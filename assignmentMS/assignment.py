@@ -40,7 +40,14 @@ def find_by_assignmentId(assignmentId):
     assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
     if assignment:
         return jsonify(assignment.json())
-    return jsonify({"message": "Book not found."}), 404
+    return jsonify({"message": "Assignment not found."}), 404
+
+@app.route("/assignment/<int:userId>")
+def find_by_userId(userId):
+    assignment = Assignment.query.filter_by(userId=userId).first()
+    if assignment:
+        return jsonify(assignment.json())
+    return jsonify({"message": "Assignment not found."}), 404
 
 @app.route("/assignment/<int:assignmentId>", methods=['POST'])
 def create_assignment(assignmentId):
@@ -61,7 +68,7 @@ def create_assignment(assignmentId):
 @app.route("/assignment/<int:assignmentId>", methods=['PUT'])
 def update_assignment(assignmentId):
     try:
-        assignment = Assignment.query.filter_by(order_id=order_id).first()
+        assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
         if not assignment:
             return jsonify(
                 {
@@ -69,7 +76,7 @@ def update_assignment(assignmentId):
                     "data": {
                         "assignmentId": assignmentId
                     },
-                    "message": "Order not found."
+                    "message": "Assignment not found."
                 }
             ), 404
 
@@ -91,7 +98,7 @@ def update_assignment(assignmentId):
                 "data": {
                     "assignmentId": assignmentId
                 },
-                "message": "An error occurred while updating the order. " + str(e)
+                "message": "An error occurred while updating the assignment. " + str(e)
             }
         ), 500
  
