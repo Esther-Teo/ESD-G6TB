@@ -153,6 +153,7 @@ def update_user_details(UserID):
         ), 500
 
         # PUT is not working will try to fix it up 
+        # will google some shit and fix itup 
 
         # def put(self, id):
         # user = [user for user in User if user['UserID'] == UserID]
