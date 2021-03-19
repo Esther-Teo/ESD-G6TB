@@ -4,7 +4,7 @@ from os import environ
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/tutor'# environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 
 db = SQLAlchemy(app)
@@ -29,7 +29,7 @@ class Tutor(db.Model):
         self.PriceRange = PriceRange
 
     def json(self):
-        return {"TutorID": self.TutorID, "TutorName": self.TutorName, "TutorPhone": self.TutorPhone, "Location": self.Location,"Portfolio": self.Portfolio,"Subjects": self.Subjects,"PriceRange": self.PriceRange, }
+        return {"TutorID": self.TutorID, "TutorName": self.TutorName, "TutorPhone": self.TutorPhone, "Location": self.Location,"Portfolio": self.Portfolio,"Subjects": self.Subjects,"PriceRange": self.PriceRange }
 
 @app.route("/tutor")
 def get_all():
@@ -105,7 +105,7 @@ def add_tutor(TutorID):
 
 
 
-@app.route("/Tutor/<string:TutorID>",methods=['PUT'])
+@app.route("/tutor/<string:TutorID>",methods=['PUT'])
 def update_tutor_details(TutorID):
     try:
         tutor = Tutor.query.filter_by(TutorID=TutorID).first()
