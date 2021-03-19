@@ -71,13 +71,15 @@ CREATE TABLE IF NOT EXISTS `Child` (
 
 INSERT INTO `user` (`userID`, `childID`, `school`, `primary`,`secondary`, `level`, `subjects`) VALUES
 ('0001', '1' 'Raffles Primary School', `1`, `0`, '4', 'Mathematics'),
-('0001', '2', 'Nanyang Girls High School', `0`, `1`, '8', 'Additional Mathematics'),
-('0002', '1', 'Dunman High School ', `0`, `1`, '9', 'Chemistry'),
+('0001', '2', 'Nanyang Girls High School', `0`, `1`, '2', 'Additional Mathematics'),
+('0002', '1', 'Dunman High School ', `0`, `1`, '3', 'Chemistry'),
 ('0002', '2', 'Rosyth School', `1`, `0`, '3', 'Chinese'),
 ('0003', '1', 'Clementi Primary School', `1`, `0`, '2', 'Science'),
 ('0004', '1', 'Yishun Primary School', `1`, `0`, '5', 'Tamil'),
-('0005', '1', 'Anderson Secondary School', `0`, `1`, '8', 'Physics');
+('0005', '1', 'Anderson Secondary School', `0`, `1`, '2', 'Physics');
 COMMIT;
+
+-- create a table for child's subjects 
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
