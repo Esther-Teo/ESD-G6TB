@@ -32,6 +32,8 @@ class Child(db.Model):
     UserID = db.Column(db.Integer, primary_key=True)
     ChildID = db.Column(db.Integer, primary_key=True)
     School = db.Column(db.String(100), nullable=False)
+    # Primary?
+    # Secondary?
     Level = db.Column(db.String(100), nullable=False)
     Subjects = db.Column(db.String(100), nullable=False)
 
@@ -118,8 +120,8 @@ def add_user(UserID):
 @app.route("/user/<string:UserID>", methods=['PUT'])
 def update_user_details(UserID):
     try:
-        userlist = User.query.filter_by(UserID=UserID).first()
-        if not userlist:
+        userList = User.query.filter_by(UserID=UserID).first()
+        if not userList:
             return jsonify(
                 {
                     "code": 404,
@@ -131,16 +133,21 @@ def update_user_details(UserID):
             ), 404
 
         # update status
+        # do for UserPhone and Location 
         data = request.get_json()
-        if data['status']:
-            userlist.status = data['status']
+        if data['UserPhone']:
+            userList.UserPhone = data['UserPhone']
+        if data['Location']:
+            userList.Location = data['Location']
             db.session.commit()
+            
             return jsonify(
                 {
                     "code": 200,
-                    "data": userlist.json()
+                    "data": userList.json()
                 }
             ), 200
+
     except Exception as e:
         return jsonify(
             {
@@ -152,26 +159,7 @@ def update_user_details(UserID):
             }
         ), 500
 
-        # PUT is not working will try to fix it up 
-        # will google some shit and fix itup 
 
-        # def put(self, id):
-        # user = [user for user in User if user['UserID'] == UserID]
-
-        # if len(user) == 0:
-        #     abort(404)
-
-        # user = user[0]
-
-        # # Loop Through all the passed agruments
-        # args = self.reqparse.parse_args()
-        # for k, v in args.items():
-        #     # Check if the passed value is not null
-        #     if v is not None:
-        #         # if not, set the element in the books dict with the 'k' object to the value provided in the request.
-        #         user[k] = v
-
-        # return{"user": marshal(book, bookFields)}
 
 # GET Child details 
 @app.route("/user/child")
