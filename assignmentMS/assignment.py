@@ -43,7 +43,7 @@ def find_by_assignmentId(assignmentId):
     return jsonify({"message": "Assignment not found."}), 404
 
 @app.route("/assignment/<int:userId>")
-def find_by_userId(userId):
+def find_by_user(userId):
     assignment = Assignment.query.filter_by(userId=userId).first()
     if assignment:
         return jsonify(assignment.json())
@@ -65,25 +65,21 @@ def create_assignment(assignmentId):
  
     return jsonify(assignment.json()), 201
 
+
 @app.route("/assignment/<int:assignmentId>", methods=['PUT'])
 def update_assignment(assignmentId):
     try:
         assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
-        if not assignment:
-            return jsonify(
-                {
-                    "code": 404,
-                    "data": {
-                        "assignmentId": assignmentId
-                    },
-                    "message": "Assignment not found."
-                }
-            ), 404
-
-        # update status
-        data = request.get_json()
-        if data['status']:
-            assignment.status = data['status']
+        if assignment:
+            data = request.get_json()
+            if data['subject']:
+                assignment.subject = data['subject']
+            if data['location']:
+                assignment.location = data['location']
+            if data['expectedPrice']:
+                assignment.expectedPrice = data['expectedPrice'] 
+            if data['preferredDay']:
+                assignment.preferredDay = data['preferredDay'] 
             db.session.commit()
             return jsonify(
                 {
@@ -91,6 +87,16 @@ def update_assignment(assignmentId):
                     "data": assignment.json()
                 }
             ), 200
+        return jsonify(
+            {
+                "code": 404,
+                "data": {
+                    "assignmentId": assignmentId
+                },
+                "message": "Assignment not found."
+            }
+        ), 404
+
     except Exception as e:
         return jsonify(
             {
