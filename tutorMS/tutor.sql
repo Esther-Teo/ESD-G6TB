@@ -32,26 +32,28 @@ USE `tutor`;
 
 DROP TABLE IF EXISTS `tutor`;
 CREATE TABLE IF NOT EXISTS `tutor` (
-    `TutorID` char(10) NOT NULL,
-    `TutorName` varchar(64) NOT NULL,
-    `TutorPhone` int(8) NOT NULL,
-    `Location` varchar(1000) NOT NULL,
-    `Portfolio` varchar(1000) NOT NULL,
-    `Subjects` varchar(1000) NOT NULL,
-    `PriceRange` int(5) NOT NULL,
-    PRIMARY KEY (`TutorID`)
+    `tutorID` char(120) NOT NULL,
+    `tutorName` varchar(64) NOT NULL,
+    `tutorPhone` int(8) NOT NULL,
+    `location` varchar(1000) NOT NULL,
+    `portfolio` varchar(1000) NOT NULL,
+    `teachesPri` tinyint(1) NOT NULL,
+    `teachesSec` tinyint(1) NOT NULL,
+    `subjects` varchar(1000) NOT NULL,
+    `priceRange` int(5) NOT NULL,
+    PRIMARY KEY (`tutorID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tutor`
 --
 
-INSERT INTO `tutor` (`TutorID`, `TutorName`, `TutorPhone`, `Location`, `Portfolio`, `Subjects`, `PriceRange`) VALUES
-('1','Bob', 9001889,'Fort Canning','Taught Sec 3 students for 1 month', 'English, Math', 100),
-('2','Tom', 999,'Dover','Taught Pri 1 students for 1 month', 'Mother Tongue, Math ', 160),
-('3','Sue', 112,'Marymount','Taught Sec 4 students for 1 month', 'Science, Math ', 105),
-('4','Mary', 123,'Pasir Ris','None', 'English, Math, Social Studies ', 125),
-('5','Jane', 12311,'River Valley','Mentored before', 'English, Science ', 130);
+INSERT INTO `tutor` (`tutorID`, `tutorName`, `tutorPhone`, `location`, `portfolio`,`teachesPri`,`teachesSec`, `subjects`, `priceRange`) VALUES
+('Bob@gmail.com','Bob', 9001889,'Fort Canning','Taught Sec 3 students for 1 month','1','0', 'English, Math', 100),
+('Tom@hotmail.com','Tom', 999,'Dover','Taught Pri 1 students for 1 month','0','1', 'Mother Tongue, Math ', 160),
+('SueSUE@gmail.com','Sue', 112,'Marymount','Taught Sec 4 students for 1 month', '1','0','Science, Math ', 105),
+('MaryTan@gmail.com','Mary', 123,'Pasir Ris','None', '0','1','English, Math, Social Studies ', 125),
+('Janice@gmail.com','Jane', 12311,'River Valley','Mentored before','0','1', 'English, Science ', 130);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -11,35 +11,39 @@ db = SQLAlchemy(app)
 
 class Tutor(db.Model):
     __tablename__ = 'tutor'
-    TutorID = db.Column(db.String(10), primary_key=True)
-    TutorName = db.Column(db.String(64), nullable=False)
-    TutorPhone = db.Column(db.INTEGER, nullable=False)
-    Location = db.Column(db.Text(1000), nullable=False)
-    Portfolio = db.Column(db.Text(1000))
-    Subjects = db.Column(db.Text(1000))
-    PriceRange = db.Column(db.INTEGER)
+    tutorID = db.Column(db.String(120), primary_key=True)
+    tutorName = db.Column(db.String(64), nullable=False)
+    tutorPhone = db.Column(db.INTEGER, nullable=False)
+    location = db.Column(db.Text(1000), nullable=False)
+    portfolio = db.Column(db.Text(1000))
+    teachesPri = db.Column(db.BOOLEAN, default=False)
+    teachesSec = db.Column(db.BOOLEAN, default=False)
+    subjects = db.Column(db.Text(1000))
+    priceRange = db.Column(db.INTEGER)
 
-    def __init__(self, TutorID, TutorName, TutorPhone, Location,Portfolio,Subjects,PriceRange):
-        self.TutorID = TutorID
-        self.TutorName = TutorName
-        self.TutorPhone = TutorPhone
-        self.Location = Location
-        self.Portfolio = Portfolio
-        self.Subjects = Subjects
-        self.PriceRange = PriceRange
+    def __init__(self, tutorID, tutorName, tutorPhone, location,portfolio,teachesPri,teachesSec,subjects,priceRange):
+        self.tutorID = tutorID
+        self.tutorName = tutorName
+        self.tutorPhone = tutorPhone
+        self.location = location
+        self.portfolio = portfolio
+        self.teachesPri = teachesPri
+        self.teachesSec = teachesSec
+        self.subjects = subjects
+        self.priceRange = priceRange
 
     def json(self):
-        return {"TutorID": self.TutorID, "TutorName": self.TutorName, "TutorPhone": self.TutorPhone, "Location": self.Location,"Portfolio": self.Portfolio,"Subjects": self.Subjects,"PriceRange": self.PriceRange }
+        return {"tutorID": self.tutorID, "tutorName": self.tutorName, "tutorPhone": self.tutorPhone, "location": self.location,"portfolio": self.portfolio,"teachesPri": self.teachesPri,"teachesSec": self.teachesSec,"subjects": self.subjects,"priceRange": self.priceRange }
 
 @app.route("/tutor")
 def get_all():
-    tutorlist = Tutor.query.all()
-    if len(tutorlist):
+    tutorList = Tutor.query.all()
+    if len(tutorList):
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "tutors": [tutor.json() for tutor in tutorlist]
+                    "tutors": [tutor.json() for tutor in tutorList]
                 }
             }
         )
@@ -49,9 +53,9 @@ def get_all():
             "message": "There are no tutors."
         }
     ), 404
-@app.route("/tutor/<string:TutorID>")
-def find_by_TutorID(TutorID):
-    tutor = Tutor.query.filter_by(TutorID=TutorID).first()
+@app.route("/tutor/<string:tutorID>")
+def find_by_tutorID(tutorID):
+    tutor = Tutor.query.filter_by(tutorID=tutorID).first()
     if tutor:
         return jsonify(
             {
@@ -66,21 +70,21 @@ def find_by_TutorID(TutorID):
         }
     ), 404
 
-@app.route("/tutor/<string:TutorID>", methods=['POST'])
-def add_tutor(TutorID):
-    if (Tutor.query.filter_by(TutorID=TutorID).first()):
+@app.route("/tutor/<string:tutorID>", methods=['POST'])
+def add_tutor(tutorID):
+    if (Tutor.query.filter_by(tutorID=tutorID).first()):
         return jsonify(
             {
                 "code": 400,
                 "data": {
-                    "TutorID": TutorID
+                    "tutorID": tutorID
                 },
                 "message": "Tutor already has an account."
             }
         ), 400
 
     data = request.get_json()
-    tutor = Tutor(TutorID, **data)
+    tutor = Tutor(tutorID, **data)
 
     try:
         db.session.add(tutor)
@@ -90,7 +94,7 @@ def add_tutor(TutorID):
             {
                 "code": 500,
                 "data": {
-                    "TutorID": TutorID
+                    "tutorID": tutorID
                 },
                 "message": "An error occurred creating the tutor account."
             }
@@ -105,16 +109,16 @@ def add_tutor(TutorID):
 
 
 
-@app.route("/tutor/<string:TutorID>",methods=['PUT'])
-def update_tutor_details(TutorID):
+@app.route("/tutor/<string:tutorID>",methods=['PUT'])
+def update_tutor_details(tutorID):
     try:
-        tutor = Tutor.query.filter_by(TutorID=TutorID).first()
+        tutor = Tutor.query.filter_by(tutorID=tutorID).first()
         if not tutor:
             return jsonify(
                 {
                     "code": 404,
                     "data": {
-                        "TutorID": TutorID
+                        "tutorID": tutorID
                     },
                     "message": "Tutor not found."
                 }
@@ -122,20 +126,20 @@ def update_tutor_details(TutorID):
 
         # update info
         data = request.get_json()
-        if data['TutorPhone']:
-            tutor.TutorPhone = data['TutorPhone']
-            db.session.commit()
-        if data['Location']:
-            tutor.Location = data['Location']
-            db.session.commit()
-        if data['Portfolio']:
-            tutor.Portfolio = data['Portfolio']
-            db.session.commit()
-        if data['Subjects']:
-            tutor.Subjects = data['Subjects']
-            db.session.commit()
-        if data['PriceRange']:
-            tutor.PriceRange = data['PriceRange']
+        if data['tutorPhone']:
+            tutor.tutorPhone = data['tutorPhone']
+        if data['location']:
+            tutor.location = data['location']
+        if data['portfolio']:
+            tutor.portfolio = data['portfolio']
+        if data['teachesPri']:
+            tutor.teachesPri = data['teachesPri']
+        if data['teachesSec']:
+            tutor.teachesSec = data['teachesSec']
+        if data['subjects']:
+            tutor.subjects = data['subjects']
+        if data['priceRange']:
+            tutor.priceRange = data['priceRange']
             db.session.commit()
         
             return jsonify(
@@ -150,7 +154,7 @@ def update_tutor_details(TutorID):
             {
                 "code": 500,
                 "data": {
-                    "TutorID": TutorID
+                    "tutorID": tutorID
                 },
                 "message": "An error occurred while updating the tutor details. " + str(e)
             }
