@@ -10,56 +10,56 @@ db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = 'user'
 
-    UserID = db.Column(db.Integer, primary_key=True)
-    UserName = db.Column(db.String(100), nullable=False)
-    UserPhone = db.Column(db.Integer, nullable=False)
-    Location = db.Column(db.String(100), nullable=False)
+    userID = db.Column(db.Integer, primary_key=True)
+    userName = db.Column(db.String(100), nullable=False)
+    userPhone = db.Column(db.Integer, nullable=False)
+    location = db.Column(db.String(100), nullable=False)
 
-    def __init__(self, UserID, UserName, UserPhone, Location):
-        self.UserID = UserID
-        self.UserName = UserName
-        self.UserPhone = UserPhone
-        self.Location = Location
+    def __init__(self, userID, userName, userPhone, location):
+        self.userID = userID
+        self.userName = userName
+        self.userPhone = userPhone
+        self.location = location
 
     def json(self):
         return {
-        "UserID": self.UserID, "UserName": self.UserName, "UserPhone": self.UserPhone, "Location": self.Location
+        "userID": self.userID, "userName": self.userName, "userPhone": self.userPhone, "location": self.location
         }
 
 class Child(db.Model):
     __tablename__ = 'child'
 
-    UserID = db.Column(db.Integer, primary_key=True)
-    ChildID = db.Column(db.Integer, primary_key=True)
-    School = db.Column(db.String(100), nullable=False)
-    # Primary?
-    # Secondary?
-    Level = db.Column(db.String(100), nullable=False)
-    Subjects = db.Column(db.String(100), nullable=False)
+    userID = db.Column(db.Integer, primary_key=True)
+    childID = db.Column(db.Integer, primary_key=True)
+    school = db.Column(db.String(100), nullable=False)
+    primary = db.Column(db.Boolean, nullable = False)
+    secondary = db.Column(db.Boolean, nullable = False)
+    level = db.Column(db.String(100), nullable=False)
+    subjects = db.Column(db.String(100), nullable=False)
 
-    def __init__(self, UserID, ChildID, School, Level, Subjects):
-        self.UserID = UserID
-        self.ChildID = ChildID
-        self.School = School
-        self.Level = Level
-        self.Subjects = Subjects
+    def __init__(self, userID, childID, school, primary, secondary, level, subjects):
+        self.userID = userID
+        self.childID = childID
+        self.school = school
+        self.level = level
+        self.subjects = subjects
 
     def json(self):
         return {
-        "UserID": self.UserID, "ChildID": self.ChildID, "School": self.School, "Level": self.Level, "Subjects": self.Subjects
+        "userID": self.userID, "childID": self.childID, "school": self.school, "level": self.level, "subjects": self.subjects
         }
 
 
 # GET all Users 
 @app.route("/user")
 def get_all_users():
-    userlist = User.query.all()
-    if len(userlist):
+    userList = User.query.all()
+    if len(userList):
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "users": [user.json() for user in userlist]
+                    "users": [user.json() for user in userList]
                 }
             }
         )
@@ -71,29 +71,29 @@ def get_all_users():
     ), 404
 
 # GET User Details By UserID 
-@app.route("/user/<string:UserID>")
-def find_by_UserID(UserID):
-    userlist = User.query.filter_by(UserID=UserID).first()
-    if userlist:
-        return jsonify(userlist.json())
+@app.route("/user/<string:userID>")
+def find_by_UserID(userID):
+    userList = User.query.filter_by(userID=userID).first()
+    if userList:
+        return jsonify(userList.json())
     return jsonify({"message": "User is not found."}), 404
 
 # add new user using POST 
-@app.route("/user/<string:UserID>", methods=['POST'])
-def add_user(UserID):
-    if (User.query.filter_by(UserID=UserID).first()):
+@app.route("/user/<string:userID>", methods=['POST'])
+def add_user(userID):
+    if (User.query.filter_by(userID=userID).first()):
         return jsonify(
             {
                 "code": 400,
                 "data": {
-                    "UserID": UserID
+                    "userID": userID
                 },
                 "message": "User already exists."
             }
         ), 400
  
     data = request.get_json()
-    user = User(UserID, **data)
+    user = User(userID, **data)
  
     try:
         db.session.add(user)
@@ -103,7 +103,7 @@ def add_user(UserID):
             {
                 "code": 500,
                 "data": {
-                    "UserID": UserID
+                    "userID": userID
                 },
                 "message": "An error occurred creating the User."
             }
@@ -117,28 +117,28 @@ def add_user(UserID):
     ), 201
 
 # Update user details using UserID --> PUT
-@app.route("/user/<string:UserID>", methods=['PUT'])
-def update_user_details(UserID):
+@app.route("/user/<string:userID>", methods=['PUT'])
+def update_user_details(userID):
     try:
-        userList = User.query.filter_by(UserID=UserID).first()
+        userList = User.query.filter_by(userID=userID).first()
         if not userList:
             return jsonify(
                 {
                     "code": 404,
                     "data": {
-                        "UserID": UserID
+                        "userID": userID
                     },
-                    "message": "UserID has not been updated"
+                    "message": "userID has not been updated"
                 }
             ), 404
 
         # update status
         # do for UserPhone and Location 
         data = request.get_json()
-        if data['UserPhone']:
-            userList.UserPhone = data['UserPhone']
-        if data['Location']:
-            userList.Location = data['Location']
+        if data['userPhone']:
+            userList.UserPhone = data['userPhone']
+        if data['location']:
+            userList.location = data['location']
             db.session.commit()
             
             return jsonify(
@@ -153,7 +153,7 @@ def update_user_details(UserID):
             {
                 "code": 500,
                 "data": {
-                    "UserID": UserID
+                    "UserID": userID
                 },
                 "message": "An error occurred while updating the user. " + str(e)
             }
@@ -164,13 +164,13 @@ def update_user_details(UserID):
 # GET Child details 
 @app.route("/user/child")
 def get_child():
-    childlist = Child.query.all()
-    if len(childlist):
+    childList = Child.query.all()
+    if len(childList):
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "Child": [child.json() for child in childlist]
+                    "Child": [child.json() for child in childList]
                 }
             }
         )
@@ -182,12 +182,12 @@ def get_child():
     ), 404
 
 # GET Child Details using ChildID 
-@app.route("/user/<string:UserID>/<string:ChildID>")
-def find_by_ChildID(UserID,ChildID):
-    childlist = Child.query.filter_by(UserID = UserID, ChildID = ChildID).first()
-    if childlist:
-        return jsonify(childlist.json())
-    return jsonify({"message": "Child is not found."}), 404
+@app.route("/user/<string:userID>/<string:childID>")
+def find_by_ChildID(userID,childID):
+    childList = Child.query.filter_by(userID = userID, childID = childID).first()
+    if childList:
+        return jsonify(childList.json())
+    return jsonify({"message": "child is not found."}), 404
 
 
 if __name__ =="__main__":

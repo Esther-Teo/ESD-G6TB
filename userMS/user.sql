@@ -32,10 +32,10 @@ USE `user`;
 
 DROP TABLE IF EXISTS `User`;
 CREATE TABLE IF NOT EXISTS `User` (
-  `UserID` INT NOT NULL,
-  `UserName` VARCHAR(100) NOT NULL,
-  `UserPhone` INT NOT NULL,
-  `Location` VARCHAR(100) NOT NULL,
+  `userID` INT NOT NULL,
+  `userName` VARCHAR(100) NOT NULL,
+  `userPhone` INT NOT NULL,
+  `location` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `User` (
 -- Dumping data for table `book`
 --
 
-INSERT INTO `user` (`UserID`, `UserName`, `UserPhone`, `Location`) VALUES
+INSERT INTO `user` (`userID`, `userName`, `userPhone`, `location`) VALUES
 ('0001', 'Michael Scarn', '12354678', 'Jurong East'),
 ('0002', 'Dwight Snoot', '96857412', 'Yishun'),
 ('0003', 'Nard Dog', '21325465', 'Sengkang'),
@@ -53,26 +53,30 @@ COMMIT;
 
 DROP TABLE IF EXISTS `Child`;
 CREATE TABLE IF NOT EXISTS `Child` (
-  `UserID` INT NOT NULL,
-  `ChildID` INT NOT NULL,
-  `School` VARCHAR(100) NOT NULL,
-  `Level` VARCHAR(100) NOT NULL,
-  `Subjects` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`UserID`, `ChildID`)
+  `userID` INT NOT NULL,
+  `childID` INT NOT NULL,
+  `school` VARCHAR(100) NOT NULL,
+  `primary` BOOLEAN NOT NULL,
+  `secondary` BOOLEAN NOT NULL,
+  `level` VARCHAR(100) NOT NULL,
+  `subjects` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`userID`, `childID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `child`
 --
 
-INSERT INTO `user` (`UserID`, `ChildID`, `School`, `Level`, `Subjects`) VALUES
-('0001', '1' 'Raffles Primary School', '4', 'Mathematics'),
-('0001', '2', 'Nanyang Girls High School', '8', 'Additional Mathematics'),
-('0002', '1', 'Dunman High School ', '9', 'Chemistry'),
-('0002', '2', 'Rosyth School', '3', 'Chinese'),
-('0003', '1', 'Clementi Primary School', '2', 'Science'),
-('0004', '1', 'Yishun Primary School', '5', 'Tamil'),
-('0005', '1', 'Anderson Secondary School', '8', 'Physics');
+-- create a new table for child and subjects 
+
+INSERT INTO `user` (`userID`, `childID`, `school`, `primary`,`secondary`, `level`, `subjects`) VALUES
+('0001', '1' 'Raffles Primary School', `1`, `0`, '4', 'Mathematics'),
+('0001', '2', 'Nanyang Girls High School', `0`, `1`, '8', 'Additional Mathematics'),
+('0002', '1', 'Dunman High School ', `0`, `1`, '9', 'Chemistry'),
+('0002', '2', 'Rosyth School', `1`, `0`, '3', 'Chinese'),
+('0003', '1', 'Clementi Primary School', `1`, `0`, '2', 'Science'),
+('0004', '1', 'Yishun Primary School', `1`, `0`, '5', 'Tamil'),
+('0005', '1', 'Anderson Secondary School', `0`, `1`, '8', 'Physics');
 COMMIT;
 
 
