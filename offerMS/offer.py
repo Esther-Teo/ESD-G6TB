@@ -7,7 +7,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
  
 db = SQLAlchemy(app)
  
-class offer(db.Model):
+class Offer(db.Model):
     __tablename__ = 'offer'
  
     assignmentid = db.Column(db.Integer, primary_key=True)
@@ -30,7 +30,7 @@ class offer(db.Model):
 
 @app.route("/offer")
 def get_all():
-	offerlist = offer.query.all()
+	offerlist = Offer.query.all()
 	if len(offerlist):
 		return jsonify(
             {
@@ -50,7 +50,7 @@ def get_all():
  
 @app.route("/offer/<int:assignmentid>/<int:tutorid>")
 def find_by_pk(assignmentid, tutorid):
-	offer = offer.query.filter_by(assignmentid=assignmentid, tutorid=tutorid).first()
+	offer = Offer.query.filter_by(assignmentid=assignmentid, tutorid=tutorid).first()
 	if offer:
 		return jsonify(
             {
@@ -68,7 +68,7 @@ def find_by_pk(assignmentid, tutorid):
  
 @app.route("/offer/<int:assignmentid>/<int:tutorid>", methods=['POST'])
 def create_offer(assignmentid, tutorid):
-	if (offer.query.filter_by(assignmentid=assignmentid, tutorid=tutorid).first()):
+	if (Offer.query.filter_by(assignmentid=assignmentid, tutorid=tutorid).first()):
 		return jsonify(
             {
                 "code": 400,
@@ -81,7 +81,7 @@ def create_offer(assignmentid, tutorid):
         ), 400
  
 	data = request.get_json()
-	offer = offer(assignmentid, tutorid, **data)
+	offer = Offer(assignmentid, tutorid, **data)
  
 	try:
 		db.session.add(offer)
@@ -107,4 +107,4 @@ def create_offer(assignmentid, tutorid):
 
  
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=5003, debug=True)
