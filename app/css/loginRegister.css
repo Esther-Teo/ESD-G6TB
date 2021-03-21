@@ -1,0 +1,218 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    /* color: #000; */
+}
+
+.header1{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.6s;
+    padding: 40px 100px;
+    z-index: 100000;
+    
+}
+
+.header1.sticky
+{
+    padding: 5px 100px;
+    background: #fff;
+}
+
+
+.header1 .logo
+{
+    position: relative;
+    font-weight: 700;
+    color: black;
+    text-decoration: none;
+    font-size: 2em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: 0.6s;
+}
+
+.header1 ul
+{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header1 ul li
+{
+    position: relative;
+    list-style: none;
+}
+.header1 ul li a
+{
+    position: relative;
+    margin: 0 15px;
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+    letter-spacing: 2px;
+    font-weight: 600px;
+    transition: 0.6s;
+}
+
+.header1 ul li:hover{
+    background-color: #ffffff;
+    transition: 0.6s;
+}
+
+.header1 ul li a:hover
+{
+    color: #000;
+    transition: 0.6s;
+}
+
+
+.login
+{
+    list-style-position:inside;
+    border: 2px solid coral;
+    
+}
+
+
+.image-container{
+    background: url('../images/bookRegister.jpg') center no-repeat;
+    background-size: cover;
+    height: 100vh;
+}
+
+.image-container1{
+    background: url('../images/loginBg.jpg') center no-repeat;
+    background-size: cover;
+    height: 100vh;
+}
+
+
+.form-container{
+    background-color: #a47e4c;
+    display: flex;
+    justify-content: center;
+}
+
+.form-box{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.form-box h4{
+    font-weight: bold;
+    color: #fff;
+}
+
+.form-box .form-input{
+    position: relative;
+}
+
+.form-box .form-input input{
+    width: 100%;
+    height: 40px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background: white;
+    padding-left: 15px;
+}
+
+.form-box .form-input span{
+    position: absolute;
+    top: 8px;
+    padding-left: 20px;
+    color: #777;
+}
+
+
+.form-box .form-input input::placeholder{
+    padding-left: 0px;
+}
+
+.form-box .form-input input:focus, .form-box .form-input input:valid{
+    border-bottom: 2px;
+}
+
+.form-box input[type="checkbox"]:not(:checked) + label:before{
+    background: transparent;
+    border: 2px solid #fff;
+    width: 15px;
+    height: 15px;
+}
+
+.form-box .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before{
+    background-color: #48403d;
+    border: 0px;
+}
+
+.form-box button[type="submit"]{
+    border: none;
+    cursor: pointer;
+    width: 150px;
+    height: 40px;
+    border-right: 5px;
+    background-color: #fff;
+    color: #000;
+    font-weight: bold;
+    transition: 0.6s;
+}
+
+.form-box button[type="submit"]:hover{
+    box-shadow: 0px 9px 10px -2px rgba(0,0,0,0.55);   
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+
+.registerLink {
+    color: turquoise;
+    font-weight: bold;
+}
+
+.registerLink:hover{
+    color: rgb(2, 255, 238);
+    font-weight: bold;
+}
+
+#terms{
+    color: turquoise;
+    font-weight: bold;
+}
+
+#terms:hover{
+    color: rgb(2, 255, 238);
+    font-weight: bold;
+}
+
+
+
+
+@media screen and (max-width: 992px) {
+    .image-container1 {
+        display: none !important;
+    }
+
+    /* Change the md-6 to md-12 in order for the div to */
+
+
+    .form-container{
+        position:absolute;
+        left:0;
+        right:0;
+    }
+}

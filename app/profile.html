@@ -1,0 +1,114 @@
+
+<?php
+    require_once("database/common.php");
+     
+    // Remove comment block to implement protection
+    
+    if ( !isset($_SESSION["user"]) ){
+        // no user session (user not logged in but tries to access the page illegally)
+        //$_SESSION["error"] = "Please log in";
+        //header("Location: ../loginPage.html");
+    }
+    
+    
+?>
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        
+        <link rel="stylesheet" href="css/profile.css">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+        <title>My Profile</title>
+    </head>
+    <body class="body1">
+        <header class="header1">
+            <a href="index.html" class="logo">Re-Zero</a>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#">Books</a></li>
+                <li><a href="#">About</a></li>
+
+            <?php 
+              //Displays different buttons depending on user session status (whether user is logged in or not)
+              if ( !isset($_SESSION["user"]) ) {
+                echo "
+                <li class='login'><a href='loginPage.html'>Log In</a></li>
+                ";
+              }
+              else{
+                echo "
+                <li><a href='profile.html'>Profile</a></li> 
+                <li class='login'><a href='../logout.php'>Log Out</a></li>
+                "; //profile button can be omitted if preferred (redundant current page)
+              }
+            ?>
+            </ul>
+            
+        </header>
+    
+        <div class="overlay" >
+            <div class='container-fluid'row'mx-auto pt-5 pb-5' id='profile'>
+                <?php
+                    $dao = new UserDAO();
+                    $user = $dao->selectUser($_SESSION["user"]); //returns a User object of current user
+                    //declare user variables to display later
+                    $email = $_SESSION["user"];
+                    $firstName = $user->getFirstName();
+                    $lastName = $user->getLastName();
+                    $contactNum = $user->getContactNum();
+                    $telegram = $user->getTelegram();
+                    echo ("
+                        <table class='table table-borderless'>
+
+                          <tbody>
+                            <tr>
+                              <th scope='row'>Name</th>
+                              <td> $lastName $firstName</td>
+                            </tr>
+                            <tr>
+                              <th scope='row'>Email</th>
+                              <td>$email</td>
+                            </tr>
+                            <tr>
+                              <th scope='row'>Contact Number</th>
+                              <td>$contactNum</td>
+                            </tr>
+                            <tr>
+                              <th scope='row'>Telegram</th>
+                              <td>$telegram</td>
+                            </tr> 
+                          </tbody>
+                        </table>            
+                    ");
+                ?>
+                
+                <div class="container">
+                  <!-- <button type="button" class="btn btn-secondary"><a href="./listingsForTrade.php" style="color: lightgray;">Edit Profile</a></button> -->
+                  <button type="button" class="btn btn-secondary"><a href="../createListing.html" style="color: lightgray;">Add Listing</a></button>
+                </div>
+                
+
+            </div>
+        </div> 
+        
+
+
+
+        <script type="text/javascript">
+        window.addEventListener("scroll", function(){
+            var header= document.querySelector("header");
+            header.classList.toggle("sticky", window.scrollY > 0);
+        })
+        </script>
+        <script src='../js/getBooks.js'></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>    
+    </body>
+</html>

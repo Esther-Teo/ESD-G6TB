@@ -1,0 +1,91 @@
+body{
+    background-color: rgb(31, 32, 55);
+}
+
+h1
+{
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color:#fff;
+    padding-bottom: 10px;
+}
+
+h1:after
+{
+    content: '';
+    background: rgb(255, 255, 255);
+    display: block;
+    height: 3px;
+    width: 150px;
+    margin: 10px auto;
+}
+
+
+
+.banner{
+    height: 100vh;
+    background: url("../images/aboutUs1.jpg") rgba(0,0,0,0.5)  no-repeat center top ;
+    background-size: cover;
+    position: relative;
+}
+
+.banner:before
+{
+    content: '';
+    position: absolute;
+    background-color: rgba(0,0,0,0.5);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
+
+p{
+    padding-bottom: 30px;
+}
+
+
+.goal
+{
+    color: #fff;
+    position: relative; 
+    padding-top: 200px;
+    text-align: center;
+}
+
+.row
+{
+    color: #fff;
+}
+
+
+.profile
+{
+    margin-top: 25px;
+}
+
+.profile .img-box
+{
+    opacity: 1;
+    display: block;
+    position: relative;
+}
+
+
+.img-item
+{
+    width: 80%;
+    height: 80%;
+    border-radius: 80px;
+}
+
+h2
+{
+    font-weight: bold;
+}
+
+h3
+{
+    padding-left: 120px; padding-right: 120px;
+}

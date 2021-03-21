@@ -1,0 +1,10 @@
+hr {
+    border-top: 2px solid black;
+}
+
+.row.z-depth-3 {
+    margin-top: 100px;
+    margin-bottom: 0px;
+    background-color: black;
+}
+

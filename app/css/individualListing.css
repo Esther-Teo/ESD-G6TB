@@ -1,0 +1,75 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.body1{
+    background-image: linear-gradient( rgba(141, 141, 141, 0.632), rgba(27, 27, 27, 0.802)), url(../images/listing-bg.jpg) ;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+
+.test1
+{
+    position: relative;
+    color: #fff;
+    margin: 0 30px;
+}
+
+
+.container{
+    margin-top: 20px;
+    color: #fff;
+}
+
+
+.carousel-caption
+{
+    margin-bottom: 250px;
+    position:fixed;
+}
+
+h2
+{
+    padding-bottom: 30px;
+}
+
+
+.overlay{
+
+    color: #fff;
+    margin: 130px 70px 50px;
+    content: " ";
+    z-index: 1;
+    display: block;
+    position: absolute;
+    height: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.overlay-listing{
+
+    color: #fff;
+    margin: 130px 35px 50px;
+    content: " ";
+    z-index: 1;
+    display: block;
+    position: absolute;
+    height: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+#description{
+    transition: height 2s;
+
+}
