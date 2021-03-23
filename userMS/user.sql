@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `user`
+-- Database: `offer`
 --
 CREATE DATABASE IF NOT EXISTS `user` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `user`;
@@ -27,11 +27,11 @@ USE `user`;
 -- --------------------------------------------------------
 
 --
--- 
+-- Table structure for table `offers`
 --
 
-DROP TABLE IF EXISTS `Users`;
-CREATE TABLE IF NOT EXISTS `Users` (
+DROP TABLE IF EXISTS `User`;
+CREATE TABLE IF NOT EXISTS `User` (
   `userID` INT NOT NULL,
   `userName` VARCHAR(100) NOT NULL,
   `userPhone` INT NOT NULL,
@@ -40,10 +40,10 @@ CREATE TABLE IF NOT EXISTS `Users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- 
+-- Dumping data for table `book`
 --
 
-INSERT INTO `Users` (`userID`, `userName`, `userPhone`, `location`) VALUES
+INSERT INTO `user` (`userID`, `userName`, `userPhone`, `location`) VALUES
 ('0001', 'Michael Scarn', '12354678', 'Jurong East'),
 ('0002', 'Dwight Snoot', '96857412', 'Yishun'),
 ('0003', 'Nard Dog', '21325465', 'Sengkang'),
@@ -58,54 +58,28 @@ CREATE TABLE IF NOT EXISTS `Child` (
   `school` VARCHAR(100) NOT NULL,
   `primary` BOOLEAN NOT NULL,
   `secondary` BOOLEAN NOT NULL,
-  `level` INT NOT NULL,
-  PRIMARY KEY (`userID`, `childID`)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
--- Dumping data for table `child`
---
-
--- create a new table for child and subjects 
-
-INSERT INTO `Child` (`userID`, `childID`, `school`, `primary`,`secondary`, `level`) VALUES
-('0001', '1' 'Raffles Primary School', 'True', 'False', '4');
--- ('0001', '2', 'Nanyang Girls High School', 'False', 'True', '2'),
--- ('0002', '1', 'Dunman High School ', 'False', 'True', '3'),
--- ('0002', '2', 'Rosyth School', 'True', 'False', '3'),
--- ('0003', '1', 'Clementi Primary School', 'True', 'False', '2'),
--- ('0004', '1', 'Yishun Primary School', 'True', 'False', '5'),
--- ('0005', '1', 'Anderson Secondary School', 'False', 'True', '2');
-COMMIT;
-
--- create a table for child's subjects 
-DROP TABLE IF EXISTS `childSubjects`;
-CREATE TABLE IF NOT EXISTS `childSubjects` (
-  `userID` INT NOT NULL,
-  `childID` INT NOT NULL,
-  `primary` BOOLEAN NOT NULL,
-  `secondary` BOOLEAN NOT NULL,
   `level` VARCHAR(100) NOT NULL,
   `subjects` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`userID`, `childID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `user` (`userID`, `childID`, `primary`,`secondary`, `level`, `subjects`) VALUES
-('0001', '1', 'True', 'False', '4', 'Mathematics');
--- ('0001', '1', 'True', 'False', '4', 'English'),
--- ('0001', '2', 'False', 'True', '2', 'Additional Mathematics'),
--- ('0001', '2', 'False', 'True',  '2', 'History'),
--- ('0002', '1', 'False', 'True', '3', 'Chemistry'),
--- ('0002', '2', 'True', 'False', '3', 'Chinese'),
--- ('0003', '1', 'True', 'False', '2', 'Science'),
--- ('0003', '1', 'True', 'False', '2', 'Mathematics'),
--- ('0003', '1', 'True', 'False', '2', 'English'),
--- ('0004', '1', 'True', 'False', '5', 'Tamil'),
--- ('0004', '1', 'True', 'False', '5', 'Science'),
--- ('0005', '1', 'False', 'True',  '2', 'Physics');
+--
+-- Dumping data for table `child`
+--
+
+-- create a new table for child and subjects 
+
+INSERT INTO `user` (`userID`, `childID`, `school`, `primary`,`secondary`, `level`, `subjects`) VALUES
+('0001', '1' 'Raffles Primary School', `1`, `0`, '4', 'Mathematics'),
+('0001', '2', 'Nanyang Girls High School', `0`, `1`, '2', 'Additional Mathematics'),
+('0002', '1', 'Dunman High School ', `0`, `1`, '3', 'Chemistry'),
+('0002', '2', 'Rosyth School', `1`, `0`, '3', 'Chinese'),
+('0003', '1', 'Clementi Primary School', `1`, `0`, '2', 'Science'),
+('0004', '1', 'Yishun Primary School', `1`, `0`, '5', 'Tamil'),
+('0005', '1', 'Anderson Secondary School', `0`, `1`, '2', 'Physics');
 COMMIT;
 
+-- create a table for child's subjects 
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
