@@ -1,0 +1,40 @@
+        
+search bar
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon" style="color: white;"></span>
+        </button>
+        
+        
+        <section id="searchBar" class="search-bar">
+          <div class="container mt-0">
+            <div class="row">
+              <div class="col-lg-10 mx-auto">
+                  <form action="searched.php" method="POST" name='form6'>
+                  <div class="p-1 bg-light shadow-sm">
+                    <div class="input-group">
+                      <input id='user_input' type="search" name="user_input" placeholder="Search based on title, genre, author" class="form-control border-0 bg-light">
+                      <div class="input-group-append" name='form5'>
+                        <!-- Button -->
+                        
+                        <div class="btn-group">
+                          <button id='laopuo' type="button" name="form" class="btn btn-secondary dropdown-toggle smallscreen" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Title</button>
+                          <div class="dropdown-menu">
+                          
+
+                            <option class="dropdown-item" id="book" name="Title" value="book" onclick="ChangeDropDownBox('Title')" selected>Title</option>
+                            <option class="dropdown-item" id="author" name="Author" value="author" onclick="ChangeDropDownBox('Author')">Author</option>
+                            <option class="dropdown-item" id="genre" name="Genre" value="genre" onclick="ChangeDropDownBox('Genre')">Genre</option>
+                            <option class="dropdown-item" id="user" name="User" value="user" onclick="ChangeDropDownBox('User')">User</option>  -->
+                           </div>
+                        </div>
+                        <div class="input-group-append">
+                          <button id="submit"  class="btn btn-link"><a  class="searchIcon"></a></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
