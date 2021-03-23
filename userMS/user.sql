@@ -70,13 +70,13 @@ CREATE TABLE IF NOT EXISTS `Child` (
 -- create a new table for child and subjects 
 
 INSERT INTO `Child` (`userID`, `childID`, `school`, `primary`,`secondary`, `level`) VALUES
-('0001', '1', 'Raffles Primary School', True, False, '4'),
-('0001', '2', 'Nanyang Girls High School', False, True, '2'),
-('0002', '1', 'Dunman High School ', False, True, '3'),
-('0002', '2', 'Rosyth School', True, False, '3'),
-('0003', '1', 'Clementi Primary School', True, False, '2'),
-('0004', '1', 'Yishun Primary School', True, False, '5'),
-('0005', '1', 'Anderson Secondary School', False, True, '2');
+('0001', '1' 'Raffles Primary School', 'True', 'False', '4');
+-- ('0001', '2', 'Nanyang Girls High School', 'False', 'True', '2'),
+-- ('0002', '1', 'Dunman High School ', 'False', 'True', '3'),
+-- ('0002', '2', 'Rosyth School', 'True', 'False', '3'),
+-- ('0003', '1', 'Clementi Primary School', 'True', 'False', '2'),
+-- ('0004', '1', 'Yishun Primary School', 'True', 'False', '5'),
+-- ('0005', '1', 'Anderson Secondary School', 'False', 'True', '2');
 COMMIT;
 
 -- create a table for child's subjects 
@@ -88,22 +88,22 @@ CREATE TABLE IF NOT EXISTS `childSubjects` (
   `secondary` BOOLEAN NOT NULL,
   `level` VARCHAR(100) NOT NULL,
   `subjects` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`userID`, `childID`, `subjects`)
+  PRIMARY KEY (`userID`, `childID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `childSubjects` (`userID`, `childID`, `primary`,`secondary`, `level`, `subjects`) VALUES
-('0001', '1', True, False, '4', 'Mathematics'),
-('0001', '1', True, False, '4', 'English'),
-('0001', '2', False, True, '2', 'Additional Mathematics'),
-('0001', '2', False, True,  '2', 'History'),
-('0002', '1', False, True, '3', 'Chemistry'),
-('0002', '2', True, False, '3', 'Chinese'),
-('0003', '1', True, False, '2', 'Science'),
-('0003', '1', True, False, '2', 'Mathematics'),
-('0003', '1', True, False, '2', 'English'),
-('0004', '1', True, False, '5', 'Tamil'),
-('0004', '1', True, False, '5', 'Science'),
-('0005', '1', False, True,  '2', 'Physics');
+INSERT INTO `user` (`userID`, `childID`, `primary`,`secondary`, `level`, `subjects`) VALUES
+('0001', '1', 'True', 'False', '4', 'Mathematics');
+-- ('0001', '1', 'True', 'False', '4', 'English'),
+-- ('0001', '2', 'False', 'True', '2', 'Additional Mathematics'),
+-- ('0001', '2', 'False', 'True',  '2', 'History'),
+-- ('0002', '1', 'False', 'True', '3', 'Chemistry'),
+-- ('0002', '2', 'True', 'False', '3', 'Chinese'),
+-- ('0003', '1', 'True', 'False', '2', 'Science'),
+-- ('0003', '1', 'True', 'False', '2', 'Mathematics'),
+-- ('0003', '1', 'True', 'False', '2', 'English'),
+-- ('0004', '1', 'True', 'False', '5', 'Tamil'),
+-- ('0004', '1', 'True', 'False', '5', 'Science'),
+-- ('0005', '1', 'False', 'True',  '2', 'Physics');
 COMMIT;
 
 
