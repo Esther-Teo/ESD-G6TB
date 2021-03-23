@@ -32,20 +32,20 @@ USE `offer`;
 
 DROP TABLE IF EXISTS `offer`;
 CREATE TABLE IF NOT EXISTS `offer` (
-  `assignmentid` INT NOT NULL,
-  `tutorid` INT NOT NULL,
+  `assignmentId` INT NOT NULL,
+  `tutorId` INT NOT NULL,
   `status` VARCHAR(6) NOT NULL,
-  `selectedtime` INT NOT NULL,
-  `offeredrate` INT NOT NULL,
-  `selectedday` VARCHAR(3) NOT NULL,
-  PRIMARY KEY (`assignmentid`, `tutorid`)
+  `selectedTime` INT NOT NULL,
+  `expectedPrice` INT NOT NULL,
+  `preferredDay` VARCHAR(3) NOT NULL,
+  PRIMARY KEY (`assignmentid`, `tutorId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `book`
 --
 
-INSERT INTO `offer` (`assignmentid`, `tutorid`, `status`, `selectedtime`, `offeredrate`, `selectedday`) VALUES
+INSERT INTO `offer` (`assignmentId`, `tutorId`, `status`, `selectedTime`, `expectedPrice`, `preferredDay`) VALUES
 ('1000', '1000', 'open', '1500', '30', 'sun'),
 ('2000', '2000', 'closed', '0900', '50', 'sat'),
 ('3000', '3000', 'closed', '2000', '35', 'fri'),
