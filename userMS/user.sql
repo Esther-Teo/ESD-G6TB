@@ -24,8 +24,6 @@ SET time_zone = "+00:00";
 CREATE DATABASE IF NOT EXISTS `user` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `user`;
 
-
-
 -- --------------------------------------------------------
 
 --
