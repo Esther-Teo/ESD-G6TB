@@ -38,8 +38,9 @@ CREATE TABLE IF NOT EXISTS `offer` (
   `selectedTime` INT NOT NULL,
   `expectedPrice` INT NOT NULL,
   `preferredDay` VARCHAR(3) NOT NULL,
-  PRIMARY KEY (`assignmentid`, `tutorId`)
+  PRIMARY KEY (`assignmentId`, `tutorId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 --
 -- Dumping data for table `book`

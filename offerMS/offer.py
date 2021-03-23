@@ -48,9 +48,9 @@ def get_all():
     ), 404
 
  
-@app.route("/offer/<int:assignmentid>/<int:tutorid>")
-def find_by_pk(assignmentid, tutorid):
-	offer = Offer.query.filter_by(assignmentid=assignmentid, tutorid=tutorid).first()
+@app.route("/offer/<int:assignmentId>/<int:tutorId>")
+def find_by_pk(assignmentId, tutorId):
+	offer = Offer.query.filter_by(assignmentId=assignmentId, tutorId=tutorId).first()
 	if offer:
 		return jsonify(
             {
@@ -66,22 +66,22 @@ def find_by_pk(assignmentid, tutorid):
     ), 404
 
  
-@app.route("/offer/<int:assignmentid>/<int:tutorid>", methods=['POST'])
-def create_offer(assignmentid, tutorid):
-	if (Offer.query.filter_by(assignmentid=assignmentid, tutorid=tutorid).first()):
+@app.route("/offer/<int:assignmentId>/<int:tutorId>", methods=['POST'])
+def create_offer(assignmentId, tutorId):
+	if (Offer.query.filter_by(assignmentId=assignmentId, tutorId=tutorId).first()):
 		return jsonify(
             {
                 "code": 400,
                 "data": {
-                    "assignmentid": assignmentid, 
-					"tutorid": tutorid
+                    "assignmentId": assignmentId, 
+					"tutorId": tutorId
                 },
                 "message": "Offer already exists."
             }
         ), 400
  
 	data = request.get_json()
-	offer = Offer(assignmentid, tutorid, **data)
+	offer = Offer(assignmentid, tutorId, **data)
  
 	try:
 		db.session.add(offer)
@@ -91,7 +91,7 @@ def create_offer(assignmentid, tutorid):
             {
                 "code": 500,
                 "data": {
-                    "assignmentid": assignmentid,
+                    "assignmentId": assignmentId,
                     "tutorid": tutorid
                 },
                 "message": "An error occurred creating the offer."
