@@ -27,9 +27,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
         <title>All Listings</title>
-    
-
     </head>
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <body class="body1" onload="clickSearchIcon()">
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-light" id="test1">
@@ -46,7 +45,7 @@
                 <a class="nav-link" href="index.html">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="allListings.html">Browse</a>
+                <a class="nav-link" href="allListings.html">Assignments</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="about.html">About</a>
@@ -142,13 +141,13 @@
                   </div>
                 </div>
                   <div class="form-row">
-                    <div class="form-check" style="padding-right: 5px;">
+                    <div class="form-check target" style="padding-right: 5px;" >
                       <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
                       <label class="form-check-label" for="exampleRadios1">
                         Primary
                       </label>
                     </div>
-                    <div class="form-check">
+                    <div class="form-check target2">
                       <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
                       <label class="form-check-label" for="exampleRadios2">
                         Secondary
@@ -161,7 +160,20 @@
                       <input type="email" class="form-control" id="level" placeholder="Please enter your child's level!">
                     </div>
                     </div>
-                  <button type="submit" class="btn btn-primary">Create assignment!</button>
+                    <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      English
+                      </button>
+                      <div class="dropdown-menu" id='subjects-available'>
+                        <a class="dropdown-item" href="#" selected>English</a>
+                        <a class="dropdown-item" href="#">Chinese</a>
+                        <a class="dropdown-item" href="#">Tamil</a>
+                        <a class="dropdown-item" href="#">Malay</a>
+                        <a class="dropdown-item" href="#">Math</a>
+                        <a class="dropdown-item" href="#">Science</a>
+                      </div>
+                    </div>
+                  <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Create assignment!</button>
                   </div>
                 </form>
               </div>
@@ -187,6 +199,35 @@
             let text = document.getElementById('user_input').value
             window.location = `searched.php?user_input=${text}&user_searched_option=${dropdownform}`
           })
+
+          $( ".target" ).change(function() {
+          //alert( "Now option is at Primary" );
+          document.getElementById('subjects-available').innerHTML='';
+          document.getElementById('subjects-available').innerHTML += `<a class="dropdown-item" href="#" selected>English</a>
+                        <a class="dropdown-item" href="#">Chinese</a>
+                        <a class="dropdown-item" href="#">Tamil</a>
+                        <a class="dropdown-item" href="#">Malay</a>
+                        <a class="dropdown-item" href="#">Math</a>
+                        <a class="dropdown-item" href="#">Science</a>`
+          });
+          $( ".target2" ).change(function() {
+          //alert( "Now option is at Secondary" );
+          document.getElementById('subjects-available').innerHTML='';
+          document.getElementById('subjects-available').innerHTML += `<a class="dropdown-item" href="#" selected>English</a>
+                        <a class="dropdown-item" href="#">Chinese</a>
+                        <a class="dropdown-item" href="#">Tamil</a>
+                        <a class="dropdown-item" href="#">Malay</a>
+                        <a class="dropdown-item" href="#">A-Math</a>
+                        <a class="dropdown-item" href="#">E-Math</a>
+                        <a class="dropdown-item" href="#">Biology</a>
+                        <a class="dropdown-item" href="#">Chemistry</a>
+                        <a class="dropdown-item" href="#">Physics</a>
+                        <a class="dropdown-item" href="#">Geography</a>
+                        <a class="dropdown-item" href="#">History</a>
+                        <a class="dropdown-item" href="#">Literature</a>
+                        <a class="dropdown-item" href="#">Principles Of Accounts</a>`
+          });
+          
         </script>
     
     </body>
