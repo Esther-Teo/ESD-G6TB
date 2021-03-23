@@ -1,0 +1,252 @@
+<?php
+    session_start();
+    if ( !isset($_SESSION["user"]) ) {
+      $user = 'no';
+      
+    }
+    else{
+        $user = $_SESSION["user"];
+    }
+?>
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+        <link rel="stylesheet" href="css/allListings.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <script src="https://use.fontawesome.com/a64b47fd82.js"></script>
+        <link rel="stylesheet" href="css/testHome.css">
+        <link rel="stylesheet" href="css/homeresponsive.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
+        <title>All Listings</title>
+    </head>
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    <body class="body1" onload="clickSearchIcon()">
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-light" id="test1">
+          <a class="navbar-brand" href="index.html">Welcome {User}</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon" style="color: white;"></span>
+          </button>
+          <div class="collapse navbar-collapse " id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item active">
+                <button type="button" class="btn btn-linkNav" style="margin-top: 15px; padding-top:12px;" onclick="toggleSearch()"></button>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="index.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="allListings.html">Assignments</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="about.html">About</a>
+              </li>
+          <?php 
+            //Displays different buttons depending on user session status (whether user is logged in or not)
+            if ( !isset($_SESSION["user"]) ) {
+              echo "
+              <li class='nav-item'>
+                <a class='nav-link' href='loginPage.html' id='login'>Log In</a>
+              </li>
+              <li class='nav-item'>
+                <a class='nav-link' href='registerPage.html' id='signup'>Sign Up</a>
+              </li>
+              ";
+            }
+            else{
+              echo "
+              <li class='nav-item'>
+                <a class='nav-link' href='myCurrentListings.html'>Profile</a>
+              </li>    
+              <li class='nav-item'>
+                <a class='nav-link' href='logout.php' id='login'>Log Out</a>
+              </li>
+              ";
+            }
+          ?>
+    
+              
+            </ul>
+          </div>
+        </nav>
+        <!-- UPDATED -->
+        <!-- SearchBar -->
+        <section id="searchBar" class="search-bar">
+          <div class="container mt-0">
+            <div class="row">
+              <div class="col-lg-10 mx-auto">
+                  <form action="searched.php" method="POST" name='form6'>
+                  <div class="p-1 bg-light shadow-sm">
+                    <div class="input-group">
+                      <input id='user_input' type="search" name="user_input" placeholder="Search based on title, genre, author" class="form-control border-0 bg-light">
+                      <div class="input-group-append" name='form5'>
+                        <!-- Button -->
+                        
+                        <div class="btn-group">
+                          <button id='laopuo' type="button" name="form" class="btn btn-secondary dropdown-toggle smallscreen" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Title</button>
+                          <div class="dropdown-menu">
+                          
+
+                            <option class="dropdown-item" id="book" name="Title" value="book" onclick="ChangeDropDownBox('Title')" selected>Title</option>
+                            <option class="dropdown-item" id="author" name="Author" value="author" onclick="ChangeDropDownBox('Author')">Author</option>
+                            <option class="dropdown-item" id="genre" name="Genre" value="genre" onclick="ChangeDropDownBox('Genre')">Genre</option>
+                            <option class="dropdown-item" id="user" name="User" value="user" onclick="ChangeDropDownBox('User')">User</option>  -->
+                           </div>
+                        </div>
+                        <div class="input-group-append">
+                          <button id="submit"  class="btn btn-link"><a  class="searchIcon"></a></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+                    
+    
+        <div class="overlay" >
+            <h1 class='mt-3 header text-center display-4'>Assignment Management</h1>
+            <p class="text-center">
+              <a class="btn btn-primary" style="margin-right: 50px" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                Create an Assignment!
+              </a>
+              <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#all_assignment">
+                View your assignments!
+              </button>
+            </p>
+            <div class="collapse" id="collapseExample">
+              <div class="card card-body">
+                <form>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="inputEmail4">Username</label>
+                      <input type="email" class="form-control" id="inputEmail4" placeholder="Please enter your email here!">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="inputAddress">Address</label>
+                    <input type="text" class="form-control" id="inputAddress" placeholder="Please enter your postal code here">
+                  </div>
+                </div>
+                  <div class="form-row">
+                    <div class="form-check target" style="padding-right: 5px;" >
+                      <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                      <label class="form-check-label" for="exampleRadios1">
+                        Primary
+                      </label>
+                    </div>
+                    <div class="form-check target2">
+                      <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+                      <label class="form-check-label" for="exampleRadios2">
+                        Secondary
+                      </label>
+                  </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="Level">School Level</label>
+                      <input type="email" class="form-control" id="level" placeholder="Please enter your child's level!">
+                    </div>
+                    </div>
+                    <!-- <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      English
+                      </button>
+                      <div class="dropdown-menu" id='subjects-available'>
+                        <a class="dropdown-item" href="#" selected>English</a>
+                        <a class="dropdown-item" href="#">Chinese</a>
+                        <a class="dropdown-item" href="#">Tamil</a>
+                        <a class="dropdown-item" href="#">Malay</a>
+                        <a class="dropdown-item" href="#">Math</a>
+                        <a class="dropdown-item" href="#">Science</a>
+                      </div>
+                    </div> -->
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" for="subjects">Subject</label>
+                      </div>
+                      <select class="custom-select" id="subjects">
+                        <option selected disabled>Choose...</option>
+                        <option value="English">English</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="Tamil">Tamil</option>
+                        <option value="Malay">Malay</option>
+                        <option value="Math">Math</option>
+                        <option value="Science">Science</option>
+                      </select>
+                    </div>
+                  <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Create assignment!</button>
+                  </div>
+                </form>
+              </div>
+              <div class="collapse" id="all_assignment">
+                  <div class='container-fluid row mx-auto pt-3 pb-5 mt-3' id='listings'>
+                  </div>
+                </div>
+              </div>
+            </br>
+          </br>
+      </br>
+        </div>
+        
+
+        <script> var user = "<?=$user ?>"; </script>
+        need edit scrips
+        <script src="./js/homeui.js"></script>
+        <script src='./js/getBooks.js'></script>
+        <script>
+          document.getElementById('submit').addEventListener('click',function(event) {
+            event.preventDefault();
+            let dropdownform = document.getElementById('laopuo').innerText
+            let text = document.getElementById('user_input').value
+            window.location = `searched.php?user_input=${text}&user_searched_option=${dropdownform}`
+          })
+
+          $( ".target" ).change(function() {
+          //alert( "Now option is at Primary" );
+          document.getElementById('subjects').innerHTML='';
+          document.getElementById('subjects').innerHTML += `
+                        <option selected disabled>Choose...</option>
+                        <option value="English">English</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="Tamil">Tamil</option>
+                        <option value="Malay">Malay</option>
+                        <option value="Math">Math</option>
+                        <option value="Science">Science</option>`
+          });
+          $( ".target2" ).change(function() {
+          //alert( "Now option is at Secondary" );
+          document.getElementById('subjects').innerHTML='';
+          document.getElementById('subjects').innerHTML += `
+                        <option selected disabled>Choose...</option>
+                        <option value="English">English</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="Tamil">Tamil</option>
+                        <option value="Malay">Malay</option>
+                        <option value="A_Math">Math</option>
+                        <option value="E_Math">Math</option>
+                        <option value="Biology">Biology</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Geography">Geography</option>
+                        <option value="History">History</option>
+                        <option value="Literature">Literature</option>
+                        <option value="Principles of Accounts">Principles of Accounts</option>`
+          });
+          
+        </script>
+    
+    </body>
+</html>
