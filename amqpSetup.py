@@ -12,9 +12,9 @@ connection = pika.BlockingConnection(
 channel = connection.channel()
  
 # Set up exchange 
-exchangename = 'inbox_topic'
-exchangetype = 'topic'
-channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype, durable=True)
+exchange_name = 'inbox_topic'
+exchange_type = 'topic'
+channel.exchange_declare(exchange=exchange_name, exchange_type=exchange_type, durable=True)
 
 # ----------  Inbox Queue  ----------
 # Declare Inbox queue
@@ -22,14 +22,14 @@ queue_name = 'Inbox'
 channel.queue_declare(queue=queue_name, durable=True) 
 # bind 'Inbox' to 'inbox_topic' exchange
 # any routing_key (since #)
-channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#') 
+channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='#') 
 
 # ----------  Manage_Offers Queue  ----------
 queue_name = 'Manage_Offers'
 channel.queue_declare(queue=queue_name, durable=True) 
 # bind 'Manage_Offers' to 'inbox_topic' exchange
 # any routing_key that ends with '.offer'
-channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='*.offer') 
+channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='*.offer') 
 
 """
 This function in this module sets up a connection and a channel to a local AMQP broker,

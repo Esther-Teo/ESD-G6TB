@@ -1,23 +1,23 @@
 import json
 import os
 
-import amqp_setup
+import amqpSetup
 
 monitorBindingKey='#'
 
-def getInboxMsg():
-    amqp_setup.check_setup()
+def get_inbox_msg():
+    amqpSetup.check_setup()
     queue_name = "Inbox"  
 
-    amqp_setup.channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
-    amqp_setup.channel.start_consuming() 
+    amqpSetup.channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
+    amqpSetup.channel.start_consuming() 
 
 def callback(channel, method, properties, body): # required signature for the callback; no return
     print("\nReceived inbox message by " + __file__)
-    processMsg(body)
+    process_msg(body)
     print() 
 
-def processMsg(inboxMsg):
+def process_msg(inboxMsg):
     print("Printing inbox message:")
     try:
         msg = json.loads(inboxMsg)
@@ -30,5 +30,5 @@ def processMsg(inboxMsg):
 
 if __name__ == "__main__":  
     print("\nThis is " + os.path.basename(__file__), end='')
-    print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, amqp_setup.exchangename))
-    getInboxMsg()
+    print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, amqpSetup.exchangename))
+    get_inbox_msg()
