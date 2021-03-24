@@ -10,23 +10,23 @@ db = SQLAlchemy(app)
 class Offer(db.Model):
     __tablename__ = 'offer'
  
-    assignmentid = db.Column(db.Integer, primary_key=True)
-    tutorid = db.Column(db.Integer, primary_key=True)
+    assignmentId = db.Column(db.Integer, primary_key=True)
+    tutorId = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.String(6), nullable=False)
-    selectedtime = db.Column(db.Integer, nullable=False)
-    offeredrate = db.Column(db.Integer, nullable=False)
-    selectedday = db.Column(db.String(3), nullable=False)
+    selectedTime = db.Column(db.Integer, nullable=False)
+    expectedPrice = db.Column(db.Integer, nullable=False)
+    preferredDay = db.Column(db.String(3), nullable=False)
  
-    def __init__(self, assignmentid, tutorid, status, selectedtime, offeredrate, selectedday):
-        self.assignmentid = assignmentid
-        self.tutorid = tutorid
+    def __init__(self, assignmentId, tutorId, status, selectedTime, expectedPrice, preferredDay):
+        self.assignmentId = assignmentId
+        self.tutorId = tutorId
         self.status = status
-        self.selectedtime = selectedtime
-        self.offeredrate = offeredrate
-        self.selectedday = selectedday
+        self.selectedTime = selectedTime
+        self.expectedPrice = expectedPrice
+        self.preferredDay = preferredDay
  
     def json(self):
-        return {"assignmentid": self.assignmentid, "tutorid": self.tutorid, "status": self.status, "selectedtime": self.selectedtime, "offeredrate": self.offeredrate, "selectedday": self.selectedday,}
+        return {"assignmentId": self.assignmentId, "tutorId": self.tutorId, "status": self.status, "selectedTime": self.selectedTime, "expectedPrice": self.expectedPrice, "preferredDay": self.preferredDay,}
 
 @app.route("/offer")
 def get_all():
