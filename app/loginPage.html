@@ -26,67 +26,8 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <title>Login</title>
     </head>
-    <body onload="clickSearchIcon()">
-
-      
-
-
-        <nav class="navbar navbar-expand-lg navbar-dark bg-light" id="test1">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon" style="color: white;"></span>
-            </button>
-            <div class="collapse navbar-collapse " id="navbarNav">
-              <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                  <button type="button" class="btn btn-linkNav" style="margin-top: 15px; padding-top:12px;" onclick="toggleSearch()"></button>
-                </li>
-                <li class="nav-item active">
-                  <a class="nav-link" href="index.html">Home</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="allListings.html">Browse</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="about.html">About</a>
-                </li>
-                <li class='nav-item'>
-                  <a class='nav-link' href='registerPage.html' id='signup'>Sign Up</a>
-                </li>
-              </ul>
-            </div>
-          </nav>
-          
-          <!-- SearchBar -->
-          <section id="searchBar" class="search-bar">
-            <div class="container mt-0">
-              <div class="row">
-                <div class="col-lg-10 mx-auto">
-                    <form action="searched.php" method="POST" name='form6'>
-                    <div class="p-1 bg-light shadow-sm">
-                      <div class="input-group">
-                        <input id='user_input' type="search" name="user_input" placeholder="Search based on title, genre, author" class="form-control border-0 bg-light">
-                        <div class="input-group-append" name='form5'>
-                          <!-- Button -->
-                          <div class="btn-group">
-                            <button id='laopuo' type="button" name="form" class="btn btn-secondary dropdown-toggle smallscreen" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Title</button>
-                            <div class="dropdown-menu">
-                              <option class="dropdown-item" id="book" name="Title" value="book" onclick="ChangeDropDownBox('Title')" selected>Title</option>
-                              <option class="dropdown-item" id="author" name="Author" value="author" onclick="ChangeDropDownBox('Author')">Author</option>
-                              <option class="dropdown-item" id="genre" name="Genre" value="genre" onclick="ChangeDropDownBox('Genre')">Genre</option>
-                              <option class="dropdown-item" id="user" name="User" value="user" onclick="ChangeDropDownBox('User')">User</option> 
-                            </div>
-                          </div>
-                          <div class="input-group-append">
-                            <button id="submit"  class="btn btn-link"><a  class="searchIcon"></a></button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </section>
+    <body>
+      <div id="navbar"></div>
       
         <div class="banner">
         <div class="container-fluid">
@@ -104,11 +45,11 @@
                         </div>
                         <form method="post" action="database/login.php">
                             <div class="form-input">
-                                <input type="email" name="email" placeholder="Email Address" required>
+                                <input type="email" name="email" id="email" placeholder="Email Address" required>
                             </div>
                             <div class="form-input">
               
-                                <input type="password" name="password" placeholder="Password" required>
+                                <input type="password" name="password" id="password" placeholder="Password" required>
                             </div>
 
                             <?php
@@ -137,7 +78,7 @@
                                 </div>
                             </div>
                             <div class="text-left mb-3">
-                                <button type="submit" class="btn">Login</button>
+                                <button type="button" class="btn" id="login">Login</button>
                             </div>
                             <div class="text-left mb-3 g-signin2" data-onsuccess="onSignIn">
                               <!-- for google log in button  -->
@@ -150,13 +91,56 @@
                 </div>
             </div>
         </div>
-        <script src="js/homeui.js"></script>
+        <script src="//code.jquery.com/jquery.min.js"></script>
+        <!-- ajax javascript -->
         <script>
-          document.getElementById('submit').addEventListener('click',function(event) {
+        $.get("navbarUser.html", function(data){
+            $("#navbar").replaceWith(data);
+        });
+        </script>
+        <script>
+          document.getElementById('login').addEventListener('click',function(event) {
             event.preventDefault();
-            let dropdownform = document.getElementById('laopuo').innerText
-            let text = document.getElementById('user_input').value
-            window.location = `searched.php?user_input=${text}&user_searched_option=${dropdownform}`
+            //using fetch, check if there is a user in the database 
+            email = document.getElementById('email').value
+            pass = document.getElementById('password').value
+            // data to be sent to the POST request
+            let login = {
+              userEmail: email,
+              password: pass
+            }
+
+            fetch('http://localhost:5004/usercheck', {
+              method: "POST",
+              body: JSON.stringify(login),
+              headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json()) 
+            .then(json => console.log(json))
+            .catch(err => console.log(err));
+            // const response =
+
+            //     fetch(get_all_URL+`/${this.userID}`)
+            //         .then(response => response.json())
+            //         .then(data => {
+            //             console.log(response);
+            //             console.log("meep");
+            //             console.log(data.assignments)
+            //             if (data.code === 404) {
+            //                 // no book in db
+            //                 this.message = data.message;
+            //             } else {
+            //                 this.subject = data.data.subjects;
+                            
+            //             }
+            //         })
+            //         .catch(error => {
+            //             // Errors when calling the service; such as network error, 
+            //             // service offline, etc
+            //             console.log(this.message + error);
+
+            //         });
+            // window.location = ``
           })
 
           function onSignIn(googleUser){
