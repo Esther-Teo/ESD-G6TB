@@ -34,6 +34,7 @@ DROP TABLE IF EXISTS `Users`;
 CREATE TABLE IF NOT EXISTS `Users` (
   `userID` INT NOT NULL,
   `userName` VARCHAR(100) NOT NULL,
+  `userEmail` VARCHAR(100) NOT NULL,
   `userPhone` INT NOT NULL,
   `location` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`UserID`)
@@ -43,12 +44,12 @@ CREATE TABLE IF NOT EXISTS `Users` (
 -- 
 --
 
-INSERT INTO `Users` (`userID`, `userName`, `userPhone`, `location`) VALUES
-('0001', 'Michael Scarn', '12354678', 'Jurong East'),
-('0002', 'Dwight Snoot', '96857412', 'Yishun'),
-('0003', 'Nard Dog', '21325465', 'Sengkang'),
-('0004', 'Mary Juana', '78459865', 'Tampines'),
-('0005', 'Jimothy Halpert', '01472558', 'Woodlands');
+INSERT INTO `Users` (`userID`, `userName`, `userEmail`, `userPhone`, `location`) VALUES
+('0001', 'Michael Scarn', 'mikescarn@gmail.com', '12354678', 'Jurong East'),
+('0002', 'Dwight Snoot', 'dwightsnoot@gmail.com', '96857412', 'Yishun'),
+('0003', 'Nard Dog', 'andybernard@gmail.com', '21325465', 'Sengkang'),
+('0004', 'Mary Juana', 'maryjuana@gmail.com', '78459865', 'Tampines'),
+('0005', 'Jimothy Halpert', 'jimhalpert@gmail.com', '01472558', 'Woodlands');
 COMMIT;
 
 DROP TABLE IF EXISTS `Child`;
