@@ -12,6 +12,8 @@
         <title>Login Form</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <meta name="google-signin-client_id" content="946441955207-3mgitbnfn3vmvve30damv8qd3hsnla82.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
         <script src="https://use.fontawesome.com/a64b47fd82.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
@@ -137,6 +139,9 @@
                             <div class="text-left mb-3">
                                 <button type="submit" class="btn">Login</button>
                             </div>
+                            <div class="text-left mb-3 g-signin2" data-onsuccess="onSignIn">
+                              <!-- for google log in button  -->
+                            </div>
                             <div style="color: #fff">Don't have an account?
                                 <a href="registerPage.html" class="registerLink">Click Here to Register</a>
                             </div> 
@@ -153,6 +158,12 @@
             let text = document.getElementById('user_input').value
             window.location = `searched.php?user_input=${text}&user_searched_option=${dropdownform}`
           })
+
+          function onSignIn(googleUser){
+            console.log(googleUser.getBasicProfile())
+
+            // can get data directly by doing googleUser.getBasicProfile()['At'] --> email 
+          }
         </script>
 
     </body>
