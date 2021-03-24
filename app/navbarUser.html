@@ -1,11 +1,11 @@
 <?php
     session_start();
-    if ( !isset($_SESSION["user"]) ) {
+    if ( !isset($_SESSION["userName"]) ) {
       $user = 'no';
       
     }
     else{
-        $user = $_SESSION["user"];
+        $user = $_SESSION["userName"];
     }
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-light" id="test1">
