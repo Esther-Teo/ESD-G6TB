@@ -125,17 +125,23 @@ def add_user():
 @app.route("/usercheck", methods=['POST', 'GET'])
 def check_user():
     data = request.get_json()
-    # email = data.userEmail;
-    email= "mikescarn@gmail.com"
-    # passw = data.password;
-    passw="helps"
+    # print(data)
+    email = data['userEmail']
+    # email= "mikescarn@gmail.com"
+    passw = data['password']
+    # passw="helps"
     try:
-        if (User.query.filter_by(userEmail=email, password=passw).first()):
+        res = User.query.filter_by(userEmail=email, password=passw).first()
+        if (res):
+            print(res)
             return jsonify(
                 {
                     "code": 200,
                     "data": {
-                        "message":"meep"
+                        "message":"meep",
+                        "userID": res.userID,
+                        "userName": res.userName,
+                        "userEmail": res.userEmail
                     },
                     "message": "User authenticated."
                 }
