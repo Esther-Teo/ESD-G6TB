@@ -1,13 +1,11 @@
 <?php
     session_start();
-    if ( !isset($_SESSION["userName"]) ) {
+    if ( !isset($_SESSION["user"]) ) {
       $user = 'no';
       
     }
     else{
-        $user = $_SESSION["userName"];
-        $userID = $_SESSION["userID"];
-        $userEmail = $_SESSION["userEmail"];
+        $user = $_SESSION["user"];
     }
 ?>
 
@@ -38,118 +36,7 @@
                     
     
         <div class="overlay" id="app">
-            <h1 class='mt-3 header text-center display-4'>Assignment Management</h1>
-            <p class="text-center">
-              <a class="btn btn-primary" style="margin-right: 50px" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                Create an Assignment!
-              </a>
-              <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#all_assignment">
-                View your assignments!
-              </button>
-            </p>
-            <div class="collapse" id="collapseExample">
-              <div class="card card-body">
-                <form>
-                  removed because username will be stored Maybe can change to child id drop down instead
-                  <!-- <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="inputEmail4">Username</label>
-                      <input type="email" class="form-control" id="inputEmail4" placeholder="Please enter your email here!">
-                    </div>
-                  </div> -->
-                  <div class="form-row">
-                  <div class="form-group col-md-6">
-                    <label for="inputAddress">Address</label>
-                    <input type="text" class="form-control" id="inputAddress" placeholder="Please enter your postal code here">
-                  </div>
-                </div>
-                
-                  <div class="form-row">
-                    <div class="form-check target" style="padding-right: 5px;" >
-                      <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-                      <label class="form-check-label" for="exampleRadios1">
-                        Primary
-                      </label>
-                    </div>
-                    <div class="form-check target2">
-                      <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-                      <label class="form-check-label" for="exampleRadios2">
-                        Secondary
-                      </label>
-                    </div>
-                  </div>
-                  <br>
-                  <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="Level">School Level</label>
-                      <input type="number" class="form-control" id="level" placeholder="Please enter your child's level!">
-                    </div>
-                    </div>
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <label class="input-group-text" for="subjects">Subject</label>
-                      </div>
-                      <select class="custom-select" id="subjects">
-                        <option selected disabled>Choose...</option>
-                        <option value="English">English</option>
-                        <option value="Chinese">Chinese</option>
-                        <option value="Tamil">Tamil</option>
-                        <option value="Malay">Malay</option>
-                        <option value="Math">Math</option>
-                        <option value="Science">Science</option>
-                      </select>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                          <label for="inputEmail4">Expected Price</label>
-                          <input type="email" class="form-control" id="expected_price" placeholder="Please enter the rates /hour">
-                        </div>
-                      </div>
-                    <!-- Check box for preferred days -->
-                    <label>Preferred Day</label>
-                    <div class="form-row">
-                        <div class="form-check">
-                            <label class="form-check-label">
-                              <input type="checkbox" class="form-check-input" value="1">Monday
-                            </label>
-                          </div>
-                          <div class="form-check">
-                            <label class="form-check-label">
-                              <input type="checkbox" class="form-check-input" value="2">Tuesday
-                            </label>
-                          </div>
-                          <div class="form-check">
-                            <label class="form-check-label" style="padding-right: 20px;">
-                              <input type="checkbox" class="form-check-input" value="3">Wednesday
-                            </label>
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="4">Thursday
-                              </label>
-                            </div>
-                            <div class="form-check">
-                              <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="5">Friday
-                              </label>
-                            </div>
-                            <div class="form-check">
-                              <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="6">Saturday
-                              </label>
-                          </div>
-                          <div class="form-check">
-                          <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="7">Sunday
-                          </label>
-                      </div>
-                    </div>
-                  <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Create assignment!</button>
-                  </div>
-                </form>
-              </div>
-              <div class="collapse" id="all_assignment">
-                  <div class='container-fluid row mx-auto pt-3 pb-5 mt-3' id='listings'>
-                  </div>
-                </div>
+            <h1 class='mt-3 header text-center display-4'>Payment</h1>
               </div>
             </br>
           </br>
@@ -162,7 +49,7 @@
         });
         </script>
 
-        <script> var user = "<?=$userID ?>"; console.log(user);</script>
+        <script> var user = "<?=$user ?>"; console.log(user);</script>
         need edit scrips
         <!-- <script src="./js/homeui.js"></script> -->
         <script>
