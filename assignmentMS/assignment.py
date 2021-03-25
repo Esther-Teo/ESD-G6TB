@@ -33,7 +33,7 @@ class Assignment(db.Model):
         self.tutorId = tutorId
  
     def json(self):
-        return {"assignmentId": self.assignmentId, "userID": self.userID, "childId": self.childId, "subject": self.subject, "location": self.location, "expectedPrice": self.expectedPrice, "preferredDay": self.preferredDay, "tutorId": self.tutorId}
+        return {"assignmentId": self.assignmentId, "userID": self.userID, "childId": self.childId, "subject": self.subject, "location": self.location, "expectedPrice": self.expectedPrice, "preferredDay": self.preferredDay}
 
 @app.route("/assignment")
 def get_all():
