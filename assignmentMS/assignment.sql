@@ -32,28 +32,28 @@ USE `assignment`;
 
 DROP TABLE IF EXISTS `assignment`;
 CREATE TABLE IF NOT EXISTS `assignment` (
-  `AssignmentId` int NOT NULL,
-  `Username` varchar(64) NOT NULL,
-  `ChildId` int NOT NULL,
-  `Subject` varchar(30) NOT NULL,
-  `Location` varchar(64) NOT NULL,
-  `ExpectedPrice` decimal(5,2) NOT NULL,
-  `PreferredDay` int NOT NULL,
-  `TutorId` int default 0,
-  PRIMARY KEY (`AssignmentId`)
+  `assignmentId` int NOT NULL,
+  `userID` varchar(64) NOT NULL,
+  `childId` int NOT NULL,
+  `subject` varchar(30) NOT NULL,
+  `location` varchar(64) NOT NULL,
+  `expectedPrice` decimal(5,2) NOT NULL,
+  `preferredDay` int NOT NULL,
+  `tutorId` int default 0,
+  PRIMARY KEY (`assignmentId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `book`
 --
 
-INSERT INTO `assignment` (`AssignmentId`, `Username`, `ChildId`, `Subject`, `Location`, `ExpectedPrice`, `PreferredDay`) VALUES
-(1, "meep", 1, 'Pri_Math', 'Bishan', '6.50', 3),
-(2, "hais", 1, 'Pri_Math', 'Bishan', '6.50', 2),
-(3, "meep", 2, 'Sec_Math', 'Bishan', '6.50', 3),
-(4, "meep", 1, 'Pri_Eng', 'Bishan', '6.50', 1),
-(5, "aiyo", 2, 'Sec_Physics', 'Bishan', '6.50', 2),
-(6, "helpslah", 1, 'Pri_Math', 'Bishan', '6.50', 5);
+INSERT INTO `assignment` (`assignmentId`, `userID`, `childId`, `subject`, `location`, `expectedPrice`, `preferredDay`) VALUES
+(1, 1, 1, 'Pri_Math', 'Bishan', '6.50', 3),
+(2, 3, 1, 'Pri_Math', 'Bishan', '6.50', 2),
+(3, 1, 2, 'Sec_Math', 'Bishan', '6.50', 3),
+(4, 1, 1, 'Pri_Eng', 'Bishan', '6.50', 1),
+(5, 2, 2, 'Sec_Physics', 'Bishan', '6.50', 2),
+(6, 4, 1, 'Pri_Math', 'Bishan', '6.50', 5);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
