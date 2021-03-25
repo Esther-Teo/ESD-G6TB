@@ -1,11 +1,13 @@
 <?php
     session_start();
-    if ( !isset($_SESSION["user"]) ) {
+    if ( !isset($_SESSION["userName"]) ) {
       $user = 'no';
       
     }
     else{
-        $user = $_SESSION["user"];
+        $user = $_SESSION["userName"];
+        $userID = $_SESSION["userID"];
+        $userEmail = $_SESSION["userEmail"];
     }
 ?>
 
@@ -160,7 +162,7 @@
         });
         </script>
 
-        <script> var user = "<?=$user ?>"; console.log(user);</script>
+        <script> var user = "<?=$userID ?>"; console.log(user);</script>
         need edit scrips
         <!-- <script src="./js/homeui.js"></script> -->
         <script>
