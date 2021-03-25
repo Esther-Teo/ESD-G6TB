@@ -22,7 +22,7 @@ class Assignment(db.Model):
     preferredDay = db.Column(db.Integer, nullable=False)
     tutorId = db.Column(db.Integer, default=0)
  
-    def __init__(self, assignmentId, userID, childId, subject, location, expectedPrice, preferredDay, tutorId):
+    def __init__(self, assignmentId, userID, childId, subject, location, expectedPrice, preferredDay):
         self.assignmentId = assignmentId
         self.userID = userID
         self.childId = childId
@@ -30,7 +30,7 @@ class Assignment(db.Model):
         self.location = location
         self.expectedPrice = expectedPrice
         self.preferredDay = preferredDay
-        self.tutorId = tutorId
+        self.tutorId = 0
  
     def json(self):
         return {"assignmentId": self.assignmentId, "userID": self.userID, "childId": self.childId, "subject": self.subject, "location": self.location, "expectedPrice": self.expectedPrice, "preferredDay": self.preferredDay}
@@ -59,6 +59,7 @@ def create_assignment(assignmentId):
         return jsonify({"message": "An assignment with the ID '{}' already exists.".format(assignmentId)}), 400
  
     data = request.get_json()
+    print(data)
     assignment = Assignment(assignmentId, **data)
  
     try:
