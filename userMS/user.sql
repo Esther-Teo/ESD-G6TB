@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS users (
   userID BIGINT NOT NULL AUTO_INCREMENT,
   userName VARCHAR(100) NOT NULL,
   userEmail VARCHAR(100) NOT NULL,
-  pass VARCHAR(20) NOT NULL,
+  passw VARCHAR(20) NOT NULL,
   userPhone INT NOT NULL,
   loc VARCHAR(1000) NOT NULL,
   PRIMARY KEY (userID)
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS users (
 -- 
 --
 
-INSERT INTO users (userName, userEmail, pass, userPhone, loc) VALUES
+INSERT INTO users (userName, userEmail, passw, userPhone, loc) VALUES
 ( 'Michael Scarn', 'mikescarn@gmail.com', "helps",'12354678', 'Jurong East'),
 ('Dwight Snoot', 'dwightsnoot@gmail.com', "gg", '96857412', 'Yishun'),
 ('Nard Dog', 'andybernard@gmail.com',"helps", '21325465', 'Sengkang'),
