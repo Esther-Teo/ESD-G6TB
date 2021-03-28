@@ -39,8 +39,9 @@ CREATE TABLE IF NOT EXISTS `tutor` (
     `portfolio` varchar(1000) NOT NULL,
     `teachesPri` tinyint(1) NOT NULL,
     `teachesSec` tinyint(1) NOT NULL,
-    `subjects` varchar(1000) NOT NULL,
+    -- `subjects` varchar(1000) NOT NULL,
     `priceRange` int(5) NOT NULL,
+    
     PRIMARY KEY (`tutorID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
