@@ -37,9 +37,10 @@ class Tutor(db.Model):
 class TutorSubjects(db.Model):
     __tablename__ = 'tutorSubjects'
     tutorID = db.Column(db.Integer, db.ForeignKey('tutor.tutorID', ondelete="CASCADE"), primary_key=True)
-    pri = db.Column(db.Boolean, nullable=False, primary_key=True)
-    lvl = db.Column(db.Integer, nullable=False, primary_key=True)
-    subjects = db.Column(db.String(100), nullable=False, primary_key=True)
+    subjectID = db.Column(db.Integer, nullable=False, primary_key=True)
+    pri = db.Column(db.Boolean, nullable=False)
+    lvl = db.Column(db.Integer, nullable=False)
+    subjects = db.Column(db.String(100), nullable=False)
     user = relationship('Tutor', backref='tutorSubjects')
 
     def __init__(self, tutorID, pri, lvl, subjects):
@@ -70,7 +71,7 @@ def get_all():
         }
     ), 404
 
-@app.route("/tutorById/<string:tutorID>")
+@app.route("/tutorById/<int:tutorID>")
 def find_by_tutorID(tutorID):
     tutor = Tutor.query.filter_by(tutorID=tutorID).first()
     if tutor:
@@ -114,7 +115,7 @@ def add_tutor():
         }
     ), 201
 
-@app.route("/editTutor/<string:tutorID>",methods=['PUT'])
+@app.route("/editTutor/<int:tutorID>",methods=['PUT'])
 def edit_tutor_details(tutorID):
     try:
         tutor = Tutor.query.filter_by(tutorID=tutorID).first()
@@ -164,8 +165,8 @@ def edit_tutor_details(tutorID):
 
 @app.route("/subjectByTutor/<int:tutorID>")
 def get_tutorSubject(tutorID):
-    subjectList = TutorSubjects.query.filter_by(tutorID)
-    if len(tutorList):
+    subjectList = TutorSubjects.query.filter_by(tutorID=tutorID)
+    if subjectList:
         return jsonify(
             {
                 "code": 200,
@@ -185,17 +186,17 @@ def get_tutorSubject(tutorID):
 def add_tutorSubject():
 
     data = request.get_json()
-    subject = tutorSubjects(**data)
+    subject = TutorSubjects(**data)
 
     try:
-        db.session.add(tutor)
+        db.session.add(subject)
         db.session.commit()
     except:
         return jsonify(
             {
                 "code": 500,
                 "data": {
-                    "tutorID": tutorID
+                    "msg": "oof, you fked up"
                 },
                 "message": "An error occurred creating the tutor account."
             }
@@ -204,7 +205,7 @@ def add_tutorSubject():
     return jsonify(
         {
             "code": 201,
-            "data": tutor.json()
+            "data": subject.json()
         }
     ), 201
 
