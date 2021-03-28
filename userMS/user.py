@@ -1,29 +1,33 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy 
-
+from flask_cors import CORS
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/user'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/user'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-
+CORS(app)
 class User(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
 
     userID = db.Column(db.Integer, primary_key=True)
     userName = db.Column(db.String(100), nullable=False)
+    userEmail = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(20), nullable=False)
     userPhone = db.Column(db.Integer, nullable=False)
     location = db.Column(db.String(100), nullable=False)
 
-    def __init__(self, userID, userName, userPhone, location):
+    def __init__(self, userID, userName, userEmail, password,  userPhone, location):
         self.userID = userID
         self.userName = userName
+        self.userEmail = userEmail
+        self.password = password
         self.userPhone = userPhone
         self.location = location
 
     def json(self):
         return {
-        "userID": self.userID, "userName": self.userName, "userPhone": self.userPhone, "location": self.location
+        "userID": self.userID, "userName": self.userName, "userEmail": self.userEmail, "password": self.password, "userPhone": self.userPhone, "location": self.location
         }
 
 class Child(db.Model):
@@ -79,8 +83,10 @@ def find_by_UserID(userID):
     return jsonify({"message": "User is not found."}), 404
 
 # add new user using POST 
-@app.route("/user/<string:userID>", methods=['POST'])
-def add_user(userID):
+@app.route("/createUser", methods=['POST'])
+def add_user():
+    data = request.get_json()
+    userID = data.userID
     if (User.query.filter_by(userID=userID).first()):
         return jsonify(
             {
@@ -92,9 +98,8 @@ def add_user(userID):
             }
         ), 400
  
-    data = request.get_json()
+    
     user = User(userID, **data)
- 
     try:
         db.session.add(user)
         db.session.commit()
@@ -115,6 +120,41 @@ def add_user(userID):
             "data": user.json()
         }
     ), 201
+
+# check user login
+@app.route("/usercheck", methods=['POST', 'GET'])
+def check_user():
+    data = request.get_json()
+    # print(data)
+    email = data['userEmail']
+    # email= "mikescarn@gmail.com"
+    passw = data['password']
+    # passw="helps"
+    try:
+        res = User.query.filter_by(userEmail=email, password=passw).first()
+        if (res):
+            print(res)
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "message":"meep",
+                        "userID": res.userID,
+                        "userName": res.userName,
+                        "userEmail": res.userEmail
+                    },
+                    "message": "User authenticated."
+                }
+            ), 200
+    except Exception as e:
+
+        return jsonify(
+            {
+                "code": 404,
+                "message": "There was an error" + str(e)
+            }), 404
+
+
 
 # Update user details using UserID --> PUT
 @app.route("/user/<string:userID>", methods=['PUT'])
@@ -191,7 +231,7 @@ def find_by_ChildID(userID,childID):
 
 
 if __name__ =="__main__":
-    app.run(port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5004, debug=True)
 
 
 

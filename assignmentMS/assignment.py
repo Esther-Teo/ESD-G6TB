@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
+from flask_cors import CORS
 
 app = Flask(__name__)
 
@@ -8,45 +9,48 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localh
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
  
 db = SQLAlchemy(app)
- 
+CORS(app)
+
 class Assignment(db.Model):
     __tablename__ = 'assignment'
     assignmentId = db.Column(db.Integer, primary_key=True)
-    userId = db.Column(db.Integer, nullable=False)
+    userID = db.Column(db.String(64), nullable=False)
+    childId = db.Column(db.Integer, nullable=False)
     subject = db.Column(db.String(30), nullable=False)
     location = db.Column(db.String(64), nullable=False)
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
     preferredDay = db.Column(db.Integer, nullable=False)
     tutorId = db.Column(db.Integer, default=0)
  
-    def __init__(self, assignmentId, userId, subject, location, expectedPrice, preferredDay, tutorId):
+    def __init__(self, assignmentId, userID, childId, subject, location, expectedPrice, preferredDay):
         self.assignmentId = assignmentId
-        self.userId = userId
+        self.userID = userID
+        self.childId = childId
         self.subject = subject
         self.location = location
         self.expectedPrice = expectedPrice
         self.preferredDay = preferredDay
-        self.tutorId = tutorId
+        self.tutorId = 0
  
     def json(self):
-        return {"assignmentId": self.assignmentId, "userId": self.userId, "subject": self.subject, "location": self.location, "expectedPrice": self.expectedPrice, "preferredDay": self.preferredDay, "tutorId": self.tutorId}
+        return {"assignmentId": self.assignmentId, "userID": self.userID, "childId": self.childId, "subject": self.subject, "location": self.location, "expectedPrice": self.expectedPrice, "preferredDay": self.preferredDay}
 
 @app.route("/assignment")
 def get_all():
     return jsonify({"assignments": [assignment.json() for assignment in Assignment.query.all()]})
 
-@app.route("/assignment/<int:assignmentId>")
+@app.route("/assignmentById/<int:assignmentId>")
 def find_by_assignmentId(assignmentId):
     assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
     if assignment:
-        return jsonify(assignment.json())
+        return jsonify(assignment.json)
     return jsonify({"message": "Assignment not found."}), 404
 
-@app.route("/assignment/<int:userId>")
-def find_by_user(userId):
-    assignment = Assignment.query.filter_by(userId=userId).first()
+@app.route("/assignmentByUser/<int:userID>")
+def find_by_user(userID):
+    assignment = Assignment.query.filter_by(userID=userID).all()
     if assignment:
-        return jsonify(assignment.json())
+        return jsonify({"assignments": [a.json() for a in assignment]})
     return jsonify({"message": "Assignment not found."}), 404
 
 @app.route("/assignment/<int:assignmentId>", methods=['POST'])
@@ -55,6 +59,7 @@ def create_assignment(assignmentId):
         return jsonify({"message": "An assignment with the ID '{}' already exists.".format(assignmentId)}), 400
  
     data = request.get_json()
+    print(data)
     assignment = Assignment(assignmentId, **data)
  
     try:

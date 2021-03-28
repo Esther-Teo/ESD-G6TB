@@ -6,30 +6,30 @@ port = 5672
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(
         host=hostname, port=port,
-        heartbeat=3600, blocked_connection_timeout=3600, # these parameters to prolong the expiration time (in seconds) of the connection
+        heartbeat=3600, blocked_connection_timeout=3600, 
 ))
 
 channel = connection.channel()
  
 # Set up exchange 
-exchange_name = 'inbox_topic'
+exchange_name = 'offer_topic'
 exchange_type = 'topic'
 channel.exchange_declare(exchange=exchange_name, exchange_type=exchange_type, durable=True)
 
+# ---------- Error queue ----------
+queue_name = 'Error'
+channel.queue_declare(queue=queue_name, durable=True) 
+channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='*.error') 
+
 # ----------  Inbox Queue  ----------
-# Declare Inbox queue
 queue_name = 'Inbox'
 channel.queue_declare(queue=queue_name, durable=True) 
-# bind 'Inbox' to 'inbox_topic' exchange
-# any routing_key (since #)
-channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='#') 
+channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='#') # KEY NOT CONFIRMED 
 
-# ----------  Manage_Offers Queue  ----------
-queue_name = 'Manage_Offers'
-channel.queue_declare(queue=queue_name, durable=True) 
-# bind 'Manage_Offers' to 'inbox_topic' exchange
-# any routing_key that ends with '.offer'
-channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='*.offer') 
+# # ----------  Manage_Offers Queue  ----------
+# queue_name = 'Manage_Offers'
+# channel.queue_declare(queue=queue_name, durable=True) 
+# channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='*.offer') 
 
 """
 This function in this module sets up a connection and a channel to a local AMQP broker,

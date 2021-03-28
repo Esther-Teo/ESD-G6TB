@@ -1,13 +1,10 @@
 <?php
     session_start();
-    if ( !isset($_SESSION["userName"]) ) {
-      $user = 'no';
-      
+    if ( !isset($_SESSION["tutor"]) ) {
+        $user = 'no';
     }
     else{
-        $user = $_SESSION["userName"];
-        $userID = $_SESSION["userID"];
-        $userEmail = $_SESSION["userEmail"];
+        $user = $_SESSION["tutor"];
     }
 ?>
 
@@ -32,35 +29,30 @@
         <title>All Listings</title>
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-   
     <body class="body1" >
         <div id="navbar"></div>
                     
     
         <div class="overlay" id="app">
-            <h1 class='mt-3 header text-center display-4'>Assignment Management</h1>
-            <p class="text-center">
-              <a class="btn btn-primary" style="margin-right: 50px" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                Create an Assignment!
-              </a>
-              <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#all_assignment">
-                View your assignments!
-              </button>
-            </p>
-            <div class="collapse" id="collapseExample">
+            <h1 class='mt-3 header text-center display-4'>Profile</h1>
+            <div class="" id="collapseExample">
               <div class="card card-body">
                 <form>
-                  removed because username will be stored Maybe can change to child id drop down instead
                   <!-- <div class="form-row">
                     <div class="form-group col-md-6">
                       <label for="inputEmail4">Username</label>
                       <input type="email" class="form-control" id="inputEmail4" placeholder="Please enter your email here!">
                     </div>
                   </div> -->
+                  <!-- tutorID = db.Column(db.String(120), primary_key=True) (cannot )
+                  tutorName = db.Column(db.String(64), nullable=False)
+                  tutorPhone = db.Column(db.INTEGER, nullable=False)
+                  location = db.Column(db.Text(1000), nullable=False)
+                  portfolio = db.Column(db.Text(1000)) -->
                   <div class="form-row">
                   <div class="form-group col-md-6">
-                    <label for="inputAddress">Address</label>
-                    <input type="text" class="form-control" id="inputAddress" placeholder="Please enter your postal code here">
+                    <label for="inputAddress">Phone Number</label>
+                    <input type="text" class="form-control" id="inputAddress" placeholder="Please enter your mobile number here">
                   </div>
                 </div>
                 
@@ -146,10 +138,6 @@
                   </div>
                 </form>
               </div>
-              <div class="collapse" id="all_assignment">
-                  <div class='container-fluid row mx-auto pt-3 pb-5 mt-3' id='listings'>
-                  </div>
-                </div>
               </div>
             </br>
           </br>
@@ -162,7 +150,7 @@
         });
         </script>
 
-        <script> var user = "<?=$userID ?>"; console.log(user);</script>
+        <script> var user = "<?=$user ?>"; console.log(user);</script>
         need edit scrips
         <!-- <script src="./js/homeui.js"></script> -->
         <script>

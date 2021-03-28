@@ -16,12 +16,13 @@ class Tutor(db.Model):
     tutorPhone = db.Column(db.INTEGER, nullable=False)
     location = db.Column(db.Text(1000), nullable=False)
     portfolio = db.Column(db.Text(1000))
-    teachesPri = db.Column(db.BOOLEAN, default=False)
-    teachesSec = db.Column(db.BOOLEAN, default=False)
-    subjects = db.Column(db.Text(1000))
+    # teachesPri = db.Column(db.BOOLEAN, default=False)
+    # teachesSec = db.Column(db.BOOLEAN, default=False)
+    # subject = db.Column(db.Text(1000))
     priceRange = db.Column(db.INTEGER)
+    subject = db.relationship("subject")
 
-    def __init__(self, tutorID, tutorName, tutorPhone, location,portfolio,teachesPri,teachesSec,subjects,priceRange):
+    def __init__(self, tutorID, tutorName, tutorPhone, location,portfolio,teachesPri,teachesSec,subject,priceRange):
         self.tutorID = tutorID
         self.tutorName = tutorName
         self.tutorPhone = tutorPhone
@@ -29,11 +30,26 @@ class Tutor(db.Model):
         self.portfolio = portfolio
         self.teachesPri = teachesPri
         self.teachesSec = teachesSec
-        self.subjects = subjects
+        self.subject = subject
         self.priceRange = priceRange
 
     def json(self):
-        return {"tutorID": self.tutorID, "tutorName": self.tutorName, "tutorPhone": self.tutorPhone, "location": self.location,"portfolio": self.portfolio,"teachesPri": self.teachesPri,"teachesSec": self.teachesSec,"subjects": self.subjects,"priceRange": self.priceRange }
+        return {"tutorID": self.tutorID, "tutorName": self.tutorName, "tutorPhone": self.tutorPhone, "location": self.location,"portfolio": self.portfolio,"teachesPri": self.teachesPri,"teachesSec": self.teachesSec,"subject": self.subject,"priceRange": self.priceRange }
+class Subject(db.Model):
+    __tablename__ = 'subject'
+    primaryLevel = db.Column(db.BOOLEAN, default==True)
+    secondaryLevel = db.Column(db.BOOLEAN, default==True)
+    if primaryLevel == False:
+        secondaryLevel = db.Column(db.BOOLEAN, default=True)
+    if secondaryLevel == False:
+        primaryLevel = db.Column(db.BOOLEAN, default=True) 
+        
+    def __init__(self, primaryLevel, secondaryLevel):
+        self.primaryLevel = primaryLevel
+        self.secondaryLevel = secondaryLevel
+
+    def json(self):
+        return {"primaryLevel": self.primaryLevel, "secondaryLevel": self.secondaryLevel}
 
 @app.route("/tutor")
 def get_all():
@@ -136,8 +152,8 @@ def update_tutor_details(tutorID):
             tutor.teachesPri = data['teachesPri']
         if data['teachesSec']:
             tutor.teachesSec = data['teachesSec']
-        if data['subjects']:
-            tutor.subjects = data['subjects']
+        if data['subject']:
+            tutor.subject = data['subject']
         if data['priceRange']:
             tutor.priceRange = data['priceRange']
             db.session.commit()

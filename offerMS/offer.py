@@ -10,23 +10,23 @@ db = SQLAlchemy(app)
 class Offer(db.Model):
     __tablename__ = 'offer'
  
-    assignmentid = db.Column(db.Integer, primary_key=True)
-    tutorid = db.Column(db.Integer, primary_key=True)
+    assignmentId = db.Column(db.Integer, primary_key=True)
+    tutorId = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.String(6), nullable=False)
-    selectedtime = db.Column(db.Integer, nullable=False)
-    offeredrate = db.Column(db.Integer, nullable=False)
-    selectedday = db.Column(db.String(3), nullable=False)
+    selectedTime = db.Column(db.Integer, nullable=False)
+    expectedPrice = db.Column(db.Integer, nullable=False)
+    preferredDay = db.Column(db.String(3), nullable=False)
  
-    def __init__(self, assignmentid, tutorid, status, selectedtime, offeredrate, selectedday):
-        self.assignmentid = assignmentid
-        self.tutorid = tutorid
+    def __init__(self, assignmentId, tutorId, status, selectedTime, expectedPrice, preferredDay):
+        self.assignmentId = assignmentId
+        self.tutorId = tutorId
         self.status = status
-        self.selectedtime = selectedtime
-        self.offeredrate = offeredrate
-        self.selectedday = selectedday
+        self.selectedTime = selectedTime
+        self.expectedPrice = expectedPrice
+        self.preferredDay = preferredDay
  
     def json(self):
-        return {"assignmentid": self.assignmentid, "tutorid": self.tutorid, "status": self.status, "selectedtime": self.selectedtime, "offeredrate": self.offeredrate, "selectedday": self.selectedday,}
+        return {"assignmentId": self.assignmentId, "tutorId": self.tutorId, "status": self.status, "selectedTime": self.selectedTime, "expectedPrice": self.expectedPrice, "preferredDay": self.preferredDay,}
 
 @app.route("/offer")
 def get_all():
@@ -48,9 +48,9 @@ def get_all():
     ), 404
 
  
-@app.route("/offer/<int:assignmentid>/<int:tutorid>")
-def find_by_pk(assignmentid, tutorid):
-	offer = Offer.query.filter_by(assignmentid=assignmentid, tutorid=tutorid).first()
+@app.route("/offer/<int:assignmentId>/<int:tutorId>")
+def find_by_pk(assignmentId, tutorId):
+	offer = Offer.query.filter_by(assignmentId=assignmentId, tutorId=tutorId).first()
 	if offer:
 		return jsonify(
             {
@@ -66,22 +66,22 @@ def find_by_pk(assignmentid, tutorid):
     ), 404
 
  
-@app.route("/offer/<int:assignmentid>/<int:tutorid>", methods=['POST'])
-def create_offer(assignmentid, tutorid):
-	if (Offer.query.filter_by(assignmentid=assignmentid, tutorid=tutorid).first()):
+@app.route("/offer/<int:assignmentId>/<int:tutorId>", methods=['POST'])
+def create_offer(assignmentId, tutorId):
+	if (Offer.query.filter_by(assignmentId=assignmentId, tutorId=tutorId).first()):
 		return jsonify(
             {
                 "code": 400,
                 "data": {
-                    "assignmentid": assignmentid, 
-					"tutorid": tutorid
+                    "assignmentId": assignmentId, 
+					"tutorId": tutorId
                 },
                 "message": "Offer already exists."
             }
         ), 400
  
 	data = request.get_json()
-	offer = Offer(assignmentid, tutorid, **data)
+	offer = Offer(assignmentid, tutorId, **data)
  
 	try:
 		db.session.add(offer)
@@ -91,7 +91,7 @@ def create_offer(assignmentid, tutorid):
             {
                 "code": 500,
                 "data": {
-                    "assignmentid": assignmentid,
+                    "assignmentId": assignmentId,
                     "tutorid": tutorid
                 },
                 "message": "An error occurred creating the offer."
