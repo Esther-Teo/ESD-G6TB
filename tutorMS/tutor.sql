@@ -49,9 +49,9 @@ DROP TABLE IF EXISTS tutorSubjects;
 CREATE TABLE IF NOT EXISTS tutorSubjects (
   tutorID BIGINT NOT NULL,
   pri BOOLEAN NOT NULL,
-  lvl VARCHAR(100) NOT NULL,
+  lvl int NOT NULL,
   subjects VARCHAR(100) NOT NULL,
-  PRIMARY KEY (tutorID, pri ,subjects),
+  PRIMARY KEY (tutorID, pri, lvl, subjects),
   CONSTRAINT FK_tutorID FOREIGN KEY (tutorID)
     REFERENCES tutor(tutorID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -66,6 +66,13 @@ INSERT INTO tutor (tutorName, tutorEmail, passw, tutorPhone, loc, portfolio, pri
 ('Sue','suesue@gmail.com', '123',112,'Marymount','Taught Sec 4 students for 1 month', 105),
 ('Mary','MaryTan@gmail.com','123', 123,'Pasir Ris','', 125),
 ('Jane','Janice@gmail.com','123', 12311,'River Valley','Mentored before', 130);
+COMMIT;
+
+INSERT INTO tutorSubjects (tutorID, pri, lvl, subjects) VALUES
+("1", 0, 4, "Math"),
+("2", 0, 4, "Math"),
+("1", 1, 6, "English"),
+("1", 1, 6, "Math");
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

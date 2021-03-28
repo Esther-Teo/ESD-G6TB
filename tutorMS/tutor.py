@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
 from os import environ
 
 app = Flask(__name__)
@@ -35,10 +36,11 @@ class Tutor(db.Model):
 
 class TutorSubjects(db.Model):
     __tablename__ = 'tutorSubjects'
-    tutorID = db.Column(db.Integer, primary_key=True, ForeignKey('tutor.tutorID'))
-    pri = db.Column(db.Boolean, nullable=False)
-    lvl = db.Column(db.Integer, nullable=False)
-    subjects = db.Column(db.String(100), nullable=False)
+    tutorID = db.Column(db.Integer, db.ForeignKey('tutor.tutorID', ondelete="CASCADE"), primary_key=True)
+    pri = db.Column(db.Boolean, nullable=False, primary_key=True)
+    lvl = db.Column(db.Integer, nullable=False, primary_key=True)
+    subjects = db.Column(db.String(100), nullable=False, primary_key=True)
+    user = relationship('Tutor', backref='tutorSubjects')
 
     def __init__(self, tutorID, pri, lvl, subjects):
         self.tutorID = tutorID
@@ -67,6 +69,7 @@ def get_all():
             "message": "There are no tutors."
         }
     ), 404
+
 @app.route("/tutorById/<string:tutorID>")
 def find_by_tutorID(tutorID):
     tutor = Tutor.query.filter_by(tutorID=tutorID).first()
