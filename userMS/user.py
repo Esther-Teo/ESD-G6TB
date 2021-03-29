@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy 
+from sqlalchemy.orm import relationship
 from flask_cors import CORS
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/user'
@@ -13,45 +14,75 @@ class User(db.Model):
     userID = db.Column(db.Integer, primary_key=True)
     userName = db.Column(db.String(100), nullable=False)
     userEmail = db.Column(db.String(100), nullable=False)
-    password = db.Column(db.String(20), nullable=False)
+    passw = db.Column(db.String(20), nullable=False)
     userPhone = db.Column(db.Integer, nullable=False)
-    location = db.Column(db.String(100), nullable=False)
+    loc = db.Column(db.String(1000), nullable=False)
 
-    def __init__(self, userID, userName, userEmail, password,  userPhone, location):
+    def __init__(self, userID, userName, userEmail, passw,  userPhone, loc):
         self.userID = userID
         self.userName = userName
         self.userEmail = userEmail
-        self.password = password
+        self.passw = passw
         self.userPhone = userPhone
-        self.location = location
+        self.loc = loc
 
     def json(self):
         return {
-        "userID": self.userID, "userName": self.userName, "userEmail": self.userEmail, "password": self.password, "userPhone": self.userPhone, "location": self.location
+            "userID": self.userID, 
+            "userName": self.userName, 
+            "userEmail": self.userEmail, 
+            "passw": self.passw, 
+            "userPhone": self.userPhone, 
+            "loc": self.loc
         }
 
 class Child(db.Model):
     __tablename__ = 'child'
 
-    userID = db.Column(db.Integer, primary_key=True)
-    childID = db.Column(db.Integer, primary_key=True)
+    userID = db.Column(db.Integer, db.ForeignKey('user.userID', ondelete="CASCADE"), primary_key=True)
+    childName = db.Column(db.String(20), primary_key=True)
     school = db.Column(db.String(100), nullable=False)
-    primary = db.Column(db.Boolean, nullable = False)
-    secondary = db.Column(db.Boolean, nullable = False)
-    level = db.Column(db.String(100), nullable=False)
-    subjects = db.Column(db.String(100), nullable=False)
+    pri = db.Column(db.Boolean, nullable = False)
+    lvl = db.Column(db.Integer, nullable=False)
+    user = relationship('User', backref='child')
 
-    def __init__(self, userID, childID, school, primary, secondary, level, subjects):
+    def __init__(self, userID, childName, school, pri, lvl):
         self.userID = userID
-        self.childID = childID
+        self.childName = childName
         self.school = school
-        self.level = level
-        self.subjects = subjects
+        self.pri = pri
+        self.lvl = lvl
+        
 
     def json(self):
         return {
-        "userID": self.userID, "childID": self.childID, "school": self.school, "level": self.level, "subjects": self.subjects
+        "userID": self.userID, 
+        "childName": self.childName, 
+        "school": self.school, 
+        "pri": self.pri, 
+        "lvl": self.lvl
         }
+
+class ChildSubjects(db.model):
+    __tablename__ = 'childSubjects'
+
+    userID = db.Column(db.Integer, db.ForeignKey('child.userID', ondelete="CASCADE"), primary_key=True)
+    childName = db.Column(db.String(20), db.ForeignKey('child.childName', ondelete="CASCADE"), primary_key=True)
+    subjects = db.Column(db.String(100), primary_key=True)
+    child = relationship('Child', backref='childSubjects')
+
+    def __init__(self, userID, childName, subjects):
+        self.userID = userID
+        self.childName = childName
+        self.subjects = subjects
+
+    def json(self):
+        return{
+            "userID":self.userID,
+            "childName": self.childName,
+            "subjects": self.subjects
+        }
+    
 
 
 # GET all Users 
@@ -128,10 +159,10 @@ def check_user():
     # print(data)
     email = data['userEmail']
     # email= "mikescarn@gmail.com"
-    passw = data['password']
+    passw = data['passw']
     # passw="helps"
     try:
-        res = User.query.filter_by(userEmail=email, password=passw).first()
+        res = User.query.filter_by(userEmail=email, passw=passw).first()
         if (res):
             print(res)
             return jsonify(
@@ -173,12 +204,12 @@ def update_user_details(userID):
             ), 404
 
         # update status
-        # do for UserPhone and Location 
+        # do for UserPhone and loc 
         data = request.get_json()
         if data['userPhone']:
             userList.UserPhone = data['userPhone']
-        if data['location']:
-            userList.location = data['location']
+        if data['loc']:
+            userList.loc = data['loc']
             db.session.commit()
             
             return jsonify(
@@ -221,10 +252,10 @@ def get_child():
         }
     ), 404
 
-# GET Child Details using ChildID 
-@app.route("/user/<string:userID>/<string:childID>")
-def find_by_ChildID(userID,childID):
-    childList = Child.query.filter_by(userID = userID, childID = childID).first()
+# GET Child Details using childName 
+@app.route("/user/<string:userID>/<string:childName>")
+def find_by_ChildID(userID,childName):
+    childList = Child.query.filter_by(userID = userID, childName = childName).first()
     if childList:
         return jsonify(childList.json())
     return jsonify({"message": "child is not found."}), 404
