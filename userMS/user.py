@@ -40,12 +40,14 @@ class User(db.Model):
 class Child(db.Model):
     __tablename__ = 'child'
 
-    userID = db.Column(db.Integer, db.ForeignKey('user.userID', ondelete="CASCADE"), primary_key=True)
+    userID = db.Column(db.Integer, db.ForeignKey('users.userID', ondelete="CASCADE"), primary_key=True)
     childName = db.Column(db.String(20), primary_key=True)
     school = db.Column(db.String(100), nullable=False)
     pri = db.Column(db.Boolean, nullable = False)
     lvl = db.Column(db.Integer, nullable=False)
-    user = relationship('User', backref='child')
+    # user = relationship('User', backref='child')
+    user = db.relationship(
+    'User', primaryjoin='Child.userID == User.userID', backref='child')
 
     def __init__(self, userID, childName, school, pri, lvl):
         self.userID = userID
@@ -64,13 +66,16 @@ class Child(db.Model):
         "lvl": self.lvl
         }
 
-class ChildSubjects(db.model):
+class ChildSubjects(db.Model):
     __tablename__ = 'childSubjects'
 
     userID = db.Column(db.Integer, db.ForeignKey('child.userID', ondelete="CASCADE"), primary_key=True)
     childName = db.Column(db.String(20), db.ForeignKey('child.childName', ondelete="CASCADE"), primary_key=True)
     subjects = db.Column(db.String(100), primary_key=True)
-    child = relationship('Child', backref='childSubjects')
+    # child = relationship('Child', backref='childSubjects')
+    children = db.relationship(
+    'Child', primaryjoin="and_(Child.userID==ChildSubjects.userID, "
+                        "Child.childName==ChildSubjects.childName)")
 
     def __init__(self, userID, childName, subjects):
         self.userID = userID
@@ -237,18 +242,20 @@ def update_user_details(userID):
 def find_child_by_user(userID):
     try:
         childList = Child.query.filter_by(userID = userID).all()
-        data = []
+        print(childList)
+        res = []
         if childList:
             for child in childList:
                 userID = child['userID']
+                print(userID)
                 childName = child['childName']
                 subjects = ChildSubjects.query.filter_by(userID = userID, childName = childName).all()
                 child['subjects'] = subjects
-                data.append(child)
+                res.append(child)
             return jsonify(
                 {
                     "code": 200,
-                    "data": data.json()
+                    "data": res.json()
                 }
             )
     except Exception as e:
@@ -267,13 +274,13 @@ def find_child_by_user(userID):
 def find_by_ChildID(userID,childName):
     try:
         childList = Child.query.filter_by(userID = userID, childName = childName).first()
-        subject = ChildSubject.query.filter_by(userID = userID, childName = childName).all()
+        subject = ChildSubjects.query.filter_by(userID = userID, childName = childName).all()
         if childList:
             return jsonify(
                 {
                     "code": 200,
                     "childData": childList.json(),
-                    "subjectData": subject.json()
+                    "subjectData": [subj.json() for subj in subject]
                 }
             )
     except Exception as e:
@@ -288,7 +295,7 @@ def find_by_ChildID(userID,childName):
         ), 404
 
 # edit child details from userid and childName 
-@app.route("/editChild/<int:userID>/<string:childName>", method=['PUT'])
+@app.route("/editChild/<int:userID>/<string:childName>", methods=['PUT'])
 def edit_by_ChildID(userID,childName):
     try:
         childList = Child.query.filter_by(userID = userID, childName = childName).first()
