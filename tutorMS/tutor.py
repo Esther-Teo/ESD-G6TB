@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 from os import environ
+from flask_cors import CORS
 
 app = Flask(__name__)
 
@@ -9,6 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:
 app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 
 db = SQLAlchemy(app)
+CORS(app)
 
 class Tutor(db.Model):
     __tablename__ = 'tutor'
@@ -32,7 +34,16 @@ class Tutor(db.Model):
         self.priceRange = priceRange
 
     def json(self):
-        return { "tutorID": self.tutorID,"tutorName": self.tutorName, "tutorEmail": self.tutorEmail, "passw": self.passw, "tutorPhone": self.tutorPhone, "loc": self.loc, "portfolio": self.portfolio, "priceRange": self.priceRange}
+        return { 
+            "tutorID": self.tutorID,
+            "tutorName": self.tutorName, 
+            "tutorEmail": self.tutorEmail, 
+            "passw": self.passw, 
+            "tutorPhone": self.tutorPhone, 
+            "loc": self.loc, 
+            "portfolio": self.portfolio, 
+            "priceRange": self.priceRange
+            }
 
 class TutorSubjects(db.Model):
     __tablename__ = 'tutorSubjects'
@@ -43,27 +54,37 @@ class TutorSubjects(db.Model):
     subjects = db.Column(db.String(100), nullable=False)
     user = relationship('Tutor', backref='tutorSubjects')
 
-    def __init__(self, tutorID, pri, lvl, subjects):
+    def __init__(self, tutorID, subjectID, pri, lvl, subjects):
         self.tutorID = tutorID
+        self.subjectID = subjectID
         self.pri = pri
         self.lvl = lvl
         self.subjects = subjects
 
     def json(self):
-        return { "tutorID": self.tutorID,"pri": self.pri, "lvl": self.lvl, "subjects": self.subjects}
+        return { 
+            "tutorID": self.tutorID, 
+            "subjectID": self.subjectID, 
+            "pri": self.pri, 
+            "lvl": self.lvl, 
+            "subjects": self.subjects
+        }
 
+# gets all tutors
 @app.route("/tutor")
 def get_all():
     tutorList = Tutor.query.all()
     if len(tutorList):
+        for tut in tutorList:
+            tutorID = tut['tutorID']
+            subjects = TutorSubjects.query.filter_by(tutorID = tutorID).all()
+            tut['subjects'] = subjects
+            data.append(tut.json())
         return jsonify(
             {
                 "code": 200,
-                "data": {
-                    "tutors": [tutor.json() for tutor in tutorList]
-                }
+                "data": data
             }
-        )
     return jsonify(
         {
             "code": 404,
@@ -71,16 +92,21 @@ def get_all():
         }
     ), 404
 
+# gets one tutor + his subjects by his id
 @app.route("/tutorById/<int:tutorID>")
 def find_by_tutorID(tutorID):
     tutor = Tutor.query.filter_by(tutorID=tutorID).first()
     if tutor:
+        for tut in tutor:
+            tutorID = tut['tutorID']
+            subjects = TutorSubjects.query.filter_by(tutorID = tutorID).all()
+            tut['subjects'] = subjects
+            data.append(tut.json())
         return jsonify(
             {
                 "code": 200,
-                "data": tutor.json()
+                "data": data
             }
-        )
     return jsonify(
         {
             "code": 404,
@@ -88,14 +114,17 @@ def find_by_tutorID(tutorID):
         }
     ), 404
 
+# creates a tutor
 @app.route("/tutor", methods=['POST'])
 def add_tutor():
 
     data = request.get_json()
-    tutor = Tutor(**data)
-
+    
+    tutor = Tutor(data['tutorID'], data['tutorName'], data['tutorEamil'], data['passw'], data['tutorPhone'], data['loc'], data['portfolio'], data['priceRange'] )
+    subject = TutorSubjects(data['tutorID'], data['subjectID'], data['pri'], data['lvl'], data['subjects'])
     try:
         db.session.add(tutor)
+        db.session.add(subject)
         db.session.commit()
     except:
         return jsonify(
@@ -111,10 +140,12 @@ def add_tutor():
     return jsonify(
         {
             "code": 201,
-            "data": tutor.json()
+            "data": tutor.json(),
+            "subject": subject.json()
         }
     ), 201
 
+# edits a tutor with the given tutorid
 @app.route("/editTutor/<int:tutorID>",methods=['PUT'])
 def edit_tutor_details(tutorID):
     try:
@@ -163,6 +194,7 @@ def edit_tutor_details(tutorID):
             }
         ), 500
 
+# gets the list of subjects by tutor
 @app.route("/subjectByTutor/<int:tutorID>")
 def get_tutorSubject(tutorID):
     subjectList = TutorSubjects.query.filter_by(tutorID=tutorID)
@@ -182,6 +214,7 @@ def get_tutorSubject(tutorID):
         }
     ), 404
 
+# creates a subject from the tutor
 @app.route("/createSubject", methods=['POST'])
 def add_tutorSubject():
 
@@ -209,44 +242,47 @@ def add_tutorSubject():
         }
     ), 201
 
+# deletes a subject by the tutorid and subject id
 @app.route("/subject/<int:tutorID>/<int:subjectID>", methods=['DELETE'])
 def delete_subject(tutorID, subjectID):
-
-    subject = TutorSubjects.query.filter_by(tutorID=tutorID, subjectID=subjectID).first()
-    if subject:
-        db.session.delete(subject)
-        db.session.commit()
+    try:
+        subject = TutorSubjects.query.filter_by(tutorID=tutorID, subjectID=subjectID).first()
+        if subject:
+            db.session.delete(subject)
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "subjectID": subjectID
+                    }
+                }
+            )
+    except Exception as e:
         return jsonify(
             {
-                "code": 200,
+                "code": 404,
                 "data": {
                     "subjectID": subjectID
-                }
+                },
+                "message": "There was an error deleting the subject." + str(e)
             }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "data": {
-                "subjectID": subjectID
-            },
-            "message": "Subject not found."
-        }
-    ), 404
+        ), 404
 
+# edits a subject by tutorid and fetched data
 @app.route("/editSubject/<int:tutorID>",methods=['PUT'])
 def edit_subject_details(tutorID):
     try:
         data = request.get_json()
-        subID = data['passw']
+        subID = data['subjectID']
 
-        tutor = Tutor.query.filter_by(tutorID=tutorID, subID=subID).first()
-        if not tutor:
+        subject = TutorSubjects.query.filter_by(tutorID=tutorID, subjectID=subID).first()
+        if not subject:
             return jsonify(
                 {
                     "code": 404,
                     "data": {
-                        "tutorID": tutorID
+                        "subjectID": subjectID
                     },
                     "message": "Tutor not found."
                 }
@@ -254,16 +290,16 @@ def edit_subject_details(tutorID):
 
         # update info
         if data['pri']:
-            tutor.pri = data['pri']
+            subject.pri = data['pri']
         if data['lvl']:
-            tutor.lvl = data['lvl']
+            subject.lvl = data['lvl']
         if data['subjects']:
-            tutor.subjects = data['subjects']
+            subject.subjects = data['subjects']
         db.session.commit()
         return jsonify(
             {
                 "code": 200,
-                "data": tutor.json()
+                "data": subject.json()
             }
         ), 200
         
