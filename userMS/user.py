@@ -8,6 +8,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 CORS(app)
+
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -84,7 +85,6 @@ class ChildSubjects(db.model):
         }
     
 
-
 # GET all Users 
 @app.route("/user")
 def get_all_users():
@@ -130,7 +130,7 @@ def add_user():
         ), 400
  
     
-    user = User(userID, **data)
+    user = User(**data)
     try:
         db.session.add(user)
         db.session.commit()
@@ -185,10 +185,8 @@ def check_user():
                 "message": "There was an error" + str(e)
             }), 404
 
-
-
 # Update user details using UserID --> PUT
-@app.route("/user/<string:userID>", methods=['PUT'])
+@app.route("/editUser/<int:userID>", methods=['PUT'])
 def update_user_details(userID):
     try:
         userList = User.query.filter_by(userID=userID).first()
@@ -206,18 +204,22 @@ def update_user_details(userID):
         # update status
         # do for UserPhone and loc 
         data = request.get_json()
+        if data['userName']:
+            userList.UserName = data['userName']
         if data['userPhone']:
             userList.UserPhone = data['userPhone']
+        if data['passw']:
+            userList.passw = data['passw']
         if data['loc']:
             userList.loc = data['loc']
-            db.session.commit()
+        db.session.commit()
             
-            return jsonify(
-                {
-                    "code": 200,
-                    "data": userList.json()
-                }
-            ), 200
+        return jsonify(
+            {
+                "code": 200,
+                "data": userList.json()
+            }
+        ), 200
 
     except Exception as e:
         return jsonify(
@@ -230,35 +232,133 @@ def update_user_details(userID):
             }
         ), 500
 
-
-
-# GET Child details 
-@app.route("/user/child")
-def get_child():
-    childList = Child.query.all()
-    if len(childList):
+# GET all children By UserID 
+@app.route("/child/<int:userID>")
+def find_child_by_user(userID):
+    try:
+        childList = Child.query.filter_by(userID = userID).all()
+        data = []
+        if childList:
+            for child in childList:
+                userID = child['userID']
+                childName = child['childName']
+                subjects = ChildSubjects.query.filter_by(userID = userID, childName = childName).all()
+                child['subjects'] = subjects
+                data.append(child)
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": data.json()
+                }
+            )
+    except Exception as e:
         return jsonify(
             {
-                "code": 200,
+                "code": 404,
                 "data": {
-                    "Child": [child.json() for child in childList]
-                }
+                    "UserID": userID
+                },
+                "message": "Couldn't find children." + str(e)
             }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are no child."
-        }
-    ), 404
+        ), 404
 
-# GET Child Details using childName 
-@app.route("/user/<string:userID>/<string:childName>")
+# GET Child Details using userid and childName 
+@app.route("/seeChild/<int:userID>/<string:childName>")
 def find_by_ChildID(userID,childName):
-    childList = Child.query.filter_by(userID = userID, childName = childName).first()
-    if childList:
-        return jsonify(childList.json())
-    return jsonify({"message": "child is not found."}), 404
+    try:
+        childList = Child.query.filter_by(userID = userID, childName = childName).first()
+        subject = ChildSubject.query.filter_by(userID = userID, childName = childName).all()
+        if childList:
+            return jsonify(
+                {
+                    "code": 200,
+                    "childData": childList.json(),
+                    "subjectData": subject.json()
+                }
+            )
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 404,
+                "data": {
+                    "UserID": userID
+                },
+                "message": "Couldn't find children." + str(e)
+            }
+        ), 404
+
+# edit child details from userid and childName 
+@app.route("/editChild/<int:userID>/<string:childName>", method=['PUT'])
+def edit_by_ChildID(userID,childName):
+    try:
+        childList = Child.query.filter_by(userID = userID, childName = childName).first()
+
+        data = request.get_json()
+        if data['childName']:
+            childList.childName = data['childName']
+        if data['school']:
+            childList.school = data['school']
+        if data['pri']:
+            childList.school = data['pri']
+        if data['lvl']:
+            childList.lvl = data['lvl']
+        try:
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": childList.json()
+                }
+            ), 200
+
+        except Exception as e:
+            return jsonify(
+                {
+                    "code": 500,
+                    "data": {
+                        "UserID": userID
+                    },
+                    "message": "An error occurred while updating the user. " + str(e)
+                }
+            ), 500
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 404,
+                "data": {
+                    "UserID": userID
+                },
+                "message": "Couldn't find children." + str(e)
+            }
+        ), 404
+
+# delete child entity
+@app.route("/child/<int:userID>/<string:childName>", methods=['DELETE'])
+def delete_child(userID, childName):
+    try:
+        child = Child.query.filter_by(userID=userID, childName=childName).first()
+        if child:
+            db.session.delete(child)
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "childName": childName
+                    }
+                }
+            )
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 404,
+                "data": {
+                    "childName": childName
+                },
+                "message": "There was an error deleting the subject." + str(e)
+            }
+        ), 404
+
 
 
 if __name__ =="__main__":
