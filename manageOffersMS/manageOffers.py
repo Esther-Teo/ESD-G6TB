@@ -4,15 +4,9 @@ from flask_cors import CORS
 import os, sys
 
 import requests
-sys.path.insert(0, 'c:/Users/foo/Documents/GitHub/ESD-G6TB')
-# To run this file without using your local path as seen above^:
-    # Navigate into your own local path at GitHub\ESD-G6TB, then type:
-    # set PYTHONPATH=.;.\manageOffersMS
-    # python manageOffersMS\manageOffers.py
-
 from invokes import invoke_http
-import amqpSetup
 
+import amqpSetup
 import pika
 import json
 

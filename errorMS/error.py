@@ -3,9 +3,8 @@
 # to run this file as a python3 script
 
 import json
-import os, sys
+import os
 
-sys.path.insert(0, 'c:/Users/foo/Documents/GitHub/ESD-G6TB')
 import amqpSetup
 
 monitorBindingKey='*.error'
@@ -38,5 +37,5 @@ def processError(errorMsg):
 
 if __name__ == "__main__":  # execute this program only if it is run as a script (not by 'import')    
     print("\nThis is " + os.path.basename(__file__), end='')
-    print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, amqpSetup.exchange_name))
+    print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, amqp_setup.exchangename))
     receiveError()

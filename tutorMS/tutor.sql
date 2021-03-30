@@ -1,4 +1,3 @@
-
 -- phpMyAdmin SQL Dump
 -- version 4.7.4
 -- https://www.phpmyadmin.net/
@@ -20,60 +19,41 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: tutor
+-- Database: `tutor`
 --
-DROP DATABASE IF EXISTS tutor;
-CREATE DATABASE IF NOT EXISTS tutor DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE tutor;
+CREATE DATABASE IF NOT EXISTS `tutor` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `tutor`;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table tutors
+-- Table structure for table `tutors`
 --
 
-DROP TABLE IF EXISTS tutor;
-CREATE TABLE IF NOT EXISTS tutor (
-    tutorID BIGINT NOT NULL AUTO_INCREMENT,
-    tutorName varchar(100) NOT NULL,
-    tutorEmail varchar(100) NOT NULL,
-    passw varchar(100) NOT NULL,
-    tutorPhone INT NOT NULL,
-    loc varchar(1000) NOT NULL,
-    portfolio varchar(1000) NOT NULL,
-    priceRange INT NOT NULL,
-    PRIMARY KEY (tutorID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS tutorSubjects;
-CREATE TABLE IF NOT EXISTS tutorSubjects (
-  tutorID BIGINT NOT NULL,
-  subjectID BIGINT NOT NULL,
-  pri BOOLEAN NOT NULL,
-  lvl int NOT NULL,
-  subjects VARCHAR(100) NOT NULL,
-  PRIMARY KEY (tutorID, subjectID),
-  CONSTRAINT FK_tutorID FOREIGN KEY (tutorID)
-    REFERENCES tutor(tutorID)
+DROP TABLE IF EXISTS `tutor`;
+CREATE TABLE IF NOT EXISTS `tutor` (
+    `tutorID` char(120) NOT NULL,
+    `tutorName` varchar(64) NOT NULL,
+    `tutorPhone` int(8) NOT NULL,
+    `location` varchar(1000) NOT NULL,
+    `portfolio` varchar(1000) NOT NULL,
+    `teachesPri` tinyint(1) NOT NULL,
+    `teachesSec` tinyint(1) NOT NULL,
+    `subjects` varchar(1000) NOT NULL,
+    `priceRange` int(5) NOT NULL,
+    PRIMARY KEY (`tutorID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table tutor
+-- Dumping data for table `tutor`
 --
 
-INSERT INTO tutor (tutorName, tutorEmail, passw, tutorPhone, loc, portfolio, priceRange) VALUES
-('Bob','bob@gmail.com', '123', 9001889,'Fort Canning','Taught Sec 3 students for 1 month',100),
-('Tom','tom@hotmail.com','123', 999,'Dover','Taught Pri 1 students for 1 month', 160),
-('Sue','suesue@gmail.com', '123',112,'Marymount','Taught Sec 4 students for 1 month', 105),
-('Mary','MaryTan@gmail.com','123', 123,'Pasir Ris','', 125),
-('Jane','Janice@gmail.com','123', 12311,'River Valley','Mentored before', 130);
-COMMIT;
-
-INSERT INTO tutorSubjects (tutorID, subjectID, pri, lvl, subjects) VALUES
-(1, 1,  0, 4, "Math"),
-(2, 1, 0, 4, "Math"),
-(2, 2, 1, 6, "English"),
-(5, 1, 1, 6, "Math");
+INSERT INTO `tutor` (`tutorID`, `tutorName`, `tutorPhone`, `location`, `portfolio`,`teachesPri`,`teachesSec`, `subjects`, `priceRange`) VALUES
+('Bob@gmail.com','Bob', 9001889,'Fort Canning','Taught Sec 3 students for 1 month','1','0', 'English, Math', 100),
+('Tom@hotmail.com','Tom', 999,'Dover','Taught Pri 1 students for 1 month','0','1', 'Mother Tongue, Math ', 160),
+('SueSUE@gmail.com','Sue', 112,'Marymount','Taught Sec 4 students for 1 month', '1','0','Science, Math ', 105),
+('MaryTan@gmail.com','Mary', 123,'Pasir Ris','None', '0','1','English, Math, Social Studies ', 125),
+('Janice@gmail.com','Jane', 12311,'River Valley','Mentored before','0','1', 'English, Science ', 130);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
