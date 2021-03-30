@@ -30,5 +30,5 @@ def process_msg(inboxMsg):
 
 if __name__ == "__main__":  
     print("\nThis is " + os.path.basename(__file__), end='')
-    print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, amqpSetup.exchangename))
+    print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, amqpSetup.exchange_name))
     get_inbox_msg()
