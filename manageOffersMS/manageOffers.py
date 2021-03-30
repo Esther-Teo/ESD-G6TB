@@ -4,8 +4,8 @@ from flask_cors import CORS
 import os, sys
 
 import requests
-# sys.path.insert(0, 'c:/Users/foo/Documents/GitHub/ESD-G6TB')
-# To run this file:
+sys.path.insert(0, 'c:/Users/foo/Documents/GitHub/ESD-G6TB')
+# To run this file without using your local path as seen above^:
     # Navigate into your own local path at GitHub\ESD-G6TB, then type:
     # set PYTHONPATH=.;.\manageOffersMS
     # python manageOffersMS\manageOffers.py
