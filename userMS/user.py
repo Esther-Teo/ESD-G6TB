@@ -269,7 +269,7 @@ def find_child_by_user(userID):
             }
         ), 404
 
-# GET Child Details using userid and childName 
+# GET Child Details using userid and childName (includes subjects)
 @app.route("/seeChild/<int:userID>/<string:childName>")
 def find_by_ChildID(userID,childName):
     try:
