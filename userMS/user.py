@@ -294,6 +294,45 @@ def find_by_ChildID(userID,childName):
             }
         ), 404
 
+# POST child details from userid and childName 
+@app.route("/createChild/<int:userID>", methods=['POST'])
+def create_Child(userID):
+    data = request.get_json()
+    childName = data['childName']
+    if (Child.query.filter_by(userID=userID, childName=childName).first()):
+        return jsonify(
+            {
+                "code": 400,
+                "data": {
+                    "userID": userID
+                },
+                "message": "Child already exists."
+            }
+        ), 400
+    child = Child(userID, data['childName'], data['school'], data['pri'], data['lvl'])
+    subject = ChildSubjects(userID, data['childName'], data['subjects'])
+    try:
+        db.session.add(child)
+        db.session.add(subject)
+        db.session.commit()
+    except:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "userID": userID
+                },
+                "message": "An error occurred creating the User."
+            }
+        ), 500
+ 
+    return jsonify(
+        {
+            "code": 201,
+            "data": "gotit"
+        }
+    ), 201
+
 # edit child details from userid and childName 
 @app.route("/editChild/<int:userID>/<string:childName>", methods=['PUT'])
 def edit_by_ChildID(userID,childName):
