@@ -14,7 +14,7 @@ CORS(app)
 class Assignment(db.Model):
     __tablename__ = 'assignment'
     assignmentId = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), nullable=False)
+    userID = db.Column(db.String(64), nullable=False)
     childId = db.Column(db.Integer, nullable=False)
     subject = db.Column(db.String(30), nullable=False)
     location = db.Column(db.String(64), nullable=False)
@@ -22,18 +22,18 @@ class Assignment(db.Model):
     preferredDay = db.Column(db.Integer, nullable=False)
     tutorId = db.Column(db.Integer, default=0)
  
-    def __init__(self, assignmentId, username, childId, subject, location, expectedPrice, preferredDay, tutorId):
+    def __init__(self, assignmentId, userID, childId, subject, location, expectedPrice, preferredDay):
         self.assignmentId = assignmentId
-        self.username = username
+        self.userID = userID
         self.childId = childId
         self.subject = subject
         self.location = location
         self.expectedPrice = expectedPrice
         self.preferredDay = preferredDay
-        self.tutorId = tutorId
+        self.tutorId = 0
  
     def json(self):
-        return {"assignmentId": self.assignmentId, "username": self.username, "childId": self.childId, "subject": self.subject, "location": self.location, "expectedPrice": self.expectedPrice, "preferredDay": self.preferredDay, "tutorId": self.tutorId}
+        return {"assignmentId": self.assignmentId, "userID": self.userID, "childId": self.childId, "subject": self.subject, "location": self.location, "expectedPrice": self.expectedPrice, "preferredDay": self.preferredDay}
 
 @app.route("/assignment")
 def get_all():
@@ -46,9 +46,9 @@ def find_by_assignmentId(assignmentId):
         return jsonify(assignment.json)
     return jsonify({"message": "Assignment not found."}), 404
 
-@app.route("/assignmentByUser/<string:username>")
-def find_by_user(username):
-    assignment = Assignment.query.filter_by(username=username).all()
+@app.route("/assignmentByUser/<int:userID>")
+def find_by_user(userID):
+    assignment = Assignment.query.filter_by(userID=userID).all()
     if assignment:
         return jsonify({"assignments": [a.json() for a in assignment]})
     return jsonify({"message": "Assignment not found."}), 404
@@ -59,6 +59,7 @@ def create_assignment(assignmentId):
         return jsonify({"message": "An assignment with the ID '{}' already exists.".format(assignmentId)}), 400
  
     data = request.get_json()
+    print(data)
     assignment = Assignment(assignmentId, **data)
  
     try:

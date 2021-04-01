@@ -116,7 +116,13 @@
               headers: {"Content-type": "application/json; charset=UTF-8"}
             })
             .then(response => response.json()) 
-            .then(json => console.log(json))
+            .then(json => {
+              console.log(json); 
+              console.log("lol"); 
+              console.log(json.data.userID);
+              $.post("loginPage.html", {userID:json.data.userID, userEmail:json.data.userEmail, userName:json.data.userName});
+              var check = "user";
+            }) 
             .catch(err => console.log(err));
             // const response =
 
@@ -140,7 +146,7 @@
             //             console.log(this.message + error);
 
             //         });
-            // window.location = ``
+            
           })
 
           function onSignIn(googleUser){
@@ -149,6 +155,19 @@
             // can get data directly by doing googleUser.getBasicProfile()['At'] --> email 
           }
         </script>
-
+        <?php
+        $_SESSION['userID'] = $_POST['userID'];
+        $_SESSION['userName'] = $_POST['userName'];
+        $_SESSION['userEmail'] = $_POST['userEmail'];
+        ?>
+        <!-- check if user or tutor and redirect respectively NOT DONE -->
+        <script>
+          console.log(check);
+          alert("meep");
+        if (check=="user") {
+          window.location = `dashboardUser.html`
+        }
+        </script>
+        
     </body>
 </html>
