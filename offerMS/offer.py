@@ -1,11 +1,15 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/offer'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
  
 db = SQLAlchemy(app)
+
+CORS(app)
  
 class Offer(db.Model):
     __tablename__ = 'offer'
@@ -26,7 +30,7 @@ class Offer(db.Model):
         self.preferredDay = preferredDay
  
     def json(self):
-        return {"assignmentId": self.assignmentId, "tutorId": self.tutorId, "status": self.status, "selectedTime": self.selectedTime, "expectedPrice": self.expectedPrice, "preferredDay": self.preferredDay,}
+        return {"assignmentId": self.assignmentId, "tutorId": self.tutorId, "status": self.status, "selectedTime": self.selectedTime, "expectedPrice": self.expectedPrice, "preferredDay": self.preferredDay}
 
 @app.route("/offer")
 def get_all():

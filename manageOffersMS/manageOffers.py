@@ -19,10 +19,11 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-assignment_URL = "http://localhost:6000/assignmentMS/assignment"
-offer_URL = "http://localhost:6001/offerMS/offer"
+assignment_URL = "http://localhost:5001/assignmentMS/assignment"
+offer_URL = "http://localhost:5003/offerMS/offer"
 error_URL = "http://localhost:6002/errorMS/error"
 inbox_URL = "http://localhost:6003/inboxMS/inbox"
+
 
 @app.route("/manageOffersMS", methods=['POST'])
 def create_offers():
@@ -31,7 +32,7 @@ def create_offers():
             offer = request.get_json()
             print("\nReceived offer in JSON:", offer)
 
-            result = process_offers(offer)
+            result = process_offers(offer) # not producing output
             print('\n------------------------')
             print('\nresult: ', result)
             return jsonify(result), result["code"]
@@ -59,10 +60,10 @@ def process_offers(offer):
     # print('assignment_result:', assignment_result)
 
     print('\n-----Invoking offer microservice-----')
-    offer_result = invoke_http(offer_URL, method='POST', json=offer)
+    offer_result = invoke_http(offer_URL, method='POST', json=offer) # produce code 500: Invalid JSON output from offer MS
     print('offer_result:', offer_result)
 
-    code = offer_result["code"]
+    code = offer_result["code"] 
     message = json.dumps(offer_result)
 
     if code not in range(200, 300):
@@ -74,6 +75,8 @@ def process_offers(offer):
             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
       
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), offer_result)
+
+        return requests.get(offer_URL).json()
 
         return {
             "code": 500,
