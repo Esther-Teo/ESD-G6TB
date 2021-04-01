@@ -36,13 +36,13 @@ This function in this module sets up a connection and a channel to a local AMQP 
 and declares a 'topic' exchange to be used by the microservices in the solution.
 """
 def check_setup():
-    global connection, channel, hostname, port, exchangename, exchangetype
+    global connection, channel, hostname, port, exchange_name, exchange_type
 
     if not is_connection_open(connection):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, port=port))
     if channel.is_closed:
         channel = connection.channel()
-        channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype)
+        channel.exchange_declare(exchange=exchange_name, exchange_type=exchange_type)
 
 def is_connection_open(connection):
     try:

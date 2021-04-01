@@ -28,8 +28,8 @@ inbox_URL = "http://localhost:6003/inboxMS/inbox"
 def create_offers():
     if request.is_json:
         try:
-            order = request.get_json()
-            print("\nReceived offer in JSON:", order)
+            offer = request.get_json()
+            print("\nReceived offer in JSON:", offer)
 
             result = process_offers(offer)
             print('\n------------------------')
@@ -69,8 +69,8 @@ def process_offers(offer):
         print('\n\n-----Invoking error microservice as offer fails-----')
         print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
 
-        invoke_http(error_URL, method="POST", json=order_result)
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchangename, routing_key="offer.error", 
+        invoke_http(error_URL, method="POST", json=offer_result)
+        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
       
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), offer_result)
