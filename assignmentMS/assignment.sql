@@ -33,10 +33,9 @@ USE `assignment`;
 DROP TABLE IF EXISTS `assignment`;
 CREATE TABLE IF NOT EXISTS `assignment` (
   `assignmentId` int NOT NULL,
-  `userID` varchar(64) NOT NULL,
-  `childId` int NOT NULL,
+  `userID` int NOT NULL,
+  `childName` varchar(64) NOT NULL,
   `subject` varchar(30) NOT NULL,
-  `location` varchar(64) NOT NULL,
   `expectedPrice` decimal(5,2) NOT NULL,
   `preferredDay` int NOT NULL,
   `tutorId` int default 0,
@@ -47,13 +46,13 @@ CREATE TABLE IF NOT EXISTS `assignment` (
 -- Dumping data for table `book`
 --
 
-INSERT INTO `assignment` (`assignmentId`, `userID`, `childId`, `subject`, `location`, `expectedPrice`, `preferredDay`) VALUES
-(1, 1, 1, 'Pri_Math', 'Bishan', '6.50', 3),
-(2, 3, 1, 'Pri_Math', 'Bishan', '6.50', 2),
-(3, 1, 2, 'Sec_Math', 'Bishan', '6.50', 3),
-(4, 1, 1, 'Pri_Eng', 'Bishan', '6.50', 1),
-(5, 2, 2, 'Sec_Physics', 'Bishan', '6.50', 2),
-(6, 4, 1, 'Pri_Math', 'Bishan', '6.50', 5);
+INSERT INTO `assignment` (`assignmentId`, `userID`, `childName`, `subject`, `expectedPrice`, `preferredDay`) VALUES
+(1, 1, "meep", 'Pri_Math', '6.50', 3),
+(2, 2, "oof", 'Pri_Math', '6.50', 2),
+(3, 2, "lostcause", 'Sec_Math', '6.50', 3),
+(4, 4, "prettyBaby", 'Pri_Eng', '6.50', 1),
+(5, 5, "yourmom", 'Sec_Physics', '6.50', 2),
+(6, 1, "meep", 'Pri_Math', '6.50', 5);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

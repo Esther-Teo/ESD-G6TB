@@ -5,7 +5,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/assignment'#environ.get('dbURL') #'mysql+mysqlconnector://is213@localhost:7777/book' #environ.get('dbURL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/assignment'#environ.get('dbURL') #'mysql+mysqlconnector://is213@localhost:7777/book' #environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
  
 db = SQLAlchemy(app)
@@ -15,17 +15,16 @@ class Assignment(db.Model):
     __tablename__ = 'assignment'
     assignmentId = db.Column(db.Integer, primary_key=True)
     userID = db.Column(db.String(64), nullable=False)
-    childId = db.Column(db.Integer, nullable=False)
+    childName = db.Column(db.Integer, nullable=False)
     subject = db.Column(db.String(30), nullable=False)
-    location = db.Column(db.String(64), nullable=False)
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
     preferredDay = db.Column(db.Integer, nullable=False)
     tutorId = db.Column(db.Integer, default=0)
  
-    def __init__(self, assignmentId, userID, childId, subject, location, expectedPrice, preferredDay):
+    def __init__(self, assignmentId, userID, childName, subject, location, expectedPrice, preferredDay):
         self.assignmentId = assignmentId
         self.userID = userID
-        self.childId = childId
+        self.childName = childName
         self.subject = subject
         self.location = location
         self.expectedPrice = expectedPrice
@@ -33,7 +32,7 @@ class Assignment(db.Model):
         self.tutorId = 0
  
     def json(self):
-        return {"assignmentId": self.assignmentId, "userID": self.userID, "childId": self.childId, "subject": self.subject, "location": self.location, "expectedPrice": self.expectedPrice, "preferredDay": self.preferredDay}
+        return {"assignmentId": self.assignmentId, "userID": self.userID, "childName": self.childName, "subject": self.subject, "expectedPrice": self.expectedPrice, "preferredDay": self.preferredDay}
 
 @app.route("/assignment")
 def get_all():
@@ -53,14 +52,16 @@ def find_by_user(userID):
         return jsonify({"assignments": [a.json() for a in assignment]})
     return jsonify({"message": "Assignment not found."}), 404
 
-@app.route("/assignment/<int:assignmentId>", methods=['POST'])
-def create_assignment(assignmentId):
+@app.route("/assignment", methods=['POST'])
+def create_assignment():
+    data = request.get_json()
+    print(data)
+    assignmentId = data.assignmentId
     if (Assignment.query.filter_by(assignmentId=assignmentId).first()):
         return jsonify({"message": "An assignment with the ID '{}' already exists.".format(assignmentId)}), 400
  
-    data = request.get_json()
-    print(data)
-    assignment = Assignment(assignmentId, **data)
+    
+    assignment = Assignment(**data)
  
     try:
         db.session.add(assignment)
@@ -79,8 +80,6 @@ def update_assignment(assignmentId):
             data = request.get_json()
             if data['subject']:
                 assignment.subject = data['subject']
-            if data['location']:
-                assignment.location = data['location']
             if data['expectedPrice']:
                 assignment.expectedPrice = data['expectedPrice'] 
             if data['preferredDay']:
