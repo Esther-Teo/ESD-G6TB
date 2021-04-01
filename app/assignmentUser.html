@@ -151,33 +151,36 @@
                     <table class="table">
                       <thead>
                         <tr>
-                          <th scope="col">#</th>
                           <th scope="col">Child</th>
                           <th scope="col">Subject</th>
                           <th scope="col">Preferred Day</th>
                           <th scope="col">Tutor</th>
+                          <th scope="col">Delete?</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <th scope="row">1</th>
                           <td>1</td>
                           <td>Pri_Eng</td>
                           <td>5</td>
                           <td>Joel</td>
+                          <!-- <td><button type="button" value="Delete Row" onclick="SomeDeleteRowFunction()">Primary</button></td> -->
+                          <td><input type="button" value="Delete Assignment" onclick="SomeDeleteRowFunction()" style="border-radius:5px; background-color: rgb(33, 102, 194);"></td>
                         </tr>
                         <tr>
-                          <th scope="row">2</th>
                           <td>1</td>
                           <td>Pri_Chi</td>
                           <td>5</td>
                           <td>Soon Hao</td>
-                        </tr><tr>
-                          <th scope="row">3</th>
+                          <td><input type="button" value="Delete Assignment" onclick="SomeDeleteRowFunction()" style="border-radius:5px; background-color: rgb(33, 102, 194);"></td>
+                        </tr>
+                        <tr>
                           <td>2</td>
                           <td>Sec_Chem</td>
                           <td>5, 7</td>
                           <td>Edena</td>
+                          <td><input type="button" value="Delete Assignment" onclick="SomeDeleteRowFunction()" style="border-radius:5px; background-color: rgb(33, 102, 194);"></td>
+
                         </tr>
                       </tbody>
                     </table>
@@ -340,6 +343,11 @@
                 }
             });
         </script>
+        <script>
+          $('table').on('click', 'input[type="button"]', function(e){
+   $(this).closest('tr').remove()
+})
+          </script>
     
     </body>
 </html>
