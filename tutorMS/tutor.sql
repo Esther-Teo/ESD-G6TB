@@ -69,7 +69,7 @@ INSERT INTO tutor (tutorName, tutorEmail, passw, tutorPhone, loc, portfolio, pri
 ('Jane','Janice@gmail.com','123', 12311,'River Valley','Mentored before', 130);
 COMMIT;
 
-INSERT INTO tutorSubjects (tutorID, subjectID, pri, lvl, subjects) VALUES
+INSERT INTO tutorSubjects (tutorId, subjectId, pri, lvl, subjects) VALUES
 (1, 1,  0, 4, "Math"),
 (2, 1, 0, 4, "Math"),
 (2, 2, 1, 6, "English"),
