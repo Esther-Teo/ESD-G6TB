@@ -28,20 +28,159 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
         <title>All Listings</title>
+
+        <style>
+            .black{
+                text-align: left;
+                color: black;
+            }
+
+            .right{
+                margin-right: 10px;
+            }
+        </style>
+
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-   
+
     <body class="body1" >
         <div id="navbar"></div>
                     
     
         <div class="overlay" id="app">
-            <h1 class='mt-3 header text-center display-4'>Main DashBoard</h1>
-              </div>
-            </br>
-          </br>
-      </br>
+            <h1 class='mt-3 header text-center display-4'>
+                Main Dashboard
+
+            </h1>
+
+            <!-- Notifications  -->
+
+            <div class="container black">
+                <h4 class='mb-3 display-4' style="text-align:left;">
+                    Notifications
+                </h4>
+
+                <div class="row">
+                    <div class="col-sm-7">
+                        <h2 class="mb-3">Offers</h2>
+                        <h3>You have 2 Offer Notifications! </h3>
+                        
+                        <div class="card text-center border-light mb-3" style="max-width: 30rem;">
+                            <div class="card-header">Offer Notification</div>
+                            <div class="card-body">
+                            <h5 class="card-title">Tuition for {childID}</h5>
+                            <p class="card-text"><b>{tutorName}</b> has agreed to teach {childID} for Primary 4 Mathematics!</p>
+                            </div>
+                        
+
+                            <div class="mx-3" style="text-align:center;">
+                                <a href="offer.html" type="button" class="btn btn-outline-primary mb-3" >Check Offer!</a>
+                            </div>
+                        </div>
+                        
+                        <div class="card text-center border-light mb-3" style="max-width: 30rem;">
+                            <div class="card-header">Offer Notification</div>
+                            <div class="card-body">
+                            <h5 class="card-title">Tuition for {childID}</h5>
+                            <p class="card-text"><b>{tutorName}</b> has agreed to teach {childID} for Secondary 4 Physics!</p>
+                            </div>
+                        
+
+                            <div class="mx-3" style="text-align:center;">
+                                <a href="offer.html" type="button" class="btn btn-outline-primary mb-3" >Check Offer!</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-sm-5">
+                        <h2 class="mb-3">Payment</h2>
+                        <h3>You have 1 Payment Notification! </h3>
+
+                        <div class="card text-center border-light mb-3" style="max-width: 40rem;">
+                            <div class="card-header">Payment Notification</div>
+                            <div class="card-body">
+                            <h5 class="card-title">Payment for {tutorName}</h5>
+                            <p class="card-text">Please pay <b>{amount}</b> for {childID}'s tuition with <b>{tutorName}</b></p>
+                            </div>
+                        
+
+                            <div class="mx-3" style="text-align:center;">
+                                <a href="payment.html" type="button" class="btn btn-outline-primary mb-3" >Make Payment!</a>
+                            </div>
+                        </div>
+
+                        
+                    </div> 
+                </div>
+
+
+
+                
+                
+            </div>
+
+            <div class="container mt-3 black">
+                <div class="row">
+                    <div class="col-sm-12 mb-3">
+                        <h4 class='mx-3  display-4' style="text-align:left;">Tuition Schedule</h4>
+                        
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">S/N</th>
+                                    <th scope="col">childID</th>
+                                    <th scope="col">Primary/Secondary</th>
+                                    <th scope="col">Level</th>
+                                    <th scope="col">Subject</th>
+                                    <th scope="col">tutorName</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>0001</td>
+                                    <td>Primary</td>
+                                    <td>4</td>
+                                    <td>Mathematics</td>
+                                    <td>Bob</td>
+                                    <td>22/07/2021</td>
+                                    <td>1600</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>0002</td>
+                                    <td>Secondary</td>
+                                    <td>4</td>
+                                    <td>Physics</td>
+                                    <td>Greg</td>
+                                    <td>20/07/2021</td>
+                                    <td>1200</td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        
+                    </div>
+                </div>
+
+                
+                    
+                    
+            </div>
+
+                
+            </div>
         </div>
+        
+
+
+        
+
+        
         <script src="//code.jquery.com/jquery.min.js"></script>
         <script>
         $.get("navbarUser.html", function(data){
@@ -53,7 +192,6 @@
         need edit scrips
         <!-- <script src="./js/homeui.js"></script> -->
         <script>
-
 
           $( ".target" ).change(function() {
           //alert( "Now option is at Primary" );
