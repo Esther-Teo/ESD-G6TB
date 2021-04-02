@@ -35,6 +35,8 @@ CREATE TABLE IF NOT EXISTS `assignment` (
   `assignmentId` int NOT NULL,
   `userID` int NOT NULL,
   `childName` varchar(64) NOT NULL,
+  `primary` boolean NOT NULL,
+  `level` int NOT NULL,
   `subject` varchar(30) NOT NULL,
   `expectedPrice` decimal(5,2) NOT NULL,
   `preferredDay` int NOT NULL,
@@ -46,13 +48,13 @@ CREATE TABLE IF NOT EXISTS `assignment` (
 -- Dumping data for table `book`
 --
 
-INSERT INTO `assignment` (`assignmentId`, `userID`, `childName`, `subject`, `expectedPrice`, `preferredDay`) VALUES
-(1, 1, "meep", 'Pri_Math', '6.50', 3),
-(2, 2, "oof", 'Pri_Math', '6.50', 2),
-(3, 2, "lostcause", 'Sec_Math', '6.50', 3),
-(4, 4, "prettyBaby", 'Pri_Eng', '6.50', 1),
-(5, 5, "yourmom", 'Sec_Physics', '6.50', 2),
-(6, 1, "meep", 'Pri_Math', '6.50', 5);
+INSERT INTO `assignment` (`assignmentId`, `userID`, `childName`, `primary`, `level`, `subject`, `expectedPrice`, `preferredDay`) VALUES
+(1, 1, "meep",1, 2, 'Math', '6.50', 3),
+(2, 2, "oof",1, 4, 'Math', '6.50', 2),
+(3, 2, "lostcause", 0, 3, 'Math', '6.50', 3),
+(4, 4, "prettyBaby", 1, 6, 'Eng', '6.50', 1),
+(5, 5, "yourmom", 0, 3, 'Physics', '6.50', 2),
+(6, 1, "meep", 1, 2, 'Chinese', '6.50', 5);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

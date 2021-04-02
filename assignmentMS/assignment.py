@@ -16,15 +16,19 @@ class Assignment(db.Model):
     assignmentId = db.Column(db.Integer, primary_key=True)
     userID = db.Column(db.String(64), nullable=False)
     childName = db.Column(db.Integer, nullable=False)
+    primary = db.Column(db.Boolean, nullable=False)
+    level = db.Column(db.Intefer, nullable=False)
     subject = db.Column(db.String(30), nullable=False)
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
     preferredDay = db.Column(db.Integer, nullable=False)
     tutorId = db.Column(db.Integer, default=0)
  
-    def __init__(self, assignmentId, userID, childName, subject, location, expectedPrice, preferredDay):
+    def __init__(self, assignmentId, userID, childName, primary, level, subject, location, expectedPrice, preferredDay):
         self.assignmentId = assignmentId
         self.userID = userID
         self.childName = childName
+        self.primary = primary
+        self.level = level
         self.subject = subject
         self.location = location
         self.expectedPrice = expectedPrice
@@ -32,12 +36,23 @@ class Assignment(db.Model):
         self.tutorId = 0
  
     def json(self):
-        return {"assignmentId": self.assignmentId, "userID": self.userID, "childName": self.childName, "subject": self.subject, "expectedPrice": self.expectedPrice, "preferredDay": self.preferredDay}
-
+        return {
+            "assignmentId": self.assignmentId, 
+            "userID": self.userID, 
+            "childName": self.childName, 
+            "primary": self.primary, 
+            "level": self.level, 
+            "subject": self.subject, 
+            "expectedPrice": self.expectedPrice, 
+            "preferredDay": self.preferredDay
+            }
+            
+# GET all assignments (FOR TESTING ONLY!!!!)
 @app.route("/assignment")
 def get_all():
     return jsonify({"assignments": [assignment.json() for assignment in Assignment.query.all()]})
 
+# GET for viewing one assignment only
 @app.route("/assignmentById/<int:assignmentId>")
 def find_by_assignmentId(assignmentId):
     assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
@@ -45,6 +60,7 @@ def find_by_assignmentId(assignmentId):
         return jsonify(assignment.json)
     return jsonify({"message": "Assignment not found."}), 404
 
+# GET for viewing assignment by their user
 @app.route("/assignmentByUser/<int:userID>")
 def find_by_user(userID):
     assignment = Assignment.query.filter_by(userID=userID).all()
@@ -52,6 +68,7 @@ def find_by_user(userID):
         return jsonify({"assignments": [a.json() for a in assignment]})
     return jsonify({"message": "Assignment not found."}), 404
 
+# Creates an assignment
 @app.route("/assignment", methods=['POST'])
 def create_assignment():
     data = request.get_json()
@@ -71,7 +88,7 @@ def create_assignment():
  
     return jsonify(assignment.json()), 201
 
-
+# to edit, but no use for it atm
 @app.route("/assignment/<int:assignmentId>", methods=['PUT'])
 def update_assignment(assignmentId):
     try:
@@ -111,7 +128,8 @@ def update_assignment(assignmentId):
                 "message": "An error occurred while updating the assignment. " + str(e)
             }
         ), 500
- 
+
+# Deletes an assignment by its ID
 @app.route("/assignment/<int:assignmentId>", methods=['DELETE'])
 def delete_assignment(assignmentId):
     assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
