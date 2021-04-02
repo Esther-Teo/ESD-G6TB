@@ -40,12 +40,29 @@ CREATE TABLE IF NOT EXISTS `assignment` (
   `subject` varchar(30) NOT NULL,
   `expectedPrice` decimal(5,2) NOT NULL,
   `preferredDay` int NOT NULL,
-  `tutorId` int default 0,
+  `tutorID` int default 0,
   PRIMARY KEY (`assignmentId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `book`
+-- Table structure for table `offer`
+--
+
+DROP TABLE IF EXISTS `offer`;
+CREATE TABLE IF NOT EXISTS `offer` (
+  `assignmentId` INT NOT NULL,
+  `tutorID` INT NOT NULL,
+  `status` VARCHAR(6) NOT NULL,
+  `selectedTime` INT NOT NULL,
+  `expectedPrice` INT NOT NULL,
+  `preferredDay` VARCHAR(3) NOT NULL,
+  PRIMARY KEY (`assignmentId`, `tutorID`),
+  CONSTRAINT FK_assignementId FOREIGN KEY (`assignmentId`)
+  REFERENCES assignment(`assignmentId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `assignment`
 --
 
 INSERT INTO `assignment` (`assignmentId`, `userID`, `childName`, `primary`, `level`, `subject`, `expectedPrice`, `preferredDay`) VALUES
@@ -56,6 +73,17 @@ INSERT INTO `assignment` (`assignmentId`, `userID`, `childName`, `primary`, `lev
 (5, 5, "yourmom", 0, 3, 'Physics', '6.50', 2),
 (6, 1, "meep", 1, 2, 'Chinese', '6.50', 5);
 COMMIT;
+
+--
+-- Dumping data for table `offer`
+--
+
+INSERT INTO `offer` (`assignmentId`, `tutorID`, `status`, `selectedTime`, `expectedPrice`, `preferredDay`) VALUES
+(1, 1, 'pending', '1500', '7', 3),
+(2, 2, 'accepted', '0900', '6.50', 2),
+(1, 3, 'rejected', '2000', '6.50', 3),
+(3, 4, 'pending', '1900', '7', 3),
+(2, 5, 'rejected', '1500', '8', 2);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

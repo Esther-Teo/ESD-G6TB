@@ -21,7 +21,7 @@ class Assignment(db.Model):
     subject = db.Column(db.String(30), nullable=False)
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
     preferredDay = db.Column(db.Integer, nullable=False)
-    tutorId = db.Column(db.Integer, default=0)
+    tutorID = db.Column(db.Integer, default=0)
  
     def __init__(self, assignmentId, userID, childName, primary, level, subject, location, expectedPrice, preferredDay):
         self.assignmentId = assignmentId
@@ -33,7 +33,7 @@ class Assignment(db.Model):
         self.location = location
         self.expectedPrice = expectedPrice
         self.preferredDay = preferredDay
-        self.tutorId = 0
+        self.tutorID = 0
  
     def json(self):
         return {
@@ -46,6 +46,37 @@ class Assignment(db.Model):
             "expectedPrice": self.expectedPrice, 
             "preferredDay": self.preferredDay
             }
+
+class Offer(db.Model):
+    __tablename__ = 'offer'
+
+    assignmentId = db.Column(db.Integer, db.ForeignKey('assignment.assignmentId', ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+    tutorID = db.Column(db.Integer, primary_key=True)
+    status = db.Column(db.String(6), nullable=False)
+    selectedTime = db.Column(db.Integer, nullable=False)
+    expectedPrice = db.Column(db.Integer, nullable=False)
+    preferredDay = db.Column(db.String(3), nullable=False)
+    assignment = db.relationship(
+    'Assignment', primaryjoin='Offer.assignmentId == Assignment.assignmentId', backref='offer')
+ 
+    def __init__(self, assignmentId, tutorID, status, selectedTime, expectedPrice, preferredDay):
+        self.assignmentId = assignmentId
+        self.tutorID = tutorID
+        self.status = status
+        self.selectedTime = selectedTime
+        self.expectedPrice = expectedPrice
+        self.preferredDay = preferredDay
+ 
+    def json(self):
+        return {
+            "assignmentId": self.assignmentId, 
+            "tutorID": self.tutorID, 
+            "status": self.status, 
+            "selectedTime": self.selectedTime, 
+            "expectedPrice": self.expectedPrice, 
+            "preferredDay": self.preferredDay
+        }
+
 
 # GET all assignments (FOR TESTING ONLY!!!!)
 @app.route("/assignment")
@@ -68,8 +99,8 @@ def find_by_user(userID):
         return jsonify({"assignments": [a.json() for a in assignment]})
     return jsonify({"message": "Assignment not found."}), 404
 
-# Creates an assignment
-@app.route("/assignment", methods=['POST'])
+# CREATE an assignment
+@app.route("/makeAssignment", methods=['POST'])
 def create_assignment():
     data = request.get_json()
     print(data)
@@ -88,7 +119,7 @@ def create_assignment():
  
     return jsonify(assignment.json()), 201
 
-# to edit, but no use for it atm
+# PUT to edit, but no use for it atm
 @app.route("/assignment/<int:assignmentId>", methods=['PUT'])
 def update_assignment(assignmentId):
     try:
@@ -129,8 +160,8 @@ def update_assignment(assignmentId):
             }
         ), 500
 
-# Deletes an assignment by its ID
-@app.route("/assignment/<int:assignmentId>", methods=['DELETE'])
+# DELETE an assignment by its ID
+@app.route("/deleteAssignment/<int:assignmentId>", methods=['DELETE'])
 def delete_assignment(assignmentId):
     assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
     if assignment:
@@ -153,6 +184,143 @@ def delete_assignment(assignmentId):
             "message": "Assignment not found."
         }
     ), 404
+
+# add new user using POST 
+@app.route("/createOffer", methods=['POST'])
+def add_offer():
+    data = request.get_json()
+    tutorID = data.tutorID
+    assignmentId = data.AssignmentId
+    if (Offer.query.filter_by(assignmentId=assignmentId, userID=userID).first()):
+        return jsonify(
+            {
+                "code": 400,
+                "data": {
+                    "tutorID": tutorID
+                },
+                "message": "Tutor has already created an offer for this assignment."
+            }
+        ), 400
+ 
+    
+    offer = Offer(**data)
+    try:
+        db.session.add(offer)
+        db.session.commit()
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "userID": userID
+                },
+                "message": "An error occurred creating the User." + str(e)
+            }
+        ), 500
+ 
+    return jsonify(
+        {
+            "code": 201,
+            "data": offer.json()
+        }
+    ), 201
+
+# GET offer by tutorID
+@app.route("/offerByTutor/<int:tutorID>")
+def find_by_tutor(tutorID):
+    try: 
+        offer = Offer.query.filter_by(tutorID=tutorID).all()
+        if offer:
+            return jsonify({"offers": [a.json() for a in offer]})
+    except Exception as e:
+        return jsonify({"message": "Offer not found." + str(e)}), 404
+
+# GET offer by assignmentID
+@app.route("/offerByAssignment/<int:assignmentId>")
+def find_offer_by_assignment(assignmentId):
+    try: 
+        offer = Offer.query.filter_by(assignmentId=assignmentId).all()
+        if offer:
+            return jsonify({"offers": [a.json() for a in offer]})
+    except Exception as e:
+        return jsonify({"message": "Offer not found." + str(e)}), 404
+
+# DELETE an offer by its ID
+@app.route("/deleteOffer/<int:assignmentId>/<int:tutorID>", methods=['DELETE'])
+def delete_offer(assignmentId, tutorID):
+    try:
+        offer = Offer.query.filter_by(assignmentId=assignmentId, tutorID=tutorID).first()
+        if offer:
+            db.session.delete(offer)
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "assignmentId": assignmentId,
+                        "tutorID": tutorID
+                    }
+                }
+            )
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 404,
+                "data": {
+                    "assignmentId": assignmentId,
+                    "tutorID": tutorID
+                },
+                "message": "Offer had a problem deleting. " + str(e)
+            }
+        ), 404
+
+# PUT to edit, but no use for it atm (NOT DONE!!!!!)
+@app.route("/offer/<int:assignmentId>/<int:tutorID>", methods=['PUT'])
+def update_offer(assignmentId, tutorID):
+    try:
+        offer = Offer.query.filter_by(assignmentId=assignmentId, tutorID=tutorID).first()
+        if offer:
+            data = request.get_json()
+            if data['status']:
+                offer.status = data['status']
+            if data['selectedTime']:
+                offer.selectedTime = data['selectedTime']
+            if data['expectedPrice']:
+                offer.expectedPrice = data['expectedPrice'] 
+            if data['preferredDay']:
+                offer.preferredDay = data['preferredDay'] 
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "assignmentId": assignmentId,
+                        "tutorID": tutorID
+                    }
+                }
+            ), 200
+        return jsonify(
+            {
+                "code": 404,
+                "data": {
+                    "assignmentId": assignmentId,
+                    "tutorID": tutorID
+                },
+                "message": "Offer not found."
+            }
+        ), 404
+
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "assignmentId": assignmentId,
+                    "tutorID": tutorID
+                },
+                "message": "An error occurred while updating the Offer. " + str(e)
+            }
+        ), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
