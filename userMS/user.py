@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy.orm import relationship
 from flask_cors import CORS
+import json
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/user'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/user'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -65,6 +66,8 @@ class Child(db.Model):
         "pri": self.pri, 
         "lvl": self.lvl
         }
+        for cs in self.childSubjects:
+            res['subjects'].append(cs.json())
 
 class ChildSubjects(db.Model):
     __tablename__ = 'childSubjects'
@@ -139,14 +142,14 @@ def add_user():
     try:
         db.session.add(user)
         db.session.commit()
-    except:
+    except Exception as e:
         return jsonify(
             {
                 "code": 500,
                 "data": {
                     "userID": userID
                 },
-                "message": "An error occurred creating the User."
+                "message": "An error occurred creating the User." + str(e)
             }
         ), 500
  
@@ -242,20 +245,29 @@ def update_user_details(userID):
 def find_child_by_user(userID):
     try:
         childList = Child.query.filter_by(userID = userID).all()
-        print(childList)
-        res = []
+        # print(childList)
+        # res = {}
         if childList:
-            for child in childList:
-                userID = child['userID']
-                print(userID)
-                childName = child['childName']
-                subjects = ChildSubjects.query.filter_by(userID = userID, childName = childName).all()
-                child['subjects'] = subjects
-                res.append(child)
+        #     print('check')
+        #     for child in childList:
+        #         childName = child.childName
+        #         meeps = find_by_ChildID(userID,childName)
+        #         print("where is it")
+        #         meep = make_response(meeps,200)
+        #         print(meep)
+                # if (ChildSubjects.query.filter_by(userID = userID, childName=childName).all()):
+                #     subList = ChildSubjects.query.filter_by(userID = userID, childName=childName).all()
+                #     for subj in subList:
+                #         subjects.append(subj)
+            #     res.childName = meep
+            # # print(subjects)
+            # print(res)
+            # return res
             return jsonify(
                 {
                     "code": 200,
-                    "data": res.json()
+                    "data": [child.json() for child in childList]
+                    # "subjects": [subject[0].json() for subject in subjects]
                 }
             )
     except Exception as e:
@@ -273,14 +285,18 @@ def find_child_by_user(userID):
 @app.route("/seeChild/<int:userID>/<string:childName>")
 def find_by_ChildID(userID,childName):
     try:
+        subList = []
         childList = Child.query.filter_by(userID = userID, childName = childName).first()
         subject = ChildSubjects.query.filter_by(userID = userID, childName = childName).all()
         if childList:
+            for sub in subject:
+                subList.append(sub.subjects)
+                print(sub.subjects)
             return jsonify(
                 {
                     "code": 200,
                     "childData": childList.json(),
-                    "subjectData": [subj.json() for subj in subject]
+                    "subjectData": subList
                 }
             )
     except Exception as e:
