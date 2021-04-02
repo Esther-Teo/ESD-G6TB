@@ -54,7 +54,7 @@ class Offer(db.Model):
     tutorID = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.String(6), nullable=False)
     selectedTime = db.Column(db.Integer, nullable=False)
-    expectedPrice = db.Column(db.Integer, nullable=False)
+    expectedPrice = db.Column(db.Float(precision=2), nullable=False)
     preferredDay = db.Column(db.String(3), nullable=False)
     assignment = db.relationship(
     'Assignment', primaryjoin='Offer.assignmentId == Assignment.assignmentId', backref='offer')
@@ -103,7 +103,7 @@ def find_by_user(userID):
 @app.route("/makeAssignment", methods=['POST'])
 def create_assignment():
     data = request.get_json()
-    print(data)
+    print(data.assignmentId)
     assignmentId = data.assignmentId
     if (Assignment.query.filter_by(assignmentId=assignmentId).first()):
         return jsonify({"message": "An assignment with the ID '{}' already exists.".format(assignmentId)}), 400
@@ -189,9 +189,10 @@ def delete_assignment(assignmentId):
 @app.route("/createOffer", methods=['POST'])
 def add_offer():
     data = request.get_json()
-    tutorID = data.tutorID
-    assignmentId = data.AssignmentId
-    if (Offer.query.filter_by(assignmentId=assignmentId, userID=userID).first()):
+    print(data)
+    assignmentId = data['assignmentId']
+    tutorID = data['tutorID']
+    if (Offer.query.filter_by(assignmentId=assignmentId, tutorID=tutorID).first()):
         return jsonify(
             {
                 "code": 400,
@@ -201,10 +202,9 @@ def add_offer():
                 "message": "Tutor has already created an offer for this assignment."
             }
         ), 400
- 
-    
     offer = Offer(**data)
     try:
+        
         db.session.add(offer)
         db.session.commit()
     except Exception as e:
@@ -225,7 +225,7 @@ def add_offer():
         }
     ), 201
 
-# GET offer by tutorID
+# GET offer by tutorID (tested okay)
 @app.route("/offerByTutor/<int:tutorID>")
 def find_by_tutor(tutorID):
     try: 
@@ -235,7 +235,7 @@ def find_by_tutor(tutorID):
     except Exception as e:
         return jsonify({"message": "Offer not found." + str(e)}), 404
 
-# GET offer by assignmentID
+# GET offer by assignmentID (tested okay)
 @app.route("/offerByAssignment/<int:assignmentId>")
 def find_offer_by_assignment(assignmentId):
     try: 
