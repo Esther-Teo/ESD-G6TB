@@ -17,7 +17,7 @@ class Assignment(db.Model):
     userID = db.Column(db.String(64), nullable=False)
     childName = db.Column(db.Integer, nullable=False)
     primary = db.Column(db.Boolean, nullable=False)
-    level = db.Column(db.Intefer, nullable=False)
+    level = db.Column(db.Integer, nullable=False)
     subject = db.Column(db.String(30), nullable=False)
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
     preferredDay = db.Column(db.Integer, nullable=False)
@@ -46,7 +46,7 @@ class Assignment(db.Model):
             "expectedPrice": self.expectedPrice, 
             "preferredDay": self.preferredDay
             }
-            
+
 # GET all assignments (FOR TESTING ONLY!!!!)
 @app.route("/assignment")
 def get_all():
