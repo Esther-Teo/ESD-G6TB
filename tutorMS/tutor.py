@@ -110,34 +110,35 @@ def find_by_tutorId(tutorId):
 
 # creates a tutor
 @app.route("/tutor/<int:tutorId>", methods=['POST'])
-def add_tutor(tutorId):
-
-    data = request.get_json()
-    if (Tutor.query.filter_by(tutorId=tutorId).first()):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "tutorId": tutorId
-                },
-                "message": "Tutor already exists."
-            }
-        ), 400
-    
-    tutor = Tutor(tutorId, data['tutorName'], data['tutorEmail'], data['passw'], data['tutorPhone'], data['loc'], data['portfolio'], data['priceRange'])
-    subject = TutorSubjects(tutorId, data['subjectId'], data['pri'], data['lvl'], data['subjects'])
+@app.route("/createTutor", methods=['POST'])
+def add_tutor():
     try:
+        data = request.get_json()
+        tutorId = data.tutorId
+        if (Tutor.query.filter_by(tutorId=tutorId).first()):
+            return jsonify(
+                {
+                    "code": 400,
+                    "data": {
+                        "tutorId": tutorId
+                    },
+                    "message": "Tutor already exists."
+                }
+            ), 400
+        
+        tutor = Tutor(tutorId, data['tutorName'], data['tutorEmail'], data['passw'], data['tutorPhone'], data['loc'], data['portfolio'], data['priceRange'])
+        subject = TutorSubjects(tutorId, data['subjectId'], data['pri'], data['lvl'], data['subjects'])
         db.session.add(tutor)
         db.session.add(subject)
         db.session.commit()
-    except:
+    except Exception as e:
         return jsonify(
             {
                 "code": 500,
                 "data": {
                     "tutorId": tutorId
                 },
-                "message": "An error occurred creating the tutor account."
+                "message": "An error occurred creating the tutor account. " + str(e)
             }
         ), 500
 
