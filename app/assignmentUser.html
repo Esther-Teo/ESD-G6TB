@@ -32,7 +32,7 @@
         <title>All Listings</title>
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-   
+    <script src="js/assignmentUser.js"></script>
     <body class="body1" >
         <div id="navbar"></div>
                     
@@ -54,34 +54,30 @@
                     <div class="input-group-prepend">
                       <label class="input-group-text" for="subjects">Child Name</label>
                     </div>
-                    <select class="custom-select" id="childrens">
+                    <select v-model="childName" class="custom-select" id="childrens">
                     </select>
                   </div>
                   <br>
                   <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="Level">School Level</label>
-                      <input type="number" class="form-control" id="level" placeholder="Please enter your child's level!">
-                    </div>
                     </div>
                     <div class="input-group mb-3">
                       <div class="input-group-prepend">
                         <label class="input-group-text" for="subjects">Subject</label>
                       </div>
-                      <select class="custom-select" id="subjects">
-                        <option selected disabled>Choose...</option>
-                        <option value="English">English</option>
-                        <option value="Chinese">Chinese</option>
-                        <option value="Tamil">Tamil</option>
-                        <option value="Malay">Malay</option>
-                        <option value="Math">Math</option>
-                        <option value="Science">Science</option>
-                      </select>
+                        <select v-model="subject" class="custom-select" id="subjects">
+                          <option selected disabled>Choose...</option>
+                          <option value="English">English</option>
+                          <option value="Chinese">Chinese</option>
+                          <option value="Tamil">Tamil</option>
+                          <option value="Malay">Malay</option>
+                          <option value="Math">Math</option>
+                          <option value="Science">Science</option>
+                        </select>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                           <label for="inputEmail4">Expected Price</label>
-                          <input type="email" class="form-control" id="expected_price" placeholder="Please enter the rates /hour">
+                          <input v-model="expectedPrice" type="email" class="form-control" id="expected_price" placeholder="Please enter the rates /hour">
                         </div>
                       </div>
                     <!-- Check box for preferred days -->
@@ -89,39 +85,39 @@
                     <div class="form-row">
                         <div class="form-check">
                             <label class="form-check-label">
-                              <input type="checkbox" class="form-check-input" value="1">Monday
+                              <input type="checkbox" class="form-check-input" value="1" v-model="preferredDay">Monday
                             </label>
                           </div>
                           <div class="form-check">
                             <label class="form-check-label">
-                              <input type="checkbox" class="form-check-input" value="2">Tuesday
+                              <input type="checkbox" class="form-check-input" value="2" v-model="preferredDay">Tuesday
                             </label>
                           </div>
                           <div class="form-check">
                             <label class="form-check-label" style="padding-right: 20px;">
-                              <input type="checkbox" class="form-check-input" value="3">Wednesday
+                              <input type="checkbox" class="form-check-input" value="3" v-model="preferredDay">Wednesday
                             </label>
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="4">Thursday
+                                <input type="checkbox" class="form-check-input" value="4" v-model="preferredDay">Thursday
                               </label>
                             </div>
                             <div class="form-check">
                               <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="5">Friday
+                                <input type="checkbox" class="form-check-input" value="5" v-model="preferredDay">Friday
                               </label>
                             </div>
                             <div class="form-check">
                               <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="6">Saturday
+                                <input type="checkbox" class="form-check-input" value="6" v-model="preferredDay">Saturday
                               </label>
                           </div>
                           <div class="form-check">
                           <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="7">Sunday
+                            <input type="checkbox" class="form-check-input" value="7" v-model="preferredDay">Sunday
                           </label>
                       </div>
                     </div>
-                  <button type="button" class="btn btn-primary" onclick="createAssignment()" style="margin-top: 10px;">Create assignment!</button>
+                  <button type="button" class="btn btn-primary" @click="createAssignment" style="margin-top: 10px;">Create assignment!</button>
                   </div>
                 </form>
               </div>
@@ -153,7 +149,7 @@
         });
         </script>
 
-        <script> var user = "<?=$userID?>"; console.log(user);</script>
+        <script> var user = "meep"; console.log(user);</script>
         need edit scrips
         <!-- <script src="./js/homeui.js"></script> -->
         <script>
@@ -193,50 +189,13 @@
           
         </script>
         <script>
-           function createAssignment(){
-                    var selected_childname = document.getElementById("childrens").value;
-                    var selected_subject = document.getElementById("subjects").value;
-                    //alert(selected_subject);
-
-                    var selected_level = document.getElementById("level").value;
-                    var selected_Eprice = document.getElementById("expected_price").value;
-                    var array = [];
-                    var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
-                    for (var i = 0; i < checkboxes.length; i++) {
-                    array.push(checkboxes[i].value)
-                    }
-                    //alert(array);
-                    var w = 0;
-                    var selected_days = "";
-                    //alert(array.length);
-                    for (w=0;w < array.length;w++){
-                    if(w == array.length-1){
-                      selected_days += `${array[w]}`;
-                    }
-                    else{
-                      selected_days += `${array[w]}`+ " ,";
-                    }
-                    }
-                    alert(selected_subject);
-                    let jsonData = JSON.stringify({
-    "assignmentId": 1,
-    "userID": 1,
-    "childName": selected_childname,
-    "primary": selected_Primary,
-    "level": selected_level,
-    "subject": selected_subject,
-    "expectedPrice": selected_Eprice, 
-    "preferredDay": selected_days,
-});
-
-                    }
-        </script>
-        <script>
-
+            
             var username  = 'meep';
             console.log(username)
 
             var get_all_URL = "http://localhost:5001/assignmentByUser";
+            var get_childURL = `http://localhost:5004/seeChild`
+
             // var place_order_URL = "http://localhost:5100/place_order";
     
             var app = new Vue({
@@ -252,10 +211,11 @@
                     message: "There is a problem retrieving the assignment data, please try again later.",
                     names: [],
                     childName:"",
+                    primary: 0,
+                    level: 0,
                     subject: "",
-                    location: "",
                     expectedPrice: "",
-                    preferredDay: "",
+                    preferredDay: [],
                     assignmentAdded: false,
                     addAssignmentError: "",
                     createdAssignment: "",
@@ -289,6 +249,103 @@
                     //       console.log(this.message + error);
                     //   });
                     // },
+                    createAssignment: function(){
+                      
+                      //retrieves and stores childData from user microservice
+                      alert("check")
+                      const response =
+                        fetch(get_childURL+ `/${this.userID}/${this.childName}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(response);
+                                console.log(":ooooofff");
+                                // console.log(data.data)
+                                if (data.code !== 200) {
+                                    // no book in db
+                                    this.message = data.message;
+                                } else {
+                                  console.log("pls work, i wna sleep")
+                                  console.log(data.lvl)
+                                  // for (names of data.data) {
+                                    // console.log(names.childName);
+                                    this.level = data.lvl;
+                                    this.primary = names.pri
+                                  // }
+                                }
+                            })
+                            .catch(error => {
+                                // Errors when calling the service; such as network error, 
+                                // service offline, etc
+                                console.log(this.message + error);
+
+                            });
+                      //retrieves and stores form data
+                      // this.childName = document.getElementById("childrens").value;
+                      // this.subject = document.getElementById("subjects").value;
+                      //alert(selected_subject);
+                      // var selected_Eprice = document.getElementById("expected_price").value;
+                      var array = [];
+                      var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
+                      for (var i = 0; i < checkboxes.length; i++) {
+                      array.push(checkboxes[i].value)
+                      }
+                      //alert(array);
+                      var w = 0;
+                      var selected_days = "";
+                      //alert(array.length);
+                      for (w=0;w < array.length;w++){
+                      if(w == array.length-1){
+                        selected_days += `${array[w]}`;
+                      }
+                      else{
+                        selected_days += `${array[w]}`+ " ,";
+                      }
+                      }
+                      alert(this.subject);
+                      //prepares posting data
+                      let jsonData = JSON.stringify({
+                          "assignmentId": 69,
+                          "userID": 1,
+                          "childName": this.childName,
+                          "primary": this.primary,
+                          "level": this.level,
+                          "subject": this.subject,
+                          "expectedPrice": this.expectedPrice, 
+                          "preferredDay": this.preferredDay.toString(),
+                      });
+                      //posts creates a new assignment
+                      fetch(`http://localhost:5001/makeAssignment/`,
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-type": "application/json"
+                                },
+                                body: jsonData
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data);
+                                result = data.data;
+                                console.log(result);
+                                // 3 cases
+                                // switch (data.code) {
+                                //     case 201:
+                                //         this.assignmentAdded = true;
+    
+                                //         // refresh book list
+                                //         this.getAllAssignments();
+    
+                                //         // an alternate way is to add this one element into this.books
+                                //         break;
+                                //     case 400:
+                                //     case 500:
+                                //         this.addAssignmentError = data.message;
+                                //         break;
+                                //     default:
+                                //         throw `${data.code}: ${data.message}`;
+                                // }
+                            })
+                    },
                     getAllAssignments: function () {
                         // on Vue instance created, load the book list
                         const response =
@@ -424,7 +481,7 @@
                     // on Vue instance created, load the book list
                     this.getAllAssignments();
                     this.getChildren();
-                    this.deleteit(1);
+
                     alert('GGGGGG')
                     // var yolo = this.getChildren();
                     // alert(yolo[0]);
