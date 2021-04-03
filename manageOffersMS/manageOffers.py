@@ -19,10 +19,10 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-assignment_URL = "http://localhost:5001/assignmentMS/assignment"
-offer_URL = "http://localhost:5003/offerMS/offer"
+assignment_URL = "http://localhost:5001/assignment"
+offer_URL = "http://localhost:5003/offer"
 error_URL = "http://localhost:6002/errorMS/error"
-inbox_URL = "http://localhost:6003/inboxMS/inbox"
+inbox_URL = "http://localhost:6003/inbox"
 
 
 @app.route("/manageOffersMS", methods=['POST'])
@@ -36,6 +36,8 @@ def create_offers():
             print('\n------------------------')
             print('\nresult: ', result)
             return jsonify(result), result["code"]
+            # return jsonify(result)
+
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -55,13 +57,13 @@ def create_offers():
 
 def process_offers(offer):
     ############@EDENA ----HOW TO GET ASSIGNMENT DETAILS AND USE THE ASSIGNMENT DETAILS WHEN CREATING THE OFFER?
-    # print('\n-----Invoking assignment microservice-----')
-    # assignment_result = invoke_http(offer_URL, method='GET', json=assignment)
-    # print('assignment_result:', assignment_result)
-
-    print('\n-----Invoking offer microservice-----')
-    offer_result = invoke_http(offer_URL, method='POST', json=offer) # produce code 500: Invalid JSON output from offer MS
+    print('\n-----Invoking assignment microservice-----')
+    offer_result = invoke_http("http://localhost:5001/createOffer", method='POST', json=offer)
     print('offer_result:', offer_result)
+
+    # print('\n-----Invoking offer microservice-----')
+    # offer_result = invoke_http(offer_URL, method='POST', json=offer) # produce code 500: Invalid JSON output from offer MS
+    # print('offer_result:', offer_result)
 
     code = offer_result["code"] 
     message = json.dumps(offer_result)
@@ -97,7 +99,7 @@ def process_offers(offer):
 
         invoke_http(error_URL, method="POST", json=inbox_result)
         message = json.dumps(inbox_result)
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchangename, routing_key="inbox.error", 
+        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="inbox.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
         print("\nInbox status ({:d}) published to the RabbitMQ Exchange:".format(code), inbox_result)
