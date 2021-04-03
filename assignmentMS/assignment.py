@@ -21,17 +21,16 @@ class Assignment(db.Model):
     level = db.Column(db.Integer, nullable=False)
     subject = db.Column(db.String(30), nullable=False)
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
-    preferredDay = db.Column(db.Integer, nullable=False)
+    preferredDay = db.Column(db.String(90), nullable=False)
     tutorID = db.Column(db.Integer, default=0)
     offers = relationship('Offer', cascade="all, delete-orphan")
-    def __init__(self, assignmentId, userID, childName, primary, level, subject, location, expectedPrice, preferredDay):
+    def __init__(self, assignmentId, userID, childName, primary, level, subject, expectedPrice, preferredDay):
         self.assignmentId = assignmentId
         self.userID = userID
         self.childName = childName
         self.primary = primary
         self.level = level
         self.subject = subject
-        self.location = location
         self.expectedPrice = expectedPrice
         self.preferredDay = preferredDay
         self.tutorID = 0
@@ -57,7 +56,7 @@ class Offer(db.Model):
     status = db.Column(db.String(6), nullable=False)
     selectedTime = db.Column(db.Integer, nullable=False)
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
-    preferredDay = db.Column(db.String(3), nullable=False)
+    preferredDay = db.Column(db.String(10), nullable=False)
     assignment = db.relationship(
     'Assignment', primaryjoin='Offer.assignmentId == Assignment.assignmentId', backref='offer')
  
@@ -109,8 +108,8 @@ def find_by_user(userID):
 @app.route("/makeAssignment", methods=['POST'])
 def create_assignment():
     data = request.get_json()
-    print(data.assignmentId)
-    assignmentId = data.assignmentId
+    print(data['assignmentId'])
+    assignmentId = data['assignmentId']
     if (Assignment.query.filter_by(assignmentId=assignmentId).first()):
         return jsonify({"message": "An assignment with the ID '{}' already exists.".format(assignmentId)}), 400
  

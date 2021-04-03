@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `assignment` (
   `level` int NOT NULL,
   `subject` varchar(30) NOT NULL,
   `expectedPrice` decimal(5,2) NOT NULL,
-  `preferredDay` int NOT NULL,
+  `preferredDay` varchar(90) NOT NULL,
   `tutorID` int default 0,
   PRIMARY KEY (`assignmentId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `offer` (
   `status` VARCHAR(20) NOT NULL,
   `selectedTime` INT NOT NULL,
   `expectedPrice` decimal(5,2) NOT NULL,
-  `preferredDay` INT NOT NULL,
+  `preferredDay` varchar(3) NOT NULL,
   PRIMARY KEY (`assignmentId`, `tutorID`),
   CONSTRAINT FK_assignementId FOREIGN KEY (`assignmentId`)
   REFERENCES assignment(`assignmentId`)
@@ -68,12 +68,12 @@ CREATE TABLE IF NOT EXISTS `offer` (
 --
 
 INSERT INTO `assignment` (`assignmentId`, `userID`, `childName`, `primary`, `level`, `subject`, `expectedPrice`, `preferredDay`) VALUES
-(1, 1, "meep",1, 2, 'Math', '6.50', 3),
-(2, 2, "oof",1, 4, 'Math', '6.50', 2),
-(3, 2, "lostcause", 0, 3, 'Math', '6.50', 3),
-(4, 4, "prettyBaby", 1, 6, 'Eng', '6.50', 1),
-(5, 5, "yourmom", 0, 3, 'Physics', '6.50', 2),
-(6, 1, "meep", 1, 2, 'Chinese', '6.50', 5);
+(1, 1, "meep",1, 2, 'Math', '6.50', "friday"),
+(2, 2, "oof",1, 4, 'Math', '6.50', "tuesday"),
+(3, 2, "lostcause", 0, 3, 'Math', '6.50', "Sunday"),
+(4, 4, "prettyBaby", 1, 6, 'Eng', '6.50', "Someday"),
+(5, 5, "yourmom", 0, 3, 'Physics', '6.50', "Monday"),
+(6, 1, "meep", 1, 2, 'Chinese', '6.50', "Friday");
 COMMIT;
 
 --
@@ -81,11 +81,11 @@ COMMIT;
 --
 
 INSERT INTO `offer` (`assignmentId`, `userID`, `tutorID`, `status`, `selectedTime`, `expectedPrice`, `preferredDay`) VALUES
-(1, 1, 1, 'pending', 1500, 7, 3),
-(2, 2, 2, 'accepted', 0900, 6.5, 2),
-(1, 1, 3, 'rejected', 2000, 6.5, 2),
-(3, 2, 4, 'pending', 1900, 7, 3),
-(2, 2, 5, 'rejected', 1500, 8, 2);
+(1, 1, 1, 'pending', 1500, 7, "Fri"),
+(2, 2, 2, 'accepted', 0900, 6.5, "Sun"),
+(1, 1, 3, 'rejected', 2000, 6.5, "Sat"),
+(3, 2, 4, 'pending', 1900, 7, "Mon"),
+(2, 2, 5, 'rejected', 1500, 8, "Tue");
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

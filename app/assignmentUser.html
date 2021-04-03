@@ -54,7 +54,8 @@
                     <div class="input-group-prepend">
                       <label class="input-group-text" for="subjects">Child Name</label>
                     </div>
-                    <select v-model="childName" class="custom-select" id="childrens">
+                    <select v-model="childName" @change="updateChildInfo" class="custom-select" id="childrens">
+                        <option selected disabled>Choose...</option>
                     </select>
                   </div>
                   <br>
@@ -85,35 +86,35 @@
                     <div class="form-row">
                         <div class="form-check">
                             <label class="form-check-label">
-                              <input type="checkbox" class="form-check-input" value="1" v-model="preferredDay">Monday
+                              <input type="checkbox" class="form-check-input" value="Monday" v-model="preferredDay">Monday
                             </label>
                           </div>
                           <div class="form-check">
                             <label class="form-check-label">
-                              <input type="checkbox" class="form-check-input" value="2" v-model="preferredDay">Tuesday
+                              <input type="checkbox" class="form-check-input" value="Tuesday" v-model="preferredDay">Tuesday
                             </label>
                           </div>
                           <div class="form-check">
                             <label class="form-check-label" style="padding-right: 20px;">
-                              <input type="checkbox" class="form-check-input" value="3" v-model="preferredDay">Wednesday
+                              <input type="checkbox" class="form-check-input" value="Wednesday" v-model="preferredDay">Wednesday
                             </label>
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="4" v-model="preferredDay">Thursday
+                                <input type="checkbox" class="form-check-input" value="Thursday" v-model="preferredDay">Thursday
                               </label>
                             </div>
                             <div class="form-check">
                               <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="5" v-model="preferredDay">Friday
+                                <input type="checkbox" class="form-check-input" value="Friday" v-model="preferredDay">Friday
                               </label>
                             </div>
                             <div class="form-check">
                               <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="6" v-model="preferredDay">Saturday
+                                <input type="checkbox" class="form-check-input" value="Saturday" v-model="preferredDay">Saturday
                               </label>
                           </div>
                           <div class="form-check">
                           <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="7" v-model="preferredDay">Sunday
+                            <input type="checkbox" class="form-check-input" value="Sunday" v-model="preferredDay">Sunday
                           </label>
                       </div>
                     </div>
@@ -192,7 +193,7 @@
             
             var username  = 'meep';
             console.log(username)
-
+            
             var get_all_URL = "http://localhost:5001/assignmentByUser";
             var get_childURL = `http://localhost:5004/seeChild`
 
@@ -211,7 +212,7 @@
                     message: "There is a problem retrieving the assignment data, please try again later.",
                     names: [],
                     childName:"",
-                    primary: 0,
+                    primary: 1,
                     level: 0,
                     subject: "",
                     expectedPrice: "",
@@ -249,15 +250,12 @@
                     //       console.log(this.message + error);
                     //   });
                     // },
-                    createAssignment: function(){
-                      
-                      //retrieves and stores childData from user microservice
-                      alert("check")
+                    updateChildInfo: function() {
                       const response =
                         fetch(get_childURL+ `/${this.userID}/${this.childName}`)
                             .then(response => response.json())
                             .then(data => {
-                                console.log(response);
+                                console.log(data);
                                 console.log(":ooooofff");
                                 // console.log(data.data)
                                 if (data.code !== 200) {
@@ -265,11 +263,11 @@
                                     this.message = data.message;
                                 } else {
                                   console.log("pls work, i wna sleep")
-                                  console.log(data.lvl)
+                                  console.log(data.childData.lvl)
                                   // for (names of data.data) {
                                     // console.log(names.childName);
-                                    this.level = data.lvl;
-                                    this.primary = names.pri
+                                    this.level = data.childData.lvl;
+                                    this.primary = data.childData.pri;
                                   // }
                                 }
                             })
@@ -279,6 +277,12 @@
                                 console.log(this.message + error);
 
                             });
+                    },
+                    createAssignment: function(){
+                      
+                      //retrieves and stores childData from user microservice
+                      alert("check")
+                      
                       //retrieves and stores form data
                       // this.childName = document.getElementById("childrens").value;
                       // this.subject = document.getElementById("subjects").value;
@@ -304,7 +308,7 @@
                       alert(this.subject);
                       //prepares posting data
                       let jsonData = JSON.stringify({
-                          "assignmentId": 69,
+                          "assignmentId": Math.floor((Math.random() * 696969) + 1),
                           "userID": 1,
                           "childName": this.childName,
                           "primary": this.primary,
@@ -314,7 +318,7 @@
                           "preferredDay": this.preferredDay.toString(),
                       });
                       //posts creates a new assignment
-                      fetch(`http://localhost:5001/makeAssignment/`,
+                      fetch(`http://localhost:5001/makeAssignment`,
                             {
                                 method: "POST",
                                 headers: {
@@ -327,23 +331,25 @@
                                 console.log(data);
                                 result = data.data;
                                 console.log(result);
+                                this.getAllAssignments();
                                 // 3 cases
-                                // switch (data.code) {
-                                //     case 201:
-                                //         this.assignmentAdded = true;
+                                switch (data.code) {
+                                    case 201:
+                                        this.assignmentAdded = true;
     
-                                //         // refresh book list
-                                //         this.getAllAssignments();
+                                        // refresh assignment list
+                                        alert("meeeeep")
+                                        
     
-                                //         // an alternate way is to add this one element into this.books
-                                //         break;
-                                //     case 400:
-                                //     case 500:
-                                //         this.addAssignmentError = data.message;
-                                //         break;
-                                //     default:
-                                //         throw `${data.code}: ${data.message}`;
-                                // }
+                                        // an alternate way is to add this one element into this.books
+                                        break;
+                                    case 400:
+                                    case 500:
+                                        this.addAssignmentError = data.message;
+                                        break;
+                                    default:
+                                        throw `${data.code}: ${data.message}`;
+                                }
                             })
                     },
                     getAllAssignments: function () {
@@ -433,50 +439,7 @@
                                 });
     
                     },
-                    addBook: function () {
-                        // reset data
-                        this.bookAdded = false;
-                        this.addBookError = "";
-    
-                        let jsonData = JSON.stringify({
-                            title: this.newTitle,
-                            price: this.newPrice,
-                            availability: this.newAvailability
-                        });
-    
-                        fetch(`${get_all_URL}/${this.newISBN13}`,
-                            {
-                                method: "POST",
-                                headers: {
-                                    "Content-type": "application/json"
-                                },
-                                body: jsonData
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log(data);
-                                result = data.data;
-                                console.log(result);
-                                // 3 cases
-                                switch (data.code) {
-                                    case 201:
-                                        this.bookAdded = true;
-    
-                                        // refresh book list
-                                        this.getAllBooks();
-    
-                                        // an alternate way is to add this one element into this.books
-                                        break;
-                                    case 400:
-                                    case 500:
-                                        this.addBookError = data.message;
-                                        break;
-                                    default:
-                                        throw `${data.code}: ${data.message}`;
-                                }
-                            })
-                    }
-                  },
+                  }, 
                 created: function () {
                     // on Vue instance created, load the book list
                     this.getAllAssignments();
@@ -488,41 +451,6 @@
                   // document.getElementById("all_assignment").innerHTML += ``;
                 }
             });
-
-            var app = new Vue({
-                el: "#siao",
-                
-                data: {
-                    message: "There is a problem retrieving the assignment data, please try again later.",
-                                    },
-                methods: {
-                    
-                    deleteit(assignment_ID) {
-                      console.log("helpslah")
-                      fetch('http://localhost:5001/deleteAssignment/' + assignment_ID,
-                      {
-                        method: "DELETE"
-                      })
-                      .then(response =>response.json())
-                      .then(data => {
-                        console.log("oof");
-                        console.log(":ehhh");
-                        console.log(data.data);
-                        if (data.code !== 200) {
-                            // no book in db
-                            this.message = data.message;
-                        } else {
-                          this.message += data.status;
-                        }
-                      })
-                      .catch(error => {
-                          // Errors when calling the service; such as network error, 
-                          // service offline, etc
-                          console.log(this.message + error);
-                      });
-                    },
-                  }
-                })
         </script>
         <script>
           // function delete(assignment_ID) {
