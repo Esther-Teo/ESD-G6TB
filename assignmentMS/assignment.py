@@ -51,6 +51,7 @@ class Offer(db.Model):
     __tablename__ = 'offer'
 
     assignmentId = db.Column(db.Integer, db.ForeignKey('assignment.assignmentId', ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+    userID = db.Column(db.Integer, nullable=False)
     tutorID = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.String(6), nullable=False)
     selectedTime = db.Column(db.Integer, nullable=False)
@@ -59,8 +60,9 @@ class Offer(db.Model):
     assignment = db.relationship(
     'Assignment', primaryjoin='Offer.assignmentId == Assignment.assignmentId', backref='offer')
  
-    def __init__(self, assignmentId, tutorID, status, selectedTime, expectedPrice, preferredDay):
+    def __init__(self, assignmentId, userID, tutorID, status, selectedTime, expectedPrice, preferredDay):
         self.assignmentId = assignmentId
+        self.userID = userID
         self.tutorID = tutorID
         self.status = status
         self.selectedTime = selectedTime
@@ -70,6 +72,7 @@ class Offer(db.Model):
     def json(self):
         return {
             "assignmentId": self.assignmentId, 
+            "userID": self.userID,
             "tutorID": self.tutorID, 
             "status": self.status, 
             "selectedTime": self.selectedTime, 
@@ -227,7 +230,7 @@ def add_offer():
 
 # GET offer by tutorID (tested okay)
 @app.route("/offerByTutor/<int:tutorID>")
-def find_by_tutor(tutorID):
+def findO_by_tutor(tutorID):
     try: 
         offer = Offer.query.filter_by(tutorID=tutorID).all()
         if offer:
@@ -235,9 +238,19 @@ def find_by_tutor(tutorID):
     except Exception as e:
         return jsonify({"message": "Offer not found." + str(e)}), 404
 
+# GET offer by tutorID (tested okay)
+@app.route("/offerByUser/<int:userID>")
+def findO_by_user(userID):
+    try: 
+        offer = Offer.query.filter_by(userID=userID).all()
+        if offer:
+            return jsonify({"offers": [a.json() for a in offer]})
+    except Exception as e:
+        return jsonify({"message": "Offer not found." + str(e)}), 404
+
 # GET offer by assignmentID (tested okay)
 @app.route("/offerByAssignment/<int:assignmentId>")
-def find_offer_by_assignment(assignmentId):
+def findO_by_assignment(assignmentId):
     try: 
         offer = Offer.query.filter_by(assignmentId=assignmentId).all()
         if offer:
