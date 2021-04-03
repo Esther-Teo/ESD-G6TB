@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
 from os import environ
 from flask_cors import CORS
 
@@ -22,7 +23,7 @@ class Assignment(db.Model):
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
     preferredDay = db.Column(db.Integer, nullable=False)
     tutorID = db.Column(db.Integer, default=0)
- 
+    offers = relationship('Offer', cascade="all, delete-orphan")
     def __init__(self, assignmentId, userID, childName, primary, level, subject, location, expectedPrice, preferredDay):
         self.assignmentId = assignmentId
         self.userID = userID
@@ -89,10 +90,12 @@ def get_all():
 # GET for viewing one assignment only
 @app.route("/assignmentById/<int:assignmentId>")
 def find_by_assignmentId(assignmentId):
-    assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
-    if assignment:
-        return jsonify(assignment.json)
-    return jsonify({"message": "Assignment not found."}), 404
+    try:
+        assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
+        if assignment:
+            return jsonify(assignment.json())
+    except Exception as e:
+        return jsonify({"message": "Assignment had a problem fetching" + str(e)}), 404
 
 # GET for viewing assignment by their user
 @app.route("/assignmentByUser/<int:userID>")
@@ -166,27 +169,29 @@ def update_assignment(assignmentId):
 # DELETE an assignment by its ID
 @app.route("/deleteAssignment/<int:assignmentId>", methods=['DELETE'])
 def delete_assignment(assignmentId):
-    assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
-    if assignment:
-        db.session.delete(assignment)
-        db.session.commit()
+    try:
+        assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
+        if assignment:
+            db.session.delete(assignment)
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "assignmentId": assignmentId
+                    }
+                }
+            )
+    except Exception as e:
         return jsonify(
             {
-                "code": 200,
+                "code": 404,
                 "data": {
                     "assignmentId": assignmentId
-                }
+                },
+                "message": "Assignment not found." + str(e)
             }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "data": {
-                "assignmentId": assignmentId
-            },
-            "message": "Assignment not found."
-        }
-    ), 404
+        ), 404
 
 # add new user using POST 
 @app.route("/createOffer", methods=['POST'])
