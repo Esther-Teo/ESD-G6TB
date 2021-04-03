@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
     session_start();
     if ( !isset($_SESSION["userName"]) ) {
       $user = 'no';
@@ -9,7 +9,7 @@
         $userID = $_SESSION["userID"];
         $userEmail = $_SESSION["userEmail"];
     }
-?>
+?> -->
 
 <!DOCTYPE html>
 <html>
@@ -50,33 +50,12 @@
             <div class="collapse" id="collapseExample">
               <div class="card card-body">
                 <form>
-                  removed because username will be stored Maybe can change to child id drop down instead
-                  <!-- <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="inputEmail4">Username</label>
-                      <input type="email" class="form-control" id="inputEmail4" placeholder="Please enter your email here!">
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="subjects">Child Name</label>
                     </div>
-                  </div> -->
-                  <div class="form-row">
-                  <div class="form-group col-md-6">
-                    <label for="inputAddress">Address</label>
-                    <input type="text" class="form-control" id="inputAddress" placeholder="Please enter your postal code here">
-                  </div>
-                </div>
-                
-                  <div class="form-row">
-                    <div class="form-check target" style="padding-right: 5px;" >
-                      <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-                      <label class="form-check-label" for="exampleRadios1">
-                        Primary
-                      </label>
-                    </div>
-                    <div class="form-check target2">
-                      <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-                      <label class="form-check-label" for="exampleRadios2">
-                        Secondary
-                      </label>
-                    </div>
+                    <select class="custom-select" id="childrens">
+                    </select>
                   </div>
                   <br>
                   <div class="form-row">
@@ -142,7 +121,7 @@
                           </label>
                       </div>
                     </div>
-                  <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Create assignment!</button>
+                  <button type="button" class="btn btn-primary" onclick="createAssignment()" style="margin-top: 10px;">Create assignment!</button>
                   </div>
                 </form>
               </div>
@@ -174,7 +153,7 @@
         });
         </script>
 
-        <script> var user = "<?=$userID ?>"; console.log(user);</script>
+        <script> var user = "<?=$userID?>"; console.log(user);</script>
         need edit scrips
         <!-- <script src="./js/homeui.js"></script> -->
         <script>
@@ -214,8 +193,47 @@
           
         </script>
         <script>
+           function createAssignment(){
+                    var selected_childname = document.getElementById("childrens").value;
+                    var selected_subject = document.getElementById("subjects").value;
+                    //alert(selected_subject);
 
-            var username  = '<?php echo $user;?>';
+                    var selected_level = document.getElementById("level").value;
+                    var selected_Eprice = document.getElementById("expected_price").value;
+                    var array = [];
+                    var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
+                    for (var i = 0; i < checkboxes.length; i++) {
+                    array.push(checkboxes[i].value)
+                    }
+                    //alert(array);
+                    var w = 0;
+                    var selected_days = "";
+                    //alert(array.length);
+                    for (w=0;w < array.length;w++){
+                    if(w == array.length-1){
+                      selected_days += `${array[w]}`;
+                    }
+                    else{
+                      selected_days += `${array[w]}`+ " ,";
+                    }
+                    }
+                    alert(selected_subject);
+                    let jsonData = JSON.stringify({
+    "assignmentId": 1,
+    "userID": 1,
+    "childName": selected_childname,
+    "primary": selected_Primary,
+    "level": selected_level,
+    "subject": selected_subject,
+    "expectedPrice": selected_Eprice, 
+    "preferredDay": selected_days,
+});
+
+                    }
+        </script>
+        <script>
+
+            var username  = 'meep';
             console.log(username)
 
             var get_all_URL = "http://localhost:5001/assignmentByUser";
@@ -245,6 +263,32 @@
                     creationSuccessful: false,
                 },
                 methods: {
+                    
+                    // deleteit: function(assignment_ID) {
+                    //   response =
+                    //   fetch('http://localhost:5001/deleteAssignment/' + assignment_ID,
+                    //   {
+                    //     method: "DELETE",
+                    //     mode:
+                    //   })
+                    //   .then(response =>response.json())
+                    //   .then(data => {
+                    //     console.log("oof");
+                    //     console.log(":ehhh");
+                    //     console.log(data.data);
+                    //     if (data.code !== 200) {
+                    //         // no book in db
+                    //         this.message = data.message;
+                    //     } else {
+                    //       this.message += data.status;
+                    //     }
+                    //   })
+                    //   .catch(error => {
+                    //       // Errors when calling the service; such as network error, 
+                    //       // service offline, etc
+                    //       console.log(this.message + error);
+                    //   });
+                    // },
                     getAllAssignments: function () {
                         // on Vue instance created, load the book list
                         const response =
@@ -267,6 +311,7 @@
                                         var E_price = each.expectedPrice;
                                         var lvl = each.level;
                                         var primary1 = each.primary;
+                                        var assignmentID = each.assignmentId;
                                         if (primary1){
                                           primary1 = "Primary";
                                         }
@@ -277,7 +322,7 @@
                                         var preferred_D = each.preferredDay;
                                         var subj = each.subject;
                                         // alert(primary1)
-                                        // alert(preferred_D)
+                                         //alert(assignmentID);
                                         document.getElementById("table_69").innerHTML += `
                                         <tr>
                                         <td>${childName1}</td>
@@ -286,7 +331,7 @@
                                         <td>${subj}</td>
                                         <td>${E_price}</td>
                                         <td>${preferred_D}</td>
-                                        <td><input type="button" value="Delete Assignment" onclick="SomeDeleteRowFunction()" style="border-radius:5px; background-color: rgb(33, 102, 194);"></td>
+                                        <td><input type="button" id='siao' value="Delete Assignment" onclick="deleteit(${assignmentID})" style="border-radius:5px; background-color: rgb(33, 102, 194);"></td>
                                         </tr>
                                         `
                                       }
@@ -307,14 +352,19 @@
                                 .then(response => response.json())
                                 .then(data => {
                                     console.log(response);
-                                    console.log(":(");
+                                    console.log(":ooooofff");
                                     console.log(data.data)
                                     if (data.code !== 200) {
                                         // no book in db
                                         this.message = data.message;
                                     } else {
-                                      for (name of data.data.childName) {
-                                        this.names += name;
+                                      for (names of data.data) {
+                                        this.names += names.childName;
+                                        // console.log(names.childName);
+                                        var name1 = names.childName;
+                                        document.getElementById("childrens").innerHTML += `
+                                        <option value="${name1}">${name1}</option>
+                                        `
                                       }
                                     }
                                 })
@@ -374,16 +424,76 @@
                     // on Vue instance created, load the book list
                     this.getAllAssignments();
                     this.getChildren();
+                    this.deleteit(1);
+                    alert('GGGGGG')
                     // var yolo = this.getChildren();
                     // alert(yolo[0]);
                   // document.getElementById("all_assignment").innerHTML += ``;
                 }
             });
+
+            var app = new Vue({
+                el: "#siao",
+                
+                data: {
+                    message: "There is a problem retrieving the assignment data, please try again later.",
+                                    },
+                methods: {
+                    
+                    deleteit(assignment_ID) {
+                      console.log("helpslah")
+                      fetch('http://localhost:5001/deleteAssignment/' + assignment_ID,
+                      {
+                        method: "DELETE"
+                      })
+                      .then(response =>response.json())
+                      .then(data => {
+                        console.log("oof");
+                        console.log(":ehhh");
+                        console.log(data.data);
+                        if (data.code !== 200) {
+                            // no book in db
+                            this.message = data.message;
+                        } else {
+                          this.message += data.status;
+                        }
+                      })
+                      .catch(error => {
+                          // Errors when calling the service; such as network error, 
+                          // service offline, etc
+                          console.log(this.message + error);
+                      });
+                    },
+                  }
+                })
         </script>
         <script>
-          $('table').on('click', 'input[type="button"]', function(e){
-   $(this).closest('tr').remove()
-})
+          // function delete(assignment_ID) {
+          //             fetch('http://localhost:5001/deleteAssignment/' + assignment_ID,
+          //             {
+          //               method: "DELETE"
+          //             })
+          //             .then(response =>response.json())
+          //             .then(data => {
+          //               console.log(response);
+          //               console.log(":ehhh");
+          //               console.log(data.data);
+          //               if (data.code !== 200) {
+          //                   // no book in db
+          //                   this.message = data.message;
+          //               } else {
+          //                 this.message += data.status;
+          //               }
+          //             })
+          //             .catch(error => {
+          //                 // Errors when calling the service; such as network error, 
+          //                 // service offline, etc
+          //                 console.log(this.message + error);
+          //             });
+          //           }
+          // $('table').on('click', 'input[type="button"]', function(e){
+          // $(this).closest('tr').remove()
+          // })
           </script>
     
     </body>
