@@ -254,9 +254,10 @@
                 },
                 data: {
                     userID: 1,
-                    "assignments": [],
+                    assignments: [],
                     message: "There is a problem retrieving the assignment data, please try again later.",
-                    childName: "",
+                    names: [],
+                    childName:"",
                     subject: "",
                     location: "",
                     expectedPrice: "",
@@ -281,8 +282,37 @@
                                         // no book in db
                                         this.message = data.message;
                                     } else {
-                                        this.subject = data.data.subjects;
-                                        
+                                      for (each of data.assignments){
+                                        //NOT DONE YET
+                                        // this.assignments += each.;
+                                        console.log(each)
+                                      }
+                                    }
+                                })
+                                .catch(error => {
+                                    // Errors when calling the service; such as network error, 
+                                    // service offline, etc
+                                    console.log(this.message + error);
+    
+                                });
+    
+                    },
+                    getChildren: function () {
+                        // on Vue instance created, load the book list
+                        const response =
+                            fetch(`http://localhost:5004/child/${this.userID}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(response);
+                                    console.log(":(");
+                                    console.log(data.data)
+                                    if (data.code !== 200) {
+                                        // no book in db
+                                        this.message = data.message;
+                                    } else {
+                                      for (name of data.data.childName) {
+                                        this.names += name;
+                                      }
                                     }
                                 })
                                 .catch(error => {
@@ -340,6 +370,7 @@
                 created: function () {
                     // on Vue instance created, load the book list
                     this.getAllAssignments();
+                    this.getChildren();
                 }
             });
         </script>
