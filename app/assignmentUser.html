@@ -148,41 +148,17 @@
               </div>
               <div class="collapse" id="all_assignment">
                   <div class='container-fluid row mx-auto pt-3 pb-5 mt-3' id='listings'>
-                    <table class="table">
+                    <table class="table" id="table_69">
                       <thead>
                         <tr>
-                          <th scope="col">Child</th>
+                          <th scope="col">Child Name</th>
+                          <th scope="col">Primary or Secondary</th>
+                          <th scope="col">Level</th>
                           <th scope="col">Subject</th>
+                          <th scope="col">Offered Price</th>
                           <th scope="col">Preferred Day</th>
-                          <th scope="col">Tutor</th>
                           <th scope="col">Delete?</th>
                         </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td>Pri_Eng</td>
-                          <td>5</td>
-                          <td>Joel</td>
-                          <!-- <td><button type="button" value="Delete Row" onclick="SomeDeleteRowFunction()">Primary</button></td> -->
-                          <td><input type="button" value="Delete Assignment" onclick="SomeDeleteRowFunction()" style="border-radius:5px; background-color: rgb(33, 102, 194);"></td>
-                        </tr>
-                        <tr>
-                          <td>1</td>
-                          <td>Pri_Chi</td>
-                          <td>5</td>
-                          <td>Soon Hao</td>
-                          <td><input type="button" value="Delete Assignment" onclick="SomeDeleteRowFunction()" style="border-radius:5px; background-color: rgb(33, 102, 194);"></td>
-                        </tr>
-                        <tr>
-                          <td>2</td>
-                          <td>Sec_Chem</td>
-                          <td>5, 7</td>
-                          <td>Edena</td>
-                          <td><input type="button" value="Delete Assignment" onclick="SomeDeleteRowFunction()" style="border-radius:5px; background-color: rgb(33, 102, 194);"></td>
-
-                        </tr>
-                      </tbody>
                     </table>
                   </div>
                 </div>
@@ -286,6 +262,33 @@
                                         //NOT DONE YET
                                         // this.assignments += each.;
                                         console.log(each)
+                                        // alert("For each assignemnt it willl loop")
+                                        var childName1 = each.childName;
+                                        var E_price = each.expectedPrice;
+                                        var lvl = each.level;
+                                        var primary1 = each.primary;
+                                        if (primary1){
+                                          primary1 = "Primary";
+                                        }
+                                        else {
+                                          primary1 = "Secondary";
+                                        }
+                                        var childName1 = each.childName;
+                                        var preferred_D = each.preferredDay;
+                                        var subj = each.subject;
+                                        // alert(primary1)
+                                        // alert(preferred_D)
+                                        document.getElementById("table_69").innerHTML += `
+                                        <tr>
+                                        <td>${childName1}</td>
+                                        <td>${primary1}</td>
+                                        <td>${lvl}</td>
+                                        <td>${subj}</td>
+                                        <td>${E_price}</td>
+                                        <td>${preferred_D}</td>
+                                        <td><input type="button" value="Delete Assignment" onclick="SomeDeleteRowFunction()" style="border-radius:5px; background-color: rgb(33, 102, 194);"></td>
+                                        </tr>
+                                        `
                                       }
                                     }
                                 })
@@ -371,6 +374,9 @@
                     // on Vue instance created, load the book list
                     this.getAllAssignments();
                     this.getChildren();
+                    // var yolo = this.getChildren();
+                    // alert(yolo[0]);
+                  // document.getElementById("all_assignment").innerHTML += ``;
                 }
             });
         </script>
