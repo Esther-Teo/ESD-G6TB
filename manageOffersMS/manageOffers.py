@@ -21,25 +21,23 @@ CORS(app)
 
 assignment_URL = "http://localhost:5001/assignment"
 offer_URL = "http://localhost:5003/offer"
-error_URL = "http://localhost:6002/errorMS/error"
-inbox_URL = "http://localhost:6003/inbox"
+createOffer_URL = "http://localhost:5001/createOffer"
 
-
+# Manage a new offer
 @app.route("/manageOffersMS", methods=['POST'])
-def create_offers():
+def manage_offers():
     if request.is_json:
         try:
             offer = request.get_json()
             print("\nReceived offer in JSON:", offer)
-
-            result = process_offers(offer) # not producing output
+            # 2. User views offer
+            result = process_offers(offer)
             print('\n------------------------')
             print('\nresult: ', result)
             return jsonify(result), result["code"]
-            # return jsonify(result)
-
 
         except Exception as e:
+            # Unexpected error in code
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
@@ -49,36 +47,30 @@ def create_offers():
                 "code": 500,
                 "message": "manageOffersMS.py internal error: " + ex_str
             }), 500
-
+    # Not in JSON format
     return jsonify({
         "code": 400,
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-def process_offers(offer):
-    ############@EDENA ----HOW TO GET ASSIGNMENT DETAILS AND USE THE ASSIGNMENT DETAILS WHEN CREATING THE OFFER?
-    print('\n-----Invoking assignment microservice-----')
-    offer_result = invoke_http("http://localhost:5001/createOffer", method='POST', json=offer)
-    print('offer_result:', offer_result)
+# _______________________________________________________________________________________________________
 
-    # print('\n-----Invoking offer microservice-----')
-    # offer_result = invoke_http(offer_URL, method='POST', json=offer) # produce code 500: Invalid JSON output from offer MS
-    # print('offer_result:', offer_result)
+def process_offers(offer):
+    # 3. Get offer details 
+    print('\n-----Invoking assignmentMS-----')
+    offer_result = invoke_http(createOffer_URL, method='POST', json=offer)
+    print('offer_result:', offer_result)
 
     code = offer_result["code"] 
     message = json.dumps(offer_result)
 
+    # If error, send to error handler
     if code not in range(200, 300):
-        print('\n\n-----Invoking error microservice as offer fails-----')
         print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
-
-        invoke_http(error_URL, method="POST", json=offer_result)
         amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
       
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), offer_result)
-
-        return requests.get(offer_URL).json()
 
         return {
             "code": 500,
@@ -86,42 +78,22 @@ def process_offers(offer):
             "message": "Offer creation failure sent for error handling."
         }            
     
-    print("\nOrder published to RabbitMQ Exchange.\n")
-
-    print('\n\n-----Invoking inbox microservice-----')
-    inbox_result = invoke_http(inbox_URL, method="POST", json=offer_result['data'])
-    print("inbox_result:", inbox_result, '\n')
-
-    code = inbox_result["code"]
-    if code not in range(200, 300):
-        print('\n\n-----Invoking error microservice as inbox fails-----')
-        print('\n\n-----Publishing the (inbox error) message with routing_key=inbox.error-----')
-
-        invoke_http(error_URL, method="POST", json=inbox_result)
-        message = json.dumps(inbox_result)
+    else:
+        print('\n\n-----Publishing the (offer info) message with routing_key=offer.inbox-----') 
         amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="inbox.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
-        print("\nInbox status ({:d}) published to the RabbitMQ Exchange:".format(code), inbox_result)
-
-        return {
-            "code": 400,
-            "data": {
-                "offer_result": offer_result,
-                "inbox_result": inbox_result
-            },
-            "message": "Simulated shipping record error sent for error handling."
-        }
+    print("\nOrder published to RabbitMQ Exchange.\n")
 
     return {
         "code": 201,
         "data": {
             "offer_result": offer_result,
-            "inbox_result": inbox_result
+            # "inbox_result": inbox_result
         }
     }
 
 if __name__ == "__main__":
-    print("This is flask " + os.path.basename(__file__) + " for placing an order...")
+    print("This is flask " + os.path.basename(__file__) + " for managing offers...")
     app.run(host="0.0.0.0", port=5100, debug=True)
 
