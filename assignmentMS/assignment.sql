@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS `offer` (
   `assignmentId` INT NOT NULL,
   `userID` INT NOT NULL,
   `tutorID` INT NOT NULL,
+  `tutorName` VARCHAR(40) NOT NULL,
   `status` VARCHAR(20) NOT NULL,
   `selectedTime` INT NOT NULL,
   `expectedPrice` decimal(5,2) NOT NULL,
@@ -80,12 +81,12 @@ COMMIT;
 -- Dumping data for table `offer`
 --
 
-INSERT INTO `offer` (`assignmentId`, `userID`, `tutorID`, `status`, `selectedTime`, `expectedPrice`, `preferredDay`) VALUES
-(1, 1, 1, 'pending', 1500, 7, "Fri"),
-(2, 2, 2, 'accepted', 0900, 6.5, "Sun"),
-(1, 1, 3, 'rejected', 2000, 6.5, "Sat"),
-(3, 2, 4, 'pending', 1900, 7, "Mon"),
-(2, 2, 5, 'rejected', 1500, 8, "Tue");
+INSERT INTO `offer` (`assignmentId`, `userID`, `tutorID`, `tutorName`, `status`, `selectedTime`, `expectedPrice`, `preferredDay`) VALUES
+(1, 1, 1, "Bob", 'pending', 1500, 7, "Fri"),
+(2, 2, 2, "Tom", 'accepted', 0900, 6.5, "Sun"),
+(1, 1, 3, "Sue", 'rejected', 2000, 6.5, "Sat"),
+(3, 2, 4, "Mary", 'pending', 1900, 7, "Mon"),
+(2, 2, 5, "Jane", 'rejected', 1500, 8, "Tue");
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

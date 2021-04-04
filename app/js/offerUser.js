@@ -29,9 +29,7 @@ function getAllOffers() {
                                 console.log(response);
                                 console.log("wahsehhhh");
                                 console.log(data)
-                                for (each of data) {
-                                    console.log(each)
-                                }
+                                html += ``
                             })
                         }
                     }
