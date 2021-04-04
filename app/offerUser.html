@@ -40,18 +40,12 @@
                 
                 <div class ="container" id="loadOffers">
                     <span style="color:black" v-html="headers"></span>
-                        <div class="card border-secondary mb-3" style="max-width: 18rem;">
-                            <div class="card-header text-dark" >Try</div>
-                            <div class="card-body text-secondary">
-                                <h5 class="card-title">Swtf wjhy don't changee</h5>
-                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            </div>
-                        </div>
+                       
                 </div>
             </div>
 
             <div id="previous" class="collapse">
-                hais, save me alr
+                
             </div>
             
             </br>
@@ -89,7 +83,7 @@
                     message: "There is a problem retrieving the assignment data, please try again later.",
                     names: [],
                     childName:"",
-                    primary: 1,
+                    primary: "",
                     level: 0,
                     subject: "",
                     expectedPrice: "",
@@ -102,44 +96,99 @@
                     creationSuccessful: false,
                 },
                 methods: {
-
+                    getChildrenDetails: function() {
+                        const response = 
+                        fetch("http://localhost:5004/child"+`/${this.userID}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(response);
+                                    console.log("meep");
+                                    // console.log(data)
+                                    if (data.code === 404) {
+                                        // no book in db
+                                        this.message = data.message;
+                                    } else {
+                                        // this.subject = data.data.subjects;
+                                        console.log(data)
+                                        for (each of data.data){
+                                            alert(each.childName);
+                                            document.getElementById("loadOffers").innerHTML += `
+                                            <div style="color: black;text-align: center;" id="${each.childName}"><h3>${each.childName}</h3></div>
+                                            `
+                                        }
+                                    }
+                                })
+                                .catch(error => {
+                                    // Errors when calling the service; such as network error, 
+                                    // service offline, etc
+                                    console.log(this.message + error);
+    
+                                });
+                    },
                     getAllOffers: function() {
                         // on Vue instance created, load the book list
                         const response =
                             fetch(get_all_URL+`/${this.userID}`)
                                 .then(response => response.json())
-                                .then(data => {
+                                .then(huh => {
                                     console.log(response);
                                     console.log("meep");
-                                    console.log(data)
-                                    if (data.code === 400) {
+                                    console.log(huh)
+                                    if (huh.code === 400) {
                                         // no book in db
-                                        message = data.message;
+                                        message = huh.message;
                                     } else {
                                         allElse = ""
                                         html = ""
-                                        for (each in data.offers) {
-                                            console.log(data.offers[each])
-                                            offer = data.offers[each]
-                                            if (offer.status == "pending") {
-                                                id = offer.assignmentId
-                                                fetch("http://localhost:5001/assignmentById/"+id)
+                                        var counter = 1;
+                                        for (each in huh.offers) {
+                                            //console.log(huh.offers[each])
+                                            offer = huh.offers[each]
+                                            //alert(offer.status)
+                                            //alert(offer.tutorName)
+                                            var card_tutorname = offer.tutorName;
+                                                //alert(offer.tutorname)
+                                                var card_preferredDay = offer.preferredDay;
+                                                var card_time = offer.selectedTime;
+                                                var card_price = offer.expectedPrice;
+                                                var assignmentID = offer.assignmentId;
+                                                //alert(assignmentID);
+                                                document.getElementById("loadOffers").innerHTML += `
+                                                 <div class="card border-secondary mb-3" style="max-width: 18rem;">
+                                                <div class="card-header text-dark" >`+card_tutorname+`</div>
+                                                <div class="card-body text-secondary">
+                                                <h5 class="card-title">${card_preferredDay} @ ${card_time} for $${card_price}/hr</h5>
+                                                <p class="card-text" id="${counter}"></p>
+                                                </div>
+                                                </div>`
+                                            if (offer.status === "pending") {
+                                                alert(counter)
+                                                fetch("http://localhost:5001/assignmentById/"+assignmentID)
                                                 .then(response => response.json())
-                                                .then(data => {
-                                                    console.log(response);
-                                                    console.log("wahsehhhh");
-                                                    console.log(data.childName);
-                                                    // this.childName = data.childName;
-                                                    
-                                                    if( this.children.indexOf(data.childName) < 0 ) {
-                                                        this.children.push(data.childName)
-                                                        this.headers+=`<h3>${data.childName}<h3>`
+                                                .then(plswork => {
+                                                    var card_level = plswork.level;
+                                                    var card_subject = plswork.subject;
+                                                    // alert(card_level);
+                                                    // alert(card_subject);
+                                                    if (plswork.primary){
+                                                        var card_primary = "Primary ";
                                                     }
+                                                    else {
+                                                        var card_primary = "Secondary ";
+                                                    }
+                                                    var final = card_primary + card_level + card_subject;
+                                                alert(final);
+                                                document.getElementById(counter).innerHTML += `
+                                                <p class="card-text">${card_primary} ${card_level} ${card_subject}</p>
+                                                `;
+                                                // document.getElementById(plswork.childName).innerHTML += html;
                                                 })
                                             }
                                         }  
+                                        // alert(counter);
+                                        // console.log(counter);
                                         }
-                                        document.getElementById("offerTable").innerHTML = html
+                                        // document.getElementById("offerTable").innerHTML = html
                                     })
                                 
                                 .catch(error => {
@@ -255,8 +304,9 @@
                 }, 
                 created: function () {
                     // on Vue instance created, load the book list
+                    this.getChildrenDetails();
                     this.getAllOffers();
-                    // this.getChildren();
+                    
 
                     alert('GGGGGG')
                     // var yolo = this.getChildren();
