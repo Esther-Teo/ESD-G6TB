@@ -99,10 +99,12 @@ def find_by_assignmentId(assignmentId):
 # GET for viewing assignment by their user
 @app.route("/assignmentByUser/<int:userID>")
 def find_by_user(userID):
-    assignment = Assignment.query.filter_by(userID=userID).all()
-    if assignment:
-        return jsonify({"assignments": [a.json() for a in assignment]})
-    return jsonify({"message": "Assignment not found."}), 404
+    try: 
+        assignment = Assignment.query.filter_by(userID=userID).all()
+        if assignment:
+            return jsonify({"assignments": [a.json() for a in assignment]})
+    except Exception as e:
+        return jsonify({"message": "Assignment not found." + str(e)}), 404
 
 # CREATE an assignment
 @app.route("/makeAssignment", methods=['POST'])
@@ -119,8 +121,8 @@ def create_assignment():
     try:
         db.session.add(assignment)
         db.session.commit()
-    except:
-        return jsonify({"message": "An error occurred creating the assignment."}), 500
+    except Exception as e:
+        return jsonify({"message": "An error occurred creating the assignment." + str(e)}), 500
  
     return jsonify(assignment.json()), 201
 
