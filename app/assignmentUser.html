@@ -58,6 +58,13 @@
                         <option selected disabled>Choose...</option>
                     </select>
                   </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="subjects" id="education_level">Select child first!</label>
+                    </div>
+                    
+                    <div id="education_level"></div>
+                  </div>
                   <br>
                   <div class="form-row">
                     </div>
@@ -125,16 +132,6 @@
               <div class="collapse" id="all_assignment">
                   <div class='container-fluid row mx-auto pt-3 pb-5 mt-3' id='listings'>
                     <table class="table" id="table_69">
-                      <thead>
-                        <tr>
-                          <th scope="col">Child Name</th>
-                          <th scope="col">Primary or Secondary</th>
-                          <th scope="col">Level</th>
-                          <th scope="col">Subject</th>
-                          <th scope="col">Offered Price</th>
-                          <th scope="col">Preferred Day</th>
-                          <th scope="col">Delete?</th>
-                        </tr>
                     </table>
                   </div>
                 </div>
@@ -158,34 +155,10 @@
 
           $( ".target" ).change(function() {
           //alert( "Now option is at Primary" );
-          document.getElementById('subjects').innerHTML='';
-          document.getElementById('subjects').innerHTML += `
-                        <option selected disabled>Choose...</option>
-                        <option value="English">English</option>
-                        <option value="Chinese">Chinese</option>
-                        <option value="Tamil">Tamil</option>
-                        <option value="Malay">Malay</option>
-                        <option value="Math">Math</option>
-                        <option value="Science">Science</option>`
+          
           });
           $( ".target2" ).change(function() {
           //alert( "Now option is at Secondary" );
-          document.getElementById('subjects').innerHTML='';
-          document.getElementById('subjects').innerHTML += `
-                        <option selected disabled>Choose...</option>
-                        <option value="English">English</option>
-                        <option value="Chinese">Chinese</option>
-                        <option value="Tamil">Tamil</option>
-                        <option value="Malay">Malay</option>
-                        <option value="A_Math">Math</option>
-                        <option value="E_Math">Math</option>
-                        <option value="Biology">Biology</option>
-                        <option value="Chemistry">Chemistry</option>
-                        <option value="Physics">Physics</option>
-                        <option value="Geography">Geography</option>
-                        <option value="History">History</option>
-                        <option value="Literature">Literature</option>
-                        <option value="Principles of Accounts">Principles of Accounts</option>`;
           });
           
         </script>
@@ -262,12 +235,46 @@
                                     // no book in db
                                     this.message = data.message;
                                 } else {
-                                  console.log("pls work, i wna sleep")
-                                  console.log(data.childData.lvl)
-                                  // for (names of data.data) {
-                                    // console.log(names.childName);
+                                  //console.log("pls work, i wna sleep")
+                                  //console.log(data.childData.lvl)
                                     this.level = data.childData.lvl;
                                     this.primary = data.childData.pri;
+                                    var selected_primary =  this.primary;
+                                    var selected_level =  this.level;
+                                    alert(selected_primary);
+                                    alert(selected_level);
+                                    if (selected_primary){
+                                      var printed_primary = "Primary ";
+                                      document.getElementById('subjects').innerHTML='';
+                                      document.getElementById('subjects').innerHTML += `
+                                      <option selected disabled>Choose...</option>
+                                      <option value="English">English</option>
+                                      <option value="Chinese">Chinese</option>
+                                      <option value="Tamil">Tamil</option>
+                                      <option value="Malay">Malay</option>
+                                      <option value="Math">Math</option>
+                                      <option value="Science">Science</option>`
+                                    }
+                                    else {
+                                      var printed_primary = "Secondary ";
+                                      document.getElementById('subjects').innerHTML='';
+                                      document.getElementById('subjects').innerHTML += `
+                                      <option selected disabled>Choose...</option>
+                                      <option value="English">English</option>
+                                      <option value="Chinese">Chinese</option>
+                                      <option value="Tamil">Tamil</option>
+                                      <option value="Malay">Malay</option>
+                                      <option value="A_Math">Additional Math</option>
+                                      <option value="E_Math">Elementary Math</option>
+                                      <option value="Biology">Biology</option>
+                                      <option value="Chemistry">Chemistry</option>
+                                      <option value="Physics">Physics</option>
+                                      <option value="Geography">Geography</option>
+                                      <option value="History">History</option>
+                                      <option value="Literature">Literature</option>
+                                      <option value="Principles of Accounts">Principles of Accounts</option>`;
+                                    }
+                                    document.getElementById("education_level").innerText = `${printed_primary} ${selected_level}`
                                   // }
                                 }
                             })
@@ -354,6 +361,18 @@
                     },
                     getAllAssignments: function () {
                         // on Vue instance created, load the book list
+                        document.getElementById("table_69").innerHTML =`
+                      <thead>
+                        <tr>
+                          <th scope="col">Child Name</th>
+                          <th scope="col">Primary or Secondary</th>
+                          <th scope="col">Level</th>
+                          <th scope="col">Subject</th>
+                          <th scope="col">Offered Price</th>
+                          <th scope="col">Preferred Day</th>
+                          <th scope="col">Delete?</th>
+                        </tr>
+                        `;
                         const response =
                             fetch(get_all_URL+`/${this.userID}`)
                                 .then(response => response.json())
@@ -445,7 +464,7 @@
                     this.getAllAssignments();
                     this.getChildren();
 
-                    alert('GGGGGG')
+                    //alert('GGGGGG')
                     // var yolo = this.getChildren();
                     // alert(yolo[0]);
                   // document.getElementById("all_assignment").innerHTML += ``;
