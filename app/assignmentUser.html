@@ -32,7 +32,6 @@
         <title>All Listings</title>
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-    <script src="js/assignmentUser.js"></script>
     <body class="body1" >
         <div id="navbar"></div>
                     
@@ -150,18 +149,33 @@
         <script> var user = "meep"; console.log(user);</script>
         need edit scrips
         <!-- <script src="./js/homeui.js"></script> -->
-        <script>
+<script>
 
+function deleteit(assignment_ID) {
+    response =
+    fetch('http://localhost:5001/deleteAssignment/' + assignment_ID,
+    {method: "DELETE"})
+    .then(response =>response.json())
+    .then(data => {
+      console.log("oof");
+      console.log(":ehhh");
+      console.log(data.data);
+      if (data.code !== 200) {
+          // no book in db
+          this.message = data.message;
+      } else {
+        this.message += data.status;
+      }
+    })
+    .catch(error => {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        console.log(this.message + error);
+    });
+  }
 
-          $( ".target" ).change(function() {
-          //alert( "Now option is at Primary" );
           
-          });
-          $( ".target2" ).change(function() {
-          //alert( "Now option is at Secondary" );
-          });
-          
-        </script>
+</script>
         <script>
             
             var username  = 'meep';
@@ -495,7 +509,7 @@
           //                 console.log(this.message + error);
           //             });
           //           }
-          $('table').on('click', 'input[type="button"]', function(e){
+          $('#table_69').on('click', 'input[type="button"]', function(e){
           $(this).closest('tr').remove()
           })
           </script>

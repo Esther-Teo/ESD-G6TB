@@ -39,7 +39,7 @@
             <div id="pending">
                 
                 <div class ="container" id="loadOffers">
-                    <span style="color:black" v-html="headers"></span>
+                    <!-- <span style="color:black" v-html="headers"></span> -->
                        
                 </div>
             </div>
@@ -63,8 +63,34 @@
         </script>
 
         <script> var user = "idk"; console.log(user);</script>
-        need edit scrips
-        <!-- <script src="./js/homeui.js"></script> -->
+
+<script>
+    var delete_child_URL = "http://localhost:5001/deleteOffer/";
+function deleteit(assignment_ID, tutorId) {
+    alert(tutorId)
+    response =
+    fetch(delete_child_URL + `${assignment_ID}/${tutorId}`,
+    {method: "DELETE"})
+    .then(response =>response.json())
+    .then(data => {
+        console.log("oof");
+        console.log(":ehhh");
+        console.log(data.data);
+        if (data.code !== 200) {
+            // no book in db
+            message = data.message;
+        } else {
+            message += data.status;
+        }
+    })
+    .catch(error => {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        console.log(this.message + error);
+    });
+  }
+</script>
+
         
         <script>
 
@@ -102,7 +128,7 @@
                                 .then(response => response.json())
                                 .then(data => {
                                     console.log(response);
-                                    console.log("meep");
+                                    console.log("meepy");
                                     // console.log(data)
                                     if (data.code === 404) {
                                         // no book in db
@@ -113,7 +139,7 @@
                                         for (each of data.data){
                                             alert(each.childName);
                                             document.getElementById("loadOffers").innerHTML += `
-                                            <div style="color: black;text-align: center;" id="${each.childName}"><h3>${each.childName}</h3></div>
+                                            <div class="card-deck" style="color: black;text-align: center;" id="${each.childName}"><h3>${each.childName}</h3></div>
                                             `
                                         }
                                     }
@@ -127,6 +153,7 @@
                     },
                     getAllOffers: function() {
                         // on Vue instance created, load the book list
+                        document.get
                         const response =
                             fetch(get_all_URL+`/${this.userID}`)
                                 .then(response => response.json())
@@ -137,30 +164,52 @@
                                     if (huh.code === 400) {
                                         // no book in db
                                         message = huh.message;
+                                        
                                     } else {
-                                        allElse = ""
-                                        html = ""
-                                        var counter = 1;
-                                        for (each in huh.offers) {
+                                        for (each of huh.message) {
+                                            alert("making me work alone, fking sad :( pls buy me ice cold drinks, thanks");
+                                            console.log("checkmate, bitch");
+                                            console.log(each[0].childName);
                                             //console.log(huh.offers[each])
-                                            offer = huh.offers[each]
-                                            //alert(offer.status)
-                                            //alert(offer.tutorName)
-                                            var card_tutorname = offer.tutorName;
+                                            card_status = each[1].status;
+                                            alert(card_status)
+                                            if (card_status==="pending") {
+                                                childName = each[0].childName;
+                                                card_primary = each[0].primary;
+                                                if (card_primary) {
+                                                    card_primary = "Primary"
+                                                } else {
+                                                    card_primary = "Secondary"
+                                                }
+                                                card_level = each[0].level;
+                                                card_subject = each[0].subject
+                                                var card_tutorname = each[1].tutorName;
+                                                var tutorId = each[1].tutorID;
+                                                var card_preferredDay = each[1].preferredDay;
+                                                var card_time = each[1].selectedTime;
+                                                var card_price = each[1].expectedPrice;
+                                                var assignmentID = each[1].assignmentId;
+                                                // offer = huh.offers[each]
+                                                //alert(offer.status)
+                                                //alert(offer.tutorName)
+                                                
                                                 //alert(offer.tutorname)
-                                                var card_preferredDay = offer.preferredDay;
-                                                var card_time = offer.selectedTime;
-                                                var card_price = offer.expectedPrice;
-                                                var assignmentID = offer.assignmentId;
+                                                
                                                 //alert(assignmentID);
-                                                document.getElementById("loadOffers").innerHTML += `
+                                                document.getElementById(childName).innerHTML += `
                                                  <div class="card border-secondary mb-3" style="max-width: 18rem;">
                                                 <div class="card-header text-dark" >`+card_tutorname+`</div>
                                                 <div class="card-body text-secondary">
                                                 <h5 class="card-title">${card_preferredDay} @ ${card_time} for $${card_price}/hr</h5>
-                                                <p class="card-text" id="${counter}"></p>
+                                                 <p class="card-text">${card_primary} ${card_level} ${card_subject}</p>
+                                                 </div>
+                                                 <div class="card-footer">
+                                                 <button type="button" class="btn btn-outline-success">Accept</button>
+                                                 <button type="button" onclick="deleteit(${assignmentID}, ${tutorId})" class="btn btn-outline-danger">Decline</button>
                                                 </div>
-                                                </div>`
+                                                </div>`;
+                                            }
+                                            
                                                 
                                                 }
                                             }
@@ -296,15 +345,9 @@
         </script>
         
         <script>
-            function acceptFunction(w) {
-            alert("Offer has been accepted!");
-            var q = w.parentNode.parentNode.rowIndex;
-            document.getElementById("myTable").deleteRow(q);
-            }
-            function deleteRow(r) {
-                var i = r.parentNode.parentNode.rowIndex;
-                document.getElementById("myTable").deleteRow(i);
-            }
+          $('#loadOffers').on('click', 'input[type="button"]', function(e){
+          $(this).closest('tr').remove()
+          })
         </script>
     
     </body>
