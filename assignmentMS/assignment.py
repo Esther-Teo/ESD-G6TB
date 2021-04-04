@@ -1,8 +1,15 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, session
 from os import environ
 from flask_cors import CORS
+import json
+
+
+# Session = sessionmaker(bind = engine)
+# session = Session()
+
+
 
 app = Flask(__name__)
 
@@ -89,6 +96,29 @@ class Offer(db.Model):
 def get_all():
     return jsonify({"assignments": [assignment.json() for assignment in Assignment.query.all()]})
 
+@app.route("/test/<int:userId>", methods=["GET"])
+def tryout(userId):
+    try:
+        print(userId)
+        test = db.session.query(Assignment, Offer).outerjoin(Offer, Assignment.assignmentId == Offer.assignmentId).filter(Assignment.userID==userId, Offer.userID==userId)
+
+        if test:
+            data = []
+            real = []
+            for each in test:
+                for d in each:
+                    data.append(d.json())
+                    print(d.json())
+                # data['assignments']= each.json()
+                real.append(data)
+                data=[]
+            print(data)
+            # return jsonify({"assignments": data})
+            return jsonify({"message": real}),200
+            # return jsonify({"assignments": [assignment.json() for assignment in test[0]]})
+    except Exception as e:
+        return jsonify({"message": "Assignment had a problem fetching" + str(e)}), 500
+        
 # GET for viewing one assignment only
 @app.route("/assignmentById/<int:assignmentId>")
 def find_by_assignmentId(assignmentId):

@@ -68,7 +68,7 @@
         
         <script>
 
-            var get_all_URL = "http://localhost:5001/offerByUser";
+            var get_all_URL = "http://localhost:5001/test";
             // var place_order_URL = "http://localhost:5100/place_order";
             var app = new Vue({
                 el: "#app",
@@ -161,35 +161,14 @@
                                                 <p class="card-text" id="${counter}"></p>
                                                 </div>
                                                 </div>`
-                                            if (offer.status === "pending") {
-                                                alert(counter)
-                                                fetch("http://localhost:5001/assignmentById/"+assignmentID)
-                                                .then(response => response.json())
-                                                .then(plswork => {
-                                                    var card_level = plswork.level;
-                                                    var card_subject = plswork.subject;
-                                                    // alert(card_level);
-                                                    // alert(card_subject);
-                                                    if (plswork.primary){
-                                                        var card_primary = "Primary ";
-                                                    }
-                                                    else {
-                                                        var card_primary = "Secondary ";
-                                                    }
-                                                    var final = card_primary + card_level + card_subject;
-                                                alert(final);
-                                                document.getElementById(counter).innerHTML += `
-                                                <p class="card-text">${card_primary} ${card_level} ${card_subject}</p>
-                                                `;
-                                                // document.getElementById(plswork.childName).innerHTML += html;
-                                                })
+                                                
+                                                }
                                             }
-                                        }  
+                                        })  
                                         // alert(counter);
                                         // console.log(counter);
-                                        }
                                         // document.getElementById("offerTable").innerHTML = html
-                                    })
+
                                 
                                 .catch(error => {
                                     // Errors when calling the service; such as network error, 
