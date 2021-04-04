@@ -200,22 +200,22 @@ def delete_assignment(assignmentId):
 # add new user using POST 
 @app.route("/createOffer", methods=['POST'])
 def add_offer():
-    data = request.get_json()
-    print(data)
-    assignmentId = data['assignmentId']
-    tutorID = data['tutorID']
-    if (Offer.query.filter_by(assignmentId=assignmentId, tutorID=tutorID).first()):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "tutorID": tutorID
-                },
-                "message": "Tutor has already created an offer for this assignment."
-            }
-        ), 400
-    offer = Offer(**data)
     try:
+        data = request.get_json()
+        print(data)
+        assignmentId = data['assignmentId']
+        tutorID = data['tutorID']
+        if (Offer.query.filter_by(assignmentId=assignmentId, tutorID=tutorID).first()):
+            return jsonify(
+                {
+                    "code": 400,
+                    "data": {
+                        "tutorID": tutorID
+                    },
+                    "message": "Tutor has already created an offer for this assignment."
+                }
+            ), 400
+        offer = Offer(**data)
         
         db.session.add(offer)
         db.session.commit()
@@ -224,7 +224,7 @@ def add_offer():
             {
                 "code": 500,
                 "data": {
-                    "userID": userID
+                    "tutorID": tutorID
                 },
                 "message": "An error occurred creating the User." + str(e)
             }

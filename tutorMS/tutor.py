@@ -23,14 +23,14 @@ class Tutor(db.Model):
     portfolio = db.Column(db.Text(1000))
     priceRange = db.Column(db.INTEGER, nullable=False)
 
-    def __init__(self, tutorId, tutorName, tutorEmail, passw, tutorPhone, loc, portfolio, priceRange):
+    def __init__(self, tutorId, tutorName, tutorEmail, passw, tutorPhone, loc, priceRange):
         self.tutorId = tutorId
         self.tutorName = tutorName
         self.tutorEmail = tutorEmail
         self.passw = passw
         self.tutorPhone = tutorPhone
         self.loc = loc
-        self.portfolio = portfolio
+        self.portfolio = "Tutor has not fixed their bi-ooooo :("
         self.priceRange = priceRange
 
     def json(self):
@@ -40,8 +40,7 @@ class Tutor(db.Model):
             "tutorEmail": self.tutorEmail, 
             "passw": self.passw, 
             "tutorPhone": self.tutorPhone, 
-            "loc": self.loc, 
-            "portfolio": self.portfolio, 
+            "loc": self.loc,
             "priceRange": self.priceRange
             }
 
