@@ -73,34 +73,39 @@ class Child(db.Model):
 # GET all Users 
 @app.route("/user")
 def get_all_users():
-    userList = User.query.all()
-    if len(userList):
+    try:
+        userList = User.query.all()
+        if len(userList):
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "users": [user.json() for user in userList]
+                    }
+                }
+            )
+    except Exception as e:
         return jsonify(
             {
-                "code": 200,
-                "data": {
-                    "users": [user.json() for user in userList]
-                }
+                "code": 404,
+                "message": "There are no users." + str(e)
             }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are no users."
-        }
-    ), 404
+        ), 404
 
 # GET User Details By UserID 
 @app.route("/user/<string:userID>")
 def find_by_UserID(userID):
-    userList = User.query.filter_by(userID=userID).first()
-    if userList:
-        return jsonify(userList.json())
-    return jsonify({"message": "User is not found."}), 404
+    try: 
+        userList = User.query.filter_by(userID=userID).first()
+        if userList:
+            return jsonify(userList.json())
+    except Exception as e:
+        return jsonify({"message": "User is not found." + str(e)}), 404
 
 # add new user using POST 
 @app.route("/createUser", methods=['POST'])
 def add_user():
+
     data = request.get_json()
     userID = data.userID
     if (User.query.filter_by(userID=userID).first()):
@@ -225,20 +230,7 @@ def find_child_by_user(userID):
         # print(childList)
         # res = {}
         if childList:
-        #     print('check')
-        #     for child in childList:
-        #         childName = child.childName
-        #         meeps = find_by_ChildID(userID,childName)
-        #         print("where is it")
-        #         meep = make_response(meeps,200)
-        #         print(meep)
-                # if (ChildSubjects.query.filter_by(userID = userID, childName=childName).all()):
-                #     subList = ChildSubjects.query.filter_by(userID = userID, childName=childName).all()
-                #     for subj in subList:
-                #         subjects.append(subj)
-            #     res.childName = meep
-            # # print(subjects)
-            # print(res)
+
             # return res
             return jsonify(
                 {
