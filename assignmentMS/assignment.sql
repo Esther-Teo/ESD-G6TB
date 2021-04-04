@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS `offer` (
 
 INSERT INTO `assignment` (`assignmentId`, `userID`, `childName`, `primary`, `level`, `subject`, `expectedPrice`, `preferredDay`) VALUES
 (1, 1, "meep",1, 2, 'Math', '6.50', "friday"),
+(7, 1, "zaikia", 0, 2, 'A_Math', '6.50', "friday"),
 (2, 2, "oof",1, 4, 'Math', '6.50', "tuesday"),
 (3, 2, "lostcause", 0, 3, 'Math', '6.50', "Sunday"),
 (4, 4, "prettyBaby", 1, 6, 'Eng', '6.50', "Someday"),
@@ -83,6 +84,11 @@ COMMIT;
 
 INSERT INTO `offer` (`assignmentId`, `userID`, `tutorID`, `tutorName`, `status`, `selectedTime`, `expectedPrice`, `preferredDay`) VALUES
 (1, 1, 1, "Bob", 'pending', 1500, 7, "Fri"),
+(1, 1, 2, "Tom", 'pending', 1200, 7, "Mon"),
+(7, 1, 3, "Sue", 'pending', 0800, 7, "Fri"),
+(1, 1, 4, "Mary", 'pending', 1900, 7, "Wed"),
+(7, 1, 4, "Mary", 'pending', 1900, 7, "Wed"),
+(1, 1, 4, "Mary", 'pending', 1900, 7, "Wed"),
 (2, 2, 2, "Tom", 'accepted', 0900, 6.5, "Sun"),
 (1, 1, 3, "Sue", 'rejected', 2000, 6.5, "Sat"),
 (3, 2, 4, "Mary", 'pending', 1900, 7, "Mon"),
