@@ -68,16 +68,6 @@ CREATE TABLE IF NOT EXISTS child (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- create a table for child's subjects 
-DROP TABLE IF EXISTS childSubjects;
-CREATE TABLE IF NOT EXISTS childSubjects (
-  userID BIGINT NOT NULL,
-  childName VARCHAR(20) NOT NULL,
-  subjects VARCHAR(100) NOT NULL,
-  PRIMARY KEY (userID, childName, subjects),
-  CONSTRAINT FK_userID2 FOREIGN KEY (userID, childName)
-    REFERENCES child(userID, childName)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table child
 --
@@ -94,21 +84,6 @@ INSERT INTO child (userID, childName, school, pri, lvl) VALUES
 ('5', 'yourmom','Anderson Secondary School', False, '2');
 COMMIT;
 
-
-INSERT INTO childSubjects (userID, childName, subjects) VALUES
-('1', 'meep', 'Mathematics'),
-('1', 'meep', 'English'),
-('1', 'zaikia', 'Additional Mathematics'),
-('1', 'zaikia',  'History'),
-('2', 'oof','Chemistry'),
-('2', 'lostcause', 'Chinese'),
-('3', 'helpsLah', 'Science'),
-('3', 'helpsLah',  'Mathematics'),
-('3', 'helpsLah', 'English'),
-('4', 'prettyBaby', 'Tamil'),
-('4', 'prettyBaby', 'Science'),
-('5', 'yourmom', 'Physics');
-COMMIT;
 
 
 

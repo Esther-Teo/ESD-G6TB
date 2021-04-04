@@ -69,29 +69,6 @@ class Child(db.Model):
         for cs in self.childSubjects:
             res['subjects'].append(cs.json())
 
-class ChildSubjects(db.Model):
-    __tablename__ = 'childSubjects'
-
-    userID = db.Column(db.Integer, db.ForeignKey('child.userID', ondelete="CASCADE"), primary_key=True)
-    childName = db.Column(db.String(20), db.ForeignKey('child.childName', ondelete="CASCADE"), primary_key=True)
-    subjects = db.Column(db.String(100), primary_key=True)
-    # child = relationship('Child', backref='childSubjects')
-    children = db.relationship(
-    'Child', primaryjoin="and_(Child.userID==ChildSubjects.userID, "
-                        "Child.childName==ChildSubjects.childName)")
-
-    def __init__(self, userID, childName, subjects):
-        self.userID = userID
-        self.childName = childName
-        self.subjects = subjects
-
-    def json(self):
-        return{
-            "userID":self.userID,
-            "childName": self.childName,
-            "subjects": self.subjects
-        }
-    
 
 # GET all Users 
 @app.route("/user")
@@ -281,22 +258,16 @@ def find_child_by_user(userID):
             }
         ), 404
 
-# GET Child Details using userid and childName (includes subjects)
+# GET Child Details using userid and childName
 @app.route("/seeChild/<int:userID>/<string:childName>")
 def find_by_ChildID(userID,childName):
     try:
-        subList = []
         childList = Child.query.filter_by(userID = userID, childName = childName).first()
-        subject = ChildSubjects.query.filter_by(userID = userID, childName = childName).all()
         if childList:
-            for sub in subject:
-                subList.append(sub.subjects)
-                print(sub.subjects)
             return jsonify(
                 {
                     "code": 200,
-                    "childData": childList.json(),
-                    "subjectData": subList
+                    "childData": childList.json()
                 }
             )
     except Exception as e:
@@ -326,10 +297,8 @@ def create_Child(userID):
             }
         ), 400
     child = Child(userID, data['childName'], data['school'], data['pri'], data['lvl'])
-    subject = ChildSubjects(userID, data['childName'], data['subjects'])
     try:
         db.session.add(child)
-        db.session.add(subject)
         db.session.commit()
     except:
         return jsonify(
@@ -425,8 +394,4 @@ def delete_child(userID, childName):
 
 if __name__ =="__main__":
     app.run(host='0.0.0.0', port=5004, debug=True)
-
-
-
-
 
