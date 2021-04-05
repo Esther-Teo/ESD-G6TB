@@ -83,7 +83,7 @@ COMMIT;
 -- Dumping data for table `offer`
 --
 
-INSERT INTO `offer` (`assignmentId`, `userID`, `tutorID`, `tutorName`, `tutorEnail`, `status`, `selectedTime`, `expectedPrice`, `preferredDay`) VALUES
+INSERT INTO `offer` (`assignmentId`, `userID`, `tutorID`, `tutorName`, `tutorEmail`, `status`, `selectedTime`, `expectedPrice`, `preferredDay`) VALUES
 (1, 1, 1, "Bob", "bob@gmail.com", 'pending', 1500, 7, "Fri"),
 (1, 1, 2, "Tom", "bob@gmail.com", 'pending', 1200, 7, "Mon"),
 (1, 1, 4, "Mary", "bob@gmail.com", 'pending', 1900, 7, "Wed"),
