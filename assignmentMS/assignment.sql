@@ -84,25 +84,25 @@ COMMIT;
 --
 
 INSERT INTO `offer` (`assignmentId`, `userID`, `tutorID`, `tutorName`,`tutorEmail`, `status`, `selectedTime`, `expectedPrice`, `preferredDay`) VALUES
-(1, 1, 1, "Bob", 'pending', 1500, 7, "Fri"),
-(7, 1, 13, "Bob", 'pending', 1500, 7, "Fri"),
-(7, 1, 12, "Bob", 'pending', 1500, 7, "Fri"),
-(7, 1, 11, "Bob", 'pending', 1500, 7, "Fri"),
-(7, 1, 10, "Bob", 'pending', 1500, 7, "Fri"),
-(7, 1, 1, "Bob", 'pending', 1500, 7, "Fri"),
-(7, 1, 5, "Jane", 'pending', 1500, 7, "Fri"),
-(7, 1, 2, "Tom", 'pending', 1500, 7, "Fri"),
-(1, 1, 2, "Tom", 'pending', 1200, 7, "Mon"),
-(1, 1, 21, "Tom", 'pending', 1200, 7, "Mon"),
-(1, 1, 22, "Tom", 'pending', 1200, 7, "Mon"),
-(1, 1, 4, "Mary", 'pending', 1900, 7, "Wed"),
-(1, 1, 5, "Jane", 'accepted', 1900, 7, "Wed"),
-(7, 1, 3, "Sue", 'accepted', 0800, 7, "Fri"),
-(7, 1, 4, "Mary", 'pending', 1900, 7, "Wed"),
-(2, 2, 2, "Tom", 'accepted', 0900, 6.5, "Sun"),
-(1, 1, 3, "Sue", 'rejected', 2000, 6.5, "Sat"),
-(3, 2, 4, "Mary", 'pending', 1900, 7, "Mon"),
-(2, 2, 5, "Jane", 'rejected', 1500, 8, "Tue");
+(1, 1, 1, "Bob", 'oh@gmail.com','pending', 1500, 7, "Fri"),
+(7, 1, 13, "Bob", 'oh@gmail.com','pending', 1500, 7, "Fri"),
+(7, 1, 12, "Bob", 'oh@gmail.com','pending', 1500, 7, "Fri"),
+(7, 1, 11, "Bob", 'oh@gmail.com','pending', 1500, 7, "Fri"),
+(7, 1, 10, "Bob", 'oh@gmail.com','pending', 1500, 7, "Fri"),
+(7, 1, 1, "Bob", 'oh@gmail.com','pending', 1500, 7, "Fri"),
+(7, 1, 5, "Jane", 'oh@gmail.com','pending', 1500, 7, "Fri"),
+(7, 1, 2, "Tom", 'oh@gmail.com','pending', 1500, 7, "Fri"),
+(1, 1, 2, "Tom", 'oh@gmail.com','pending', 1200, 7, "Mon"),
+(1, 1, 21, "Tom", 'oh@gmail.com','pending', 1200, 7, "Mon"),
+(1, 1, 22, "Tom", 'oh@gmail.com','pending', 1200, 7, "Mon"),
+(1, 1, 4, "Mary", 'oh@gmail.com','pending', 1900, 7, "Wed"),
+(1, 1, 5, "Jane", 'oh@gmail.com','accepted', 1900, 7, "Wed"),
+(7, 1, 3, "Sue", 'oh@gmail.com','accepted', 0800, 7, "Fri"),
+(7, 1, 4, "Mary", 'oh@gmail.com','pending', 1900, 7, "Wed"),
+(2, 2, 2, "Tom", 'oh@gmail.com','accepted', 0900, 6.5, "Sun"),
+(1, 1, 3, "Sue", 'oh@gmail.com','rejected', 2000, 6.5, "Sat"),
+(3, 2, 4, "Mary", 'oh@gmail.com','pending', 1900, 7, "Mon"),
+(2, 2, 5, "Jane", 'oh@gmail.com','rejected', 1500, 8, "Tue");
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
