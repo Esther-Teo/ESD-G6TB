@@ -66,12 +66,48 @@
   </body>
 
   <script>
+    // GET PRICE FROM URL 
+    
+
+
+
+
+    var current_appended_url= window.location.search; 
+    
+
+    function parse_query_string(query) {
+        var vars = query.split("&");
+        var query_string = {};
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            var key = decodeURIComponent(pair[0]);
+            var value = decodeURIComponent(pair[1]);
+            // If first entry with this name
+            if (typeof query_string[key] === "undefined") {
+            query_string[key] = decodeURIComponent(value);
+            // If second entry with this name
+            } else if (typeof query_string[key] === "string") {
+            var arr = [query_string[key], decodeURIComponent(value)];
+            query_string[key] = arr;
+            // If third or later entry with this name
+            } else {
+            query_string[key].push(decodeURIComponent(value));
+            }
+        }
+        return query_string;
+        }
+        
+    var price_obj=parse_query_string(current_appended_url);
+    var price_per_hour= price_obj["?price"];
+    price_per_hour= (price_per_hour) * 100
+    console.log(price_per_hour);
+
     // var stripe = Stripe('pk_test_51Ib4VfBvhmRsAY8LWdqkxz5jziPQ1YmxCjuFHuQCaJyMNjoJSipniNaC1lh9ZocTLnpaxVWwgKkFSeX76ACHNqZP007ogKEoHo');
     var paymentForm = document.getElementById("payment-form");
     var paymentIntentData = {
     // You might send a list of items the customer is purchasing so that you can compute
     // the price on the server.
-    items: [{ id: "private_tuition"}],
+    items: [{ id: "private_tuition", amount : price_per_hour}],
     currency: "sgd"
     };
 
@@ -178,9 +214,15 @@
     stripe.retrievePaymentIntent(clientSecret).then(function(result) {
         var paymentIntent = result.paymentIntent;
         var paymentIntentJson = JSON.stringify(paymentIntent, null, 2);
-
+        
+ 
+     
         document.querySelector(".sr-payment-form").classList.add("hidden");
-        document.querySelector("pre").textContent = paymentIntentJson;
+        // console.log(paymentIntentJson);
+        // document.querySelector("pre").textContent = paymentIntentJson;
+        document.querySelector("pre").textContent = paymentIntent.status;
+        
+
 
         document.querySelector(".sr-result").classList.remove("hidden");
         setTimeout(function() {
@@ -188,6 +230,13 @@
         }, 200);
 
         changeLoadingState(false);
+
+        if(paymentIntent.status=="succeeded"){
+            setTimeout(function(){
+                window.location="http://localhost:5000/app/templates/payment.html";
+             }, 3000);
+            
+        }
     });
     };
 

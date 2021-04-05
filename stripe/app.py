@@ -129,7 +129,7 @@ def _generate_account_link(account_id, origin):
 
 # Start of Connect Pay 
 # this is for parents to pay the tutors
-@app.route('/connect_pay.html')
+@app.route('/connect_pay.html', methods=['GET'])
 def connect_pay():
     return render_template('connect_pay.html')
 
@@ -138,10 +138,15 @@ def calculate_order_amount(items):
     # Replace this constant with a calculation of the order's amount
     # Calculate the order total on the server to prevent
     # people from directly manipulating the amount on the client
-    print(items)
-    #from json file but hardcoded first to $65
+    # print(items)
 
-    return 6500
+    #from json file but hardcoded first to $65
+    # [{'id': 'private_tuition', 'amount': 700}]
+    charge_per_hour=items[0]["amount"]
+    # multiply by 3 hours 
+    charge_per_hour = charge_per_hour * 3 
+    print(charge_per_hour)
+    return charge_per_hour
 
 
 def calculate_application_fee_amount(amount):

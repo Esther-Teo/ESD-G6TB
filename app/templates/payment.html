@@ -67,8 +67,7 @@
         </script>
         <script>
 
-            var username  = '<?php echo $user;?>';
-            console.log(user)
+    
 
             var get_all_URL = "http://localhost:5001/test";
             // var place_order_URL = "http://localhost:5100/place_order";
@@ -96,6 +95,7 @@
                     creationSuccessful: false,
                 },
                 methods: {
+                    //@soonnzzzzzzzz functionto populate the cards starts here
                     getAllAssignments: function () {
                         // on Vue instance created, load the book list
                         const response =
@@ -111,11 +111,11 @@
                                         
                                     } else {
                                         for (each of huh.message) {
-                                            console.log("checkmate, bitch");
+                                  
                                             console.log(each[0].childName);
                                             //console.log(huh.offers[each])
                                             card_status = each[1].status;
-                                            alert(card_status)
+                                            // alert(card_status)
                                             if (card_status==="accepted") {
                                                 childName = each[0].childName;
                                                 card_primary = each[0].primary;
@@ -138,7 +138,7 @@
                                                 
                                                 //alert(offer.tutorname)
                                                 
-                                                //alert(assignmentID);
+                                                //ADD EVENT LISTENER STRIPE CALL HERE 
                                                 document.getElementById("cardsss").innerHTML += `
                                                  <div class="card border-secondary mb-3" style="max-width: 18rem;">
                                                 <div class="card-header text-dark" >`+card_tutorname+`</div>
@@ -147,7 +147,7 @@
                                                  <p class="card-text">${card_primary} ${card_level} ${card_subject}</p>
                                                  </div>
                                                  <div class="card-footer">
-                                                 <button type="button" onclick="deleteit(${assignmentID}, ${tutorId})" class="btn btn-outline-info">Make Payment</button>
+                                                 <button type="button" onclick="stripe_redirect(${assignmentID}, ${tutorId}, ${card_price})" class="btn btn-outline-info">Make Payment</button>
                                                 </div>
                                                 </div>`;
                                             }
@@ -218,6 +218,20 @@
                     this.getAllAssignments();
                 }
             });
+            // can be used on localhost 5000
+            test_url="http://localhost:5000/connect_pay.html"
+            default_url="http://127.0.0.1:5000/connect_pay.html"
+            function stripe_redirect(assignmentID, tutorId, card_price){
+                console.log(assignmentID,tutorId,card_price)
+                // pass price to stripe 
+
+                
+                window.location=test_url + "?"+"price="+ card_price;
+
+                
+
+            }
+        
         </script>
     
     </body>
