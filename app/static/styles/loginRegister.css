@@ -84,13 +84,13 @@
 
 
 .image-container{
-    background: url('../images/bookRegister.jpg') center no-repeat;
+    background: url('../../images/bookRegister.jpg') center no-repeat;
     background-size: cover;
     height: 100vh;
 }
 
 .image-container1{
-    background: url('../images/loginBg.jpg') center no-repeat;
+    background: url('../../images/loginBg.jpg') center no-repeat;
     background-size: cover;
     height: 100vh;
 }

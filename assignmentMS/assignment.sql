@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `offer` (
   `status` VARCHAR(20) NOT NULL,
   `selectedTime` INT NOT NULL,
   `expectedPrice` decimal(5,2) NOT NULL,
-  `preferredDay` varchar(3) NOT NULL,
+  `preferredDay` varchar(3) NOT NULL,local
   PRIMARY KEY (`assignmentId`, `tutorID`),
   CONSTRAINT FK_assignementId FOREIGN KEY (`assignmentId`)
   REFERENCES assignment(`assignmentId`)

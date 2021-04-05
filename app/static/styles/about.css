@@ -25,7 +25,7 @@ h1:after
 
 .banner{
     height: 100vh;
-    background: url("../images/aboutUs1.jpg") rgba(0,0,0,0.5)  no-repeat center top ;
+    background: url("../../images/aboutUs1.jpg") rgba(0,0,0,0.5)  no-repeat center top ;
     background-size: cover;
     position: relative;
 }

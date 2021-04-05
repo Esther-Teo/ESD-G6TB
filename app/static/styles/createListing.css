@@ -7,7 +7,7 @@
 
 .body1{
     background: #000;
-    background-image: linear-gradient( rgba(32, 31, 31, 0.632), rgba(27, 27, 27, 0.802)), url(../images/createListing.jpg) ;
+    background-image: linear-gradient( rgba(32, 31, 31, 0.632), rgba(27, 27, 27, 0.802)), url(../../images/createListing.jpg) ;
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
