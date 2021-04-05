@@ -60,8 +60,7 @@ class Offer(db.Model):
     assignmentId = db.Column(db.Integer, db.ForeignKey('assignment.assignmentId', ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
     userID = db.Column(db.Integer, nullable=False)
     tutorID = db.Column(db.Integer, primary_key=True)
-    tutorName = db.Column(db.String(40), nullable=False)
-    tutorEmail = db.Column(db.String(40), nullable=False)
+    tutorName = db.Column(db.String(90), nullable=False)
     status = db.Column(db.String(6), nullable=False)
     selectedTime = db.Column(db.Integer, nullable=False)
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
@@ -69,12 +68,11 @@ class Offer(db.Model):
     assignment = db.relationship(
     'Assignment', primaryjoin='Offer.assignmentId == Assignment.assignmentId', backref='offer')
  
-    def __init__(self, assignmentId, userID, tutorID, tutorName, tutorEmail, status, selectedTime, expectedPrice, preferredDay):
+    def __init__(self, assignmentId, userID, tutorID, tutorName, status, selectedTime, expectedPrice, preferredDay):
         self.assignmentId = assignmentId
         self.userID = userID
         self.tutorID = tutorID
         self.tutorName = tutorName
-        self.tutorEmail = tutorEmail
         self.status = status
         self.selectedTime = selectedTime
         self.expectedPrice = expectedPrice
@@ -86,7 +84,6 @@ class Offer(db.Model):
             "userID": self.userID,
             "tutorID": self.tutorID, 
             "tutorName": self.tutorName,
-            "tutorEmail": self.tutorEmail,
             "status": self.status, 
             "selectedTime": self.selectedTime, 
             "expectedPrice": self.expectedPrice, 
