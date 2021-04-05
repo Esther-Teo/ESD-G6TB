@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS `offer` (
   `userID` INT NOT NULL,
   `tutorID` INT NOT NULL,
   `tutorName` VARCHAR(40) NOT NULL,
+  `tutorEmail` VARCHAR(40) NOT NULL,
   `status` VARCHAR(20) NOT NULL,
   `selectedTime` INT NOT NULL,
   `expectedPrice` decimal(5,2) NOT NULL,
