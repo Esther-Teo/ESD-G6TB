@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
     session_start();
     if ( !isset($_SESSION["userName"]) ) {
       $user = 'no';
@@ -7,9 +7,9 @@
     else{
         $user = $_SESSION["userName"];
     }
-?>
+?> -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-light" id="test1">
-        <a class="navbar-brand" href="index.html">Welcome <?php echo $user ?></a>
+        <a class="navbar-brand" href="index.html">Welcome User</a>
         <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon" style="color: white;"></span>
         </button> -->
@@ -19,13 +19,13 @@
               <button type="button" class="btn btn-linkNav" style="margin-top: 15px; padding-top:12px;" onclick="toggleSearch()"></button>
             </li> -->
             <li class="nav-item active">
-              <a class="nav-link" href="dashboardUser.html">Home</a>
+              <a class="nav-link" href="wip.html">Home</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="assignmentUser.html">Assignments</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="userProfile.html">Profile</a>
+              <a class="nav-link" href="wip.html">Profile</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="offerUser.html">Offer</a>
@@ -33,7 +33,7 @@
             <li class="nav-item">
               <a class="nav-link" href="payment.html">Payment</a>
             </li>
-        <?php 
+        <!-- <?php 
           //Displays different buttons depending on user session status (whether user is logged in or not)
           if ( !isset($_SESSION["user"]) ) {
             echo "
@@ -55,7 +55,7 @@
             </li>
             ";
           }
-        ?>
+        ?> -->
   
             
           </ul>
