@@ -81,7 +81,7 @@ def get_all():
 
 
 
-@app.route("/tutorById/<int:tutorId>")
+@app.route("/tutor/<int:tutorId>",methods=['GET'])
 def find_by_tutorId(tutorId):
     try:
         tutorList = Tutor.query.filter_by(tutorId = tutorId).first()
