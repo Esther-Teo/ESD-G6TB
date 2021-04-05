@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS `offer` (
   `userID` INT NOT NULL,
   `tutorID` INT NOT NULL,
   `tutorName` VARCHAR(40) NOT NULL,
+  `tutorEmail` VARCHAR(40) NOT NULL,
   `status` VARCHAR(20) NOT NULL,
   `selectedTime` INT NOT NULL,
   `expectedPrice` decimal(5,2) NOT NULL,
@@ -82,7 +83,7 @@ COMMIT;
 -- Dumping data for table `offer`
 --
 
-INSERT INTO `offer` (`assignmentId`, `userID`, `tutorID`, `tutorName`, `status`, `selectedTime`, `expectedPrice`, `preferredDay`) VALUES
+INSERT INTO `offer` (`assignmentId`, `userID`, `tutorID`, `tutorName`,`tutorEmail`, `status`, `selectedTime`, `expectedPrice`, `preferredDay`) VALUES
 (1, 1, 1, "Bob", 'pending', 1500, 7, "Fri"),
 (7, 1, 13, "Bob", 'pending', 1500, 7, "Fri"),
 (7, 1, 12, "Bob", 'pending', 1500, 7, "Fri"),
