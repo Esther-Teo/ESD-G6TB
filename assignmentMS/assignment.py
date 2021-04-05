@@ -69,10 +69,10 @@ class Offer(db.Model):
     assignment = db.relationship(
     'Assignment', primaryjoin='Offer.assignmentId == Assignment.assignmentId', backref='offer')
  
-    def __init__(self, assignmentId, userID, tutorID, tutorName, tutorEmail, status, selectedTime, expectedPrice, preferredDay):
+    def __init__(self, assignmentId, userID, tutorName, tutorEmail, status, selectedTime, expectedPrice, preferredDay):
         self.assignmentId = assignmentId
         self.userID = userID
-        self.tutorID = tutorID
+        self.tutorID = 0
         self.tutorName = tutorName
         self.tutorEmail = tutorEmail
         self.status = status

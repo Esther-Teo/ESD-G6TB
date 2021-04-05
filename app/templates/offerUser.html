@@ -25,128 +25,239 @@
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js">
     </script>
+    <!-- update -->
     <!-- <script src="js/offerUser.js"></script> -->
     <body class="body1" onload="javascript:getAllOffers()">
-        <div id="navbar"></div>
-                    
-    
-        <div class="overlay" id="app">
-            <h1 class='mt-3 header text-center display-4'>Your Offers</h1>
-            <div class='text-center m-2'>
-                <button class="btn btn-primary m-2" type="button" data-toggle="collapse" data-target="#pending">
-                    View Pending Offers!
-                </button>
-                <button class="btn btn-primary m-2 collapsed" type="button" data-toggle="collapse" data-target="#previous">
-                    View Previous Offers!
-                </button>
-            </div>    
-            <div id="pending">
-                
-                <div class ="container" id="loadOffers">
-                    <!-- <span style="color:black" v-html="headers"></span> -->
-                       
-                </div>
-            </div>
-
-            <div id="previous" class="collapse">
-                
-            </div>
-            
-            </br>
-          </br>
-      </br>
-        </div>
-        <script src="//code.jquery.com/jquery.min.js"></script>
-        <script>
-        $.get("navbarUser.html", function(data){
-            $("#navbar").replaceWith(data);
-        });
-        // window.onload = function() {
-        //     yourFunction(param1, param2);
-        // };
-        </script>
-
-        <script> var user = "idk"; console.log(user);</script>
-
-<script>
-    var delete_child_URL = "http://localhost:5001/deleteOffer/";
-function deleteit(assignment_ID, tutorId) {
-    alert(tutorId)
-    response =
-    fetch(delete_child_URL + `${assignment_ID}/${tutorId}`,
-    {method: "DELETE"})
-    .then(response =>response.json())
-    .then(data => {
-        console.log("oof");
-        console.log(":ehhh");
-        console.log(data.data);
-        if (data.code !== 200) {
-            // no book in db
-            message = data.message;
-        } else {
-            message += data.status;
-        }
-    })
-    .catch(error => {
-        // Errors when calling the service; such as network error, 
-        // service offline, etc
-        console.log(this.message + error);
-    });
-  }
-</script>
-
+            <div id="navbar"></div>
+                        
         
-        <script>
-
-            var get_all_URL = "http://localhost:5001/test";
-            // var place_order_URL = "http://localhost:5100/place_order";
-            var app = new Vue({
-                el: "#app",
-                computed: {
-                    hasAssignments: function () {
-                        return this.assignments.length > 0;
-                    }
-                },
-                data: {
-                    userID: 1,
-                    assignments: [],
-                    message: "There is a problem retrieving the assignment data, please try again later.",
-                    names: [],
-                    childName:"",
-                    primary: "",
-                    level: 0,
-                    subject: "",
-                    expectedPrice: "",
-                    preferredDay: [],
-                    children:[],
-                    headers:"",
-                    addAssignmentError: "",
-                    createdAssignment: "",
-                    assignmentCreated: false,
-                    creationSuccessful: false,
-                },
-                methods: {
-                    getChildrenDetails: function() {
-                        const response = 
-                        fetch("http://localhost:5004/child"+`/${this.userID}`)
+            <div class="overlay" id="app">
+                <h1 class='mt-3 header text-center display-4'>Your Offers</h1>
+                <div class='text-center m-2'>
+                    <button class="btn btn-primary m-2" type="button" data-toggle="collapse" data-target="#pending">
+                        View Pending Offers!
+                    </button>
+                    <button class="btn btn-primary m-2 collapsed" type="button" data-toggle="collapse" data-target="#previous">
+                        View Previous Offers!
+                    </button>
+                </div>    
+                <div id="pending">
+                    
+                    <div class ="container" id="loadOffers">
+                        <!-- <span style="color:black" v-html="headers"></span> -->
+                           
+                    </div>
+                </div>
+    
+                <div id="previous" class="collapse">
+                    
+                </div>
+                
+                </br>
+              </br>
+          </br>
+            </div>
+            <script src="//code.jquery.com/jquery.min.js"></script>
+            <script>
+            $.get("navbarUser.html", function(data){
+                $("#navbar").replaceWith(data);
+            });
+            // window.onload = function() {
+            //     yourFunction(param1, param2);
+            // };
+            </script>
+    
+            <script> var user = "idk"; console.log(user);</script>
+    
+    <script>
+        var delete_child_URL = "http://localhost:5001/deleteOffer/";
+        var get_all_URL = "http://localhost:5001/test/";
+        var userID = 1
+    function deleteit(assignment_ID, tutorId) {
+        alert(tutorId)
+        message="";
+        response =
+        fetch(delete_child_URL + `${assignment_ID}/${tutorId}`,
+        {method: "DELETE"})
+        .then(response =>response.json())
+        .then(data => {
+            console.log("oof");
+            console.log(":ehhh");
+            console.log(data);
+            if (data.code !== 200) {
+                // no book in db
+                message = data.message;
+            } else {
+                message += data;
+                location.reload(true);
+            }
+        })
+        .catch(error => {
+            // Errors when calling the service; such as network error, 
+            // service offline, etc
+            console.log(message + error);
+        });
+    }
+    function getAllOffers() {
+        // on Vue instance created, load the book list
+        
+        const response =
+            fetch(get_all_URL+`/${userID}`)
+                .then(response => response.json())
+                .then(huh => {
+                    console.log(response);
+                    console.log("meep");
+                    console.log(huh)
+                    if (huh.code === 400) {
+                        // no book in db
+                        message = huh.message;
+                        
+                    } else {
+                        for (each of huh.message) {
+                            //alert("making me work alone, fking sad :( pls buy me ice cold drinks, thanks");
+                            //console.log("checkmate, bitch");
+                            //console.log(each[0].childName);
+                            //console.log(huh.offers[each])
+                            card_status = each[1].status;
+                            //alert(card_status)
+                            if (card_status==="pending") {
+                                childName = each[0].childName;
+                                card_primary = each[0].primary;
+                                if (card_primary) {
+                                    card_primary = "Primary"
+                                } else {
+                                    card_primary = "Secondary"
+                                }
+                                card_level = each[0].level;
+                                card_subject = each[0].subject
+                                var card_tutorname = each[1].tutorName;
+                                var tutorId = each[1].tutorID;
+                                var card_preferredDay = each[1].preferredDay;
+                                var card_time = each[1].selectedTime;
+                                var card_price = each[1].expectedPrice;
+                                var assignmentID = each[1].assignmentId;
+                                // offer = huh.offers[each]
+                                //alert(offer.status)
+                                //alert(offer.tutorName)
+                                
+                                //alert(offer.tutorname)
+                                
+                                //alert(assignmentID);
+                                var space_below_name = childName;
+                                document.getElementById(childName).innerHTML += `
+                                <div id="card_template">
+                                    <div class="card border-secondary mb-3">
+                                <div class="card-header text-dark" >`+card_tutorname+`</div>
+                                <div class="card-body text-secondary">
+                                <h5 class="card-title">${card_preferredDay} @ ${card_time} for $${card_price}/hr</h5>
+                                    <p class="card-text">${card_primary} ${card_level} ${card_subject}</p>
+                                    </div>
+                                    <div class="card-footer">
+                                    <button type="button" class="btn btn-outline-success">Accept</button>
+                                    <button type="button" onclick="deleteit(${assignmentID}, ${tutorId});" class="btn btn-outline-danger">Decline</button>
+                                </div>
+                                </div>
+                                </div>`;
+                            }    
+                                }
+                            }
+                        })  
+                        // alert(counter);
+                        // console.log(counter);
+                        // document.getElementById("offerTable").innerHTML = html
+    
+                
+                .catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    console.log( error);
+                });
+    
+    }
+    </script>
+    
+            
+            <script>
+    
+                var get_all_URL = "http://localhost:5001/test";
+                // var place_order_URL = "http://localhost:5100/place_order";
+                var app = new Vue({
+                    el: "#app",
+                    computed: {
+                        hasAssignments: function () {
+                            return this.assignments.length > 0;
+                        }
+                    },
+                    data: {
+                        userID: 1,
+                        assignments: [],
+                        message: "There is a problem retrieving the assignment data, please try again later.",
+                        names: [],
+                        childName:"",
+                        primary: "",
+                        level: 0,
+                        subject: "",
+                        expectedPrice: "",
+                        preferredDay: [],
+                        children:[],
+                        headers:"",
+                        addAssignmentError: "",
+                        createdAssignment: "",
+                        assignmentCreated: false,
+                        creationSuccessful: false,
+                    },
+                    methods: {
+                        getChildrenDetails: function() {
+                            document.getElementById("loadOffers").innerHTML = '';
+                            const response = 
+                            fetch("http://localhost:5004/child"+`/${this.userID}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log(response);
+                                        console.log("meepy");
+                                        // console.log(data)
+                                        if (data.code === 404) {
+                                            // no book in db
+                                            this.message = data.message;
+                                        } else {
+                                            // this.subject = data.data.subjects;
+                                            console.log(data)
+                                            for (each of data.data){
+                                                alert(each.childName);
+                                                document.getElementById("loadOffers").innerHTML += `
+                                                <h3  style="color: black;text-align: center;" id="space_below_name">${each.childName}</h3>
+                                                <div class="card-deck" id="${each.childName}"></div>   
+                                                `
+                                            }
+                                        }
+                                    })
+                                    .catch(error => {
+                                        // Errors when calling the service; such as network error, 
+                                        // service offline, etc
+                                        console.log(this.message + error);
+        
+                                    });
+                        },
+                        
+                        updateChildInfo: function() {
+                            const response =
+                            fetch(get_childURL+ `/${this.userID}/${this.childName}`)
                                 .then(response => response.json())
                                 .then(data => {
-                                    console.log(response);
-                                    console.log("meepy");
-                                    // console.log(data)
-                                    if (data.code === 404) {
+                                    console.log(data);
+                                    console.log(":ooooofff");
+                                    // console.log(data.data)
+                                    if (data.code !== 200) {
                                         // no book in db
                                         this.message = data.message;
                                     } else {
-                                        // this.subject = data.data.subjects;
-                                        console.log(data)
-                                        for (each of data.data){
-                                            alert(each.childName);
-                                            document.getElementById("loadOffers").innerHTML += `
-                                            <h3  style="color: black;text-align: center;" id="space_below_name">${each.childName}</h3>
-                                            <div class="card-deck" id="${each.childName}"></div>   
-                                            `
-                                        }
+                                        console.log("pls work, i wna sleep")
+                                        console.log(data.childData.lvl)
+                                      // for (names of data.data) {
+                                        // console.log(names.childName);
+                                        this.level = data.childData.lvl;
+                                        this.primary = data.childData.pri;
+                                      // }
                                     }
                                 })
                                 .catch(error => {
@@ -155,205 +266,90 @@ function deleteit(assignment_ID, tutorId) {
                                     console.log(this.message + error);
     
                                 });
-                    },
-                    getAllOffers: function() {
-                        // on Vue instance created, load the book list
-                        document.get
-                        const response =
-                            fetch(get_all_URL+`/${this.userID}`)
-                                .then(response => response.json())
-                                .then(huh => {
-                                    console.log(response);
-                                    console.log("meep");
-                                    console.log(huh)
-                                    if (huh.code === 400) {
-                                        // no book in db
-                                        message = huh.message;
-                                        
-                                    } else {
-                                        for (each of huh.message) {
-                                            //alert("making me work alone, fking sad :( pls buy me ice cold drinks, thanks");
-                                            //console.log("checkmate, bitch");
-                                            //console.log(each[0].childName);
-                                            //console.log(huh.offers[each])
-                                            card_status = each[1].status;
-                                            //alert(card_status)
-                                            if (card_status==="pending") {
-                                                childName = each[0].childName;
-                                                card_primary = each[0].primary;
-                                                if (card_primary) {
-                                                    card_primary = "Primary"
-                                                } else {
-                                                    card_primary = "Secondary"
-                                                }
-                                                card_level = each[0].level;
-                                                card_subject = each[0].subject
-                                                var card_tutorname = each[1].tutorName;
-                                                var tutorId = each[1].tutorID;
-                                                var card_preferredDay = each[1].preferredDay;
-                                                var card_time = each[1].selectedTime;
-                                                var card_price = each[1].expectedPrice;
-                                                var assignmentID = each[1].assignmentId;
-                                                // offer = huh.offers[each]
-                                                //alert(offer.status)
-                                                //alert(offer.tutorName)
-                                                
-                                                //alert(offer.tutorname)
-                                                
-                                                //alert(assignmentID);
-                                                var space_below_name = childName;
-                                                document.getElementById(childName).innerHTML += `
-                                                <div id="card_template">
-                                                 <div class="card border-secondary mb-3">
-                                                <div class="card-header text-dark" >`+card_tutorname+`</div>
-                                                <div class="card-body text-secondary">
-                                                <h5 class="card-title">${card_preferredDay} @ ${card_time} for $${card_price}/hr</h5>
-                                                 <p class="card-text">${card_primary} ${card_level} ${card_subject}</p>
-                                                 </div>
-                                                 <div class="card-footer">
-                                                 <button type="button" class="btn btn-outline-success">Accept</button>
-                                                 <button type="button" onclick="deleteit(${assignmentID}, ${tutorId})" class="btn btn-outline-danger">Decline</button>
-                                                </div>
-                                                </div>
-                                                </div>`;
-                                            }    
-                                                }
-                                            }
-                                        })  
-                                        // alert(counter);
-                                        // console.log(counter);
-                                        // document.getElementById("offerTable").innerHTML = html
-
-                                
-                                .catch(error => {
-                                    // Errors when calling the service; such as network error, 
-                                    // service offline, etc
-                                    console.log( error);
-                                });
-
-                    },
-                    updateChildInfo: function() {
-                        const response =
-                        fetch(get_childURL+ `/${this.userID}/${this.childName}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log(data);
-                                console.log(":ooooofff");
-                                // console.log(data.data)
-                                if (data.code !== 200) {
-                                    // no book in db
-                                    this.message = data.message;
-                                } else {
-                                    console.log("pls work, i wna sleep")
-                                    console.log(data.childData.lvl)
-                                  // for (names of data.data) {
-                                    // console.log(names.childName);
-                                    this.level = data.childData.lvl;
-                                    this.primary = data.childData.pri;
-                                  // }
-                                }
-                            })
-                            .catch(error => {
-                                // Errors when calling the service; such as network error, 
-                                // service offline, etc
-                                console.log(this.message + error);
-
+                        },
+                        createAssignment: function(){
+                        
+                        //retrieves and stores childData from user microservice
+                        alert("check")
+                        
+                        //retrieves and stores form data
+                        // this.childName = document.getElementById("childrens").value;
+                        // this.subject = document.getElementById("subjects").value;
+                        //alert(selected_subject);
+                        // var selected_Eprice = document.getElementById("expected_price").value;
+                        var array = [];
+                        var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
+                        for (var i = 0; i < checkboxes.length; i++) {
+                        array.push(checkboxes[i].value)
+                        }
+                        //alert(array);
+                        var w = 0;
+                        var selected_days = "";
+                        //alert(array.length);
+                        for (w=0;w < array.length;w++){
+                        if(w == array.length-1){
+                        selected_days += `${array[w]}`;
+                        }
+                        else{
+                        selected_days += `${array[w]}`+ " ,";
+                        }
+                        }
+                        alert(this.subject);
+                        //prepares posting data
+                        let jsonData = JSON.stringify({
+                            "assignmentId": Math.floor((Math.random() * 696969) + 1),
+                            "userID": 1,
+                            "childName": this.childName,
+                            "primary": this.primary,
+                            "level": this.level,
+                            "subject": this.subject,
+                            "expectedPrice": this.expectedPrice, 
+                            "preferredDay": this.preferredDay.toString(),
                             });
-                    },
-                    createAssignment: function(){
-                    
-                    //retrieves and stores childData from user microservice
-                    alert("check")
-                    
-                    //retrieves and stores form data
-                    // this.childName = document.getElementById("childrens").value;
-                    // this.subject = document.getElementById("subjects").value;
-                    //alert(selected_subject);
-                    // var selected_Eprice = document.getElementById("expected_price").value;
-                    var array = [];
-                    var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
-                    for (var i = 0; i < checkboxes.length; i++) {
-                    array.push(checkboxes[i].value)
-                    }
-                    //alert(array);
-                    var w = 0;
-                    var selected_days = "";
-                    //alert(array.length);
-                    for (w=0;w < array.length;w++){
-                    if(w == array.length-1){
-                    selected_days += `${array[w]}`;
-                    }
-                    else{
-                    selected_days += `${array[w]}`+ " ,";
-                    }
-                    }
-                    alert(this.subject);
-                    //prepares posting data
-                    let jsonData = JSON.stringify({
-                        "assignmentId": Math.floor((Math.random() * 696969) + 1),
-                        "userID": 1,
-                        "childName": this.childName,
-                        "primary": this.primary,
-                        "level": this.level,
-                        "subject": this.subject,
-                        "expectedPrice": this.expectedPrice, 
-                        "preferredDay": this.preferredDay.toString(),
-                        });
-                        //posts creates a new assignment
-                        fetch(`http://localhost:5001/makeAssignment`,
-                            {
-                                method: "POST",
-                                headers: {
-                                    "Content-type": "application/json"
-                                },
-                                body: jsonData
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log(data);
-                                result = data.data;
-                                console.log(result);
-                                this.getAllAssignments();
-                                // 3 cases
-                                switch (data.code) {
-                                    case 201:
-                                        this.assignmentAdded = true;
-    
-                                        // refresh assignment list
-                                        alert("meeeeep")
-                                        
-    
-                                        // an alternate way is to add this one element into this.books
-                                        break;
-                                    case 400:
-                                    case 500:
-                                        this.addAssignmentError = data.message;
-                                        break;
-                                    default:
-                                        throw `${data.code}: ${data.message}`;
-                                }
-                            })
-                    },
-                }, 
-                created: function () {
-                    // on Vue instance created, load the book list
-                    this.getChildrenDetails();
-                    this.getAllOffers();
-                    
-
-                    //alert('GGGGGG')
-                    // var yolo = this.getChildren();
-                    // alert(yolo[0]);
-                  // document.getElementById("all_assignment").innerHTML += ``;
-                }
-            });
-        </script>
+                            //posts creates a new assignment
+                            fetch(`http://localhost:5001/makeAssignment`,
+                                {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-type": "application/json"
+                                    },
+                                    body: jsonData
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(data);
+                                    result = data.data;
+                                    console.log(result);
+                                    this.getAllAssignments();
+                                    // 3 cases
+                                    switch (data.code) {
+                                        case 201:
+                                            this.assignmentAdded = true;
         
-        <script>
-          $('#loadOffers').on('click', 'input[type="button"]', function(e){
-          $(this).closest('tr').remove()
-          })
-        </script>
+                                            // refresh assignment list
+                                            alert("meeeeep")
+                                            
+        
+                                            // an alternate way is to add this one element into this.books
+                                            break;
+                                        case 400:
+                                        case 500:
+                                            this.addAssignmentError = data.message;
+                                            break;
+                                        default:
+                                            throw `${data.code}: ${data.message}`;
+                                    }
+                                })
+                        },
+                    }, 
+                    created: function () {
+                        // on Vue instance created, load the children
+                        this.getChildrenDetails();
     
-    </body>
+                    }
+                });
+            </script>
+            
+    
+        </body>
 </html>

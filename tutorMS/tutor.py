@@ -23,14 +23,14 @@ class Tutor(db.Model):
     portfolio = db.Column(db.Text(1000))
     priceRange = db.Column(db.INTEGER, nullable=False)
 
-    def __init__(self, tutorId, tutorName, tutorEmail, passw, tutorPhone, loc, priceRange):
+    def __init__(self, tutorId, tutorName, tutorEmail, passw, tutorPhone, loc, portfolio, priceRange):
         self.tutorId = tutorId
         self.tutorName = tutorName
         self.tutorEmail = tutorEmail
         self.passw = passw
         self.tutorPhone = tutorPhone
         self.loc = loc
-        self.portfolio = "Tutor has not fixed their bi-ooooo :("
+        self.portfolio = portfolio
         self.priceRange = priceRange
 
     def json(self):
@@ -41,6 +41,7 @@ class Tutor(db.Model):
             "passw": self.passw, 
             "tutorPhone": self.tutorPhone, 
             "loc": self.loc,
+            "portfolio": self.portfolio,
             "priceRange": self.priceRange
             }
 
@@ -335,4 +336,4 @@ def update_subject_details(tutorId, subjectId):
 
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5006, debug=True)
