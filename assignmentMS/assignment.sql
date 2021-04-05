@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS `offer` (
   `userID` INT NOT NULL,
   `tutorID` INT NOT NULL,
   `tutorName` VARCHAR(40) NOT NULL,
+  `tutorEmail` VARCHAR(40) NOT NULL,
   `status` VARCHAR(20) NOT NULL,
   `selectedTime` INT NOT NULL,
   `expectedPrice` decimal(5,2) NOT NULL,
@@ -82,17 +83,17 @@ COMMIT;
 -- Dumping data for table `offer`
 --
 
-INSERT INTO `offer` (`assignmentId`, `userID`, `tutorID`, `tutorName`, `status`, `selectedTime`, `expectedPrice`, `preferredDay`) VALUES
-(1, 1, 1, "Bob", 'pending', 1500, 7, "Fri"),
-(1, 1, 2, "Tom", 'pending', 1200, 7, "Mon"),
-(1, 1, 4, "Mary", 'pending', 1900, 7, "Wed"),
-(1, 1, 5, "Jane", 'accepted', 1900, 7, "Wed"),
-(7, 1, 3, "Sue", 'accepted', 0800, 7, "Fri"),
-(7, 1, 4, "Mary", 'pending', 1900, 7, "Wed"),
-(2, 2, 2, "Tom", 'accepted', 0900, 6.5, "Sun"),
-(1, 1, 3, "Sue", 'rejected', 2000, 6.5, "Sat"),
-(3, 2, 4, "Mary", 'pending', 1900, 7, "Mon"),
-(2, 2, 5, "Jane", 'rejected', 1500, 8, "Tue");
+INSERT INTO `offer` (`assignmentId`, `userID`, `tutorID`, `tutorName`, `tutorEnail`, `status`, `selectedTime`, `expectedPrice`, `preferredDay`) VALUES
+(1, 1, 1, "Bob", "bob@gmail.com", 'pending', 1500, 7, "Fri"),
+(1, 1, 2, "Tom", "bob@gmail.com", 'pending', 1200, 7, "Mon"),
+(1, 1, 4, "Mary", "bob@gmail.com", 'pending', 1900, 7, "Wed"),
+(1, 1, 5, "Jane", "bob@gmail.com", 'accepted', 1900, 7, "Wed"),
+(7, 1, 3, "Sue", "bob@gmail.com", 'accepted', 0800, 7, "Fri"),
+(7, 1, 4, "Mary","bob@gmail.com", 'pending', 1900, 7, "Wed"),
+(2, 2, 2, "Tom", "bob@gmail.com", 'accepted', 0900, 6.5, "Sun"),
+(1, 1, 3, "Sue", "bob@gmail.com", 'rejected', 2000, 6.5, "Sat"),
+(3, 2, 4, "Mary", "bob@gmail.com", 'pending', 1900, 7, "Mon"),
+(2, 2, 5, "Jane", "bob@gmail.com", 'rejected', 1500, 8, "Tue");
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
