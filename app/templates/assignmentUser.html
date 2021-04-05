@@ -342,6 +342,7 @@ function deleteit(assignment_ID) {
                           "subject": this.subject,
                           "expectedPrice": this.expectedPrice, 
                           "preferredDay": this.preferredDay.toString(),
+                          "tutorID": 0
                       });
                       //posts creates a new assignment
                       fetch(`http://localhost:5001/makeAssignment`,
@@ -491,29 +492,7 @@ function deleteit(assignment_ID) {
             });
         </script>
         <script>
-          // function delete(assignment_ID) {
-          //             fetch('http://localhost:5001/deleteAssignment/' + assignment_ID,
-          //             {
-          //               method: "DELETE"
-          //             })
-          //             .then(response =>response.json())
-          //             .then(data => {
-          //               console.log(response);
-          //               console.log(":ehhh");
-          //               console.log(data.data);
-          //               if (data.code !== 200) {
-          //                   // no book in db
-          //                   this.message = data.message;
-          //               } else {
-          //                 this.message += data.status;
-          //               }
-          //             })
-          //             .catch(error => {
-          //                 // Errors when calling the service; such as network error, 
-          //                 // service offline, etc
-          //                 console.log(this.message + error);
-          //             });
-          //           }
+          
           $('#table_69').on('click', 'input[type="button"]', function(e){
           $(this).closest('tr').remove()
           })

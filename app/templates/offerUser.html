@@ -38,7 +38,7 @@
                         View Pending Offers!
                     </button>
                     <button class="btn btn-primary m-2 collapsed" type="button" data-toggle="collapse" data-target="#previous">
-                        View Previous Offers!
+                        View Accepted Offers!
                     </button>
                 </div>    
                 <div id="pending">
@@ -49,7 +49,7 @@
                     </div>
                 </div>
     
-                <div id="previous" class="collapse">
+                <div id="previous" class="collapse container">
                     
                 </div>
                 
@@ -69,12 +69,13 @@
     
             <script> var user = "idk"; console.log(user);</script>
     
-    <script>
+<script>
         var delete_child_URL = "http://localhost:5001/deleteOffer/";
         var get_all_URL = "http://localhost:5001/test/";
-        var userID = 1
+        var offer_URL = "http://localhost:5001/offer/";
+        var userID = 1;
     function deleteit(assignment_ID, tutorId) {
-        alert(tutorId)
+        // alert(tutorId);
         message="";
         response =
         fetch(delete_child_URL + `${assignment_ID}/${tutorId}`,
@@ -98,6 +99,73 @@
             console.log(message + error);
         });
     }
+
+    function acceptOffer(assignment_ID, tutorId) {
+        // alert("yeboiiiii")
+        message=""
+        const response =
+            fetch(get_all_URL+`/${userID}`)
+                .then(response => response.json())
+                .then(huh => {
+                    console.log(response);
+                    console.log("meep");
+                    console.log(huh)
+                    if (huh.code === 400) {
+                        message = huh.message;
+                    } else {
+                        for (each of huh.message) {
+                            var assignmentID2 = each[1].assignmentId;
+                            var tutorId2 = each[1].tutorID;
+                            
+                            if (tutorId2 ==tutorId && assignmentID2 == assignment_ID){
+                                var tutorname = each[1].tutorName;
+                                var email = each[1].tutorEmail;
+                                var preferredDay = each[1].preferredDay;
+                                var time = each[1].selectedTime;
+                                var price = each[1].expectedPrice;
+                                var jsonData = JSON.stringify({
+                                    "assignmentId": assignment_ID,
+                                    "expectedPrice": price,
+                                    "preferredDay": preferredDay,
+                                    "selectedTime": time,
+                                    "status": "accepted",
+                                    "tutorEmail": email,
+                                    "tutorID": tutorId,
+                                    "tutorName": tutorname,
+                                    "userID": userID
+                                });
+
+                                n_response =
+                                fetch(offer_URL + `${assignment_ID}/${tutorId}`,
+                                {method: "PUT",
+                                headers: {
+                                    "Content-type": "application/json"
+                                },
+                                body: jsonData})
+                                .then(n_response =>n_response.json())
+                                .then(data => {
+                                    console.log("oof");
+                                    console.log(":ehhh");
+                                    console.log(data);
+                                    if (data.code !== 200) {
+                                        // no book in db
+                                        message = data.message;
+                                    } else {
+                                        message += data;
+                                        location.reload(true);
+                                    }
+                                })
+                                .catch(error => {
+                                    // Errors when calling the service; such as network error, 
+                                    // service offline, etc
+                                    console.log(message + error);
+                                });
+                            }
+                        }
+                    }
+                })
+        
+    }
     function getAllOffers() {
         // on Vue instance created, load the book list
         
@@ -120,22 +188,22 @@
                             //console.log(huh.offers[each])
                             card_status = each[1].status;
                             //alert(card_status)
-                            if (card_status==="pending") {
-                                childName = each[0].childName;
-                                card_primary = each[0].primary;
-                                if (card_primary) {
-                                    card_primary = "Primary"
-                                } else {
-                                    card_primary = "Secondary"
-                                }
-                                card_level = each[0].level;
-                                card_subject = each[0].subject
-                                var card_tutorname = each[1].tutorName;
-                                var tutorId = each[1].tutorID;
-                                var card_preferredDay = each[1].preferredDay;
-                                var card_time = each[1].selectedTime;
-                                var card_price = each[1].expectedPrice;
-                                var assignmentID = each[1].assignmentId;
+                            // if (card_status==="pending") {
+                            childName = each[0].childName;
+                            card_primary = each[0].primary;
+                            if (card_primary) {
+                                card_primary = "Primary"
+                            } else {
+                                card_primary = "Secondary"
+                            }
+                            card_level = each[0].level;
+                            card_subject = each[0].subject
+                            var card_tutorname = each[1].tutorName;
+                            var tutorId = each[1].tutorID;
+                            var card_preferredDay = each[1].preferredDay;
+                            var card_time = each[1].selectedTime;
+                            var card_price = each[1].expectedPrice;
+                            var assignmentID = each[1].assignmentId;
                                 // offer = huh.offers[each]
                                 //alert(offer.status)
                                 //alert(offer.tutorName)
@@ -143,7 +211,8 @@
                                 //alert(offer.tutorname)
                                 
                                 //alert(assignmentID);
-                                var space_below_name = childName;
+                                // var space_below_name = childName;
+                            if (card_status==="pending") {   
                                 document.getElementById(childName).innerHTML += `
                                 <div id="card_template">
                                     <div class="card border-secondary mb-3">
@@ -153,12 +222,26 @@
                                     <p class="card-text">${card_primary} ${card_level} ${card_subject}</p>
                                     </div>
                                     <div class="card-footer">
-                                    <button type="button" class="btn btn-outline-success">Accept</button>
+                                    <button type="button" onclick="acceptOffer(${assignmentID}, ${tutorId});" class="btn btn-outline-success">Accept</button>
                                     <button type="button" onclick="deleteit(${assignmentID}, ${tutorId});" class="btn btn-outline-danger">Decline</button>
                                 </div>
                                 </div>
                                 </div>`;
-                            }    
+                            } else if (card_status ==="accepted"){
+                                document.getElementById("previous").innerHTML += `
+                                <div id="card_template">
+                                    <div class="card border-secondary mb-3">
+                                <div class="card-header text-dark" >`+card_tutorname+`</div>
+                                <div class="card-body text-secondary">
+                                <h5 class="card-title">${card_preferredDay} @ ${card_time} for $${card_price}/hr</h5>
+                                    <p class="card-text">${card_primary} ${card_level} ${card_subject}</p>
+                                    </div>
+                                    <div class="card-footer">
+                                    <button type="button" onclick="acceptOffer(${assignmentID}, ${tutorId});" class="btn btn-outline-secondary" disabled>Accepted</button>
+                                </div>
+                                </div>
+                                </div>`;
+                            }  
                                 }
                             }
                         })  
@@ -223,7 +306,7 @@
                                             // this.subject = data.data.subjects;
                                             console.log(data)
                                             for (each of data.data){
-                                                alert(each.childName);
+                                                // alert(each.childName);
                                                 document.getElementById("loadOffers").innerHTML += `
                                                 <h3  style="color: black;text-align: center;" id="space_below_name">${each.childName}</h3>
                                                 <div class="card-deck" id="${each.childName}"></div>   
@@ -270,7 +353,7 @@
                         createAssignment: function(){
                         
                         //retrieves and stores childData from user microservice
-                        alert("check")
+                        // alert("check")
                         
                         //retrieves and stores form data
                         // this.childName = document.getElementById("childrens").value;
@@ -294,7 +377,7 @@
                         selected_days += `${array[w]}`+ " ,";
                         }
                         }
-                        alert(this.subject);
+                        // alert(this.subject);
                         //prepares posting data
                         let jsonData = JSON.stringify({
                             "assignmentId": Math.floor((Math.random() * 696969) + 1),
@@ -327,7 +410,7 @@
                                             this.assignmentAdded = true;
         
                                             // refresh assignment list
-                                            alert("meeeeep")
+                                            // alert("meeeeep")
                                             
         
                                             // an alternate way is to add this one element into this.books

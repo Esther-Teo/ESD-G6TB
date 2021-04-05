@@ -31,7 +31,7 @@ class Assignment(db.Model):
     preferredDay = db.Column(db.String(90), nullable=False)
     tutorID = db.Column(db.Integer, default=0)
     offers = relationship('Offer', cascade="all, delete-orphan")
-    def __init__(self, assignmentId, userID, childName, primary, level, subject, expectedPrice, preferredDay):
+    def __init__(self, assignmentId, userID, childName, primary, level, subject, expectedPrice, preferredDay, tutorID):
         self.assignmentId = assignmentId
         self.userID = userID
         self.childName = childName
@@ -40,7 +40,7 @@ class Assignment(db.Model):
         self.subject = subject
         self.expectedPrice = expectedPrice
         self.preferredDay = preferredDay
-        self.tutorID = 0
+        self.tutorID = tutorID
  
     def json(self):
         return {
@@ -51,7 +51,8 @@ class Assignment(db.Model):
             "level": self.level, 
             "subject": self.subject, 
             "expectedPrice": self.expectedPrice, 
-            "preferredDay": self.preferredDay
+            "preferredDay": self.preferredDay,
+            "tutorID": self.tutorID
             }
 
 class Offer(db.Model):
