@@ -21,7 +21,8 @@ CORS(app)
 
 assignment_URL = "http://localhost:5001/assignment"
 offer_URL = "http://localhost:5003/offer"
-createOffer_URL = "http://localhost:5001/createOffer"
+create_offer_URL = "http://localhost:5001/createOffer" # creates new offer in assignment.py
+delete_offer_URL = "http://localhost:5001/deleteAssignment/" # specify assignmentID to delete: <int:assignmentId>
 
 # Manage a new offer
 @app.route("/manageOffersMS", methods=['POST'])
@@ -29,15 +30,21 @@ def manage_offers():
     if request.is_json:
         try:
             offer = request.get_json()
-            print("\nReceived offer in JSON:", offer)
-            # 2. User views offer
-            result = process_offers(offer)
+            print("\nReceived request in JSON:", offer)
+            # Task 1: delete assignment
+            
+            delete_result = delete_assignment(offer)
             print('\n------------------------')
-            print('\nresult: ', result)
-            return jsonify(result), result["code"]
+            print('\nresult: ', delete_result)
+            return jsonify(delete_result), delete_result["code"]
+            # Task 2: (to be done)
+            # if  
+            #     process_result = process_offers(offer)
+            # print('\n------------------------')
+            # print('\nresult: ', result)
+            # return jsonify(result), result["code"]
 
         except Exception as e:
-            # Unexpected error in code
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
@@ -47,24 +54,64 @@ def manage_offers():
                 "code": 500,
                 "message": "manageOffersMS.py internal error: " + ex_str
             }), 500
-    # Not in JSON format
+
     return jsonify({
         "code": 400,
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-# _______________________________________________________________________________________________________
+# Task 1: Delete assignment 
+def delete_assignment(offer):
+    # if delete == 1, delete. Otherwise, leave it alone
+    if offer['delete'] == 1:
+        assignmentId_to_delete = offer['offer']['assignmentId'] 
+        print('\n-----Invoking assignmentMS-----')
+        deleted_result = invoke_http(delete_offer_URL + str(assignmentId_to_delete), method='DELETE', json=offer['offer'])
 
+        code = deleted_result["code"] 
+        message = json.dumps(deleted_result)
+    else:
+        return None
+
+    # Error handling
+    if code not in range(200, 300):
+        print('\n-----Publishing the (offer error) message with routing_key=offer.error-----')
+        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), delete_result)
+
+        return {
+            "code": 500,
+            "data": {"deleted_result": deleted_result},
+            "message": "Deletion failure sent for error handling."
+        }
+
+    # If no error, send deletion results to inbox
+    else:
+        print("-----Assignment", str(assignmentId_to_delete), "has been deleted-----")
+        print('\n\n-----Publishing the (offer info) message with routing_key=offer.inbox-----') 
+        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="inbox.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+
+    print("\nOrder published to RabbitMQ Exchange.\n")
+    # Return success code 
+    return {
+        "code": 201,
+        "data": {
+            "deleted_result": deleted_result,
+        }
+    }
+
+# Task 2: (to be done)
 def process_offers(offer):
-    # 3. Get offer details 
     print('\n-----Invoking assignmentMS-----')
-    offer_result = invoke_http(createOffer_URL, method='POST', json=offer)
+    offer_result = invoke_http(create_offer_URL, method='POST', json=offer)
     print('offer_result:', offer_result)
 
     code = offer_result["code"] 
     message = json.dumps(offer_result)
 
-    # If error, send to error handler
+    # Error handling
     if code not in range(200, 300):
         print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
         amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
@@ -89,7 +136,6 @@ def process_offers(offer):
         "code": 201,
         "data": {
             "offer_result": offer_result,
-            # "inbox_result": inbox_result
         }
     }
 

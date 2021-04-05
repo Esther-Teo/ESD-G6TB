@@ -24,12 +24,7 @@ channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='*.erro
 # ----------  Inbox Queue  ----------
 queue_name = 'Inbox'
 channel.queue_declare(queue=queue_name, durable=True) 
-channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='#') # KEY NOT CONFIRMED 
-
-# # ----------  Manage_Offers Queue  ----------
-# queue_name = 'Manage_Offers'
-# channel.queue_declare(queue=queue_name, durable=True) 
-# channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='*.offer') 
+channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='#') 
 
 """
 This function in this module sets up a connection and a channel to a local AMQP broker,

@@ -4,7 +4,7 @@ import os, sys
 sys.path.insert(0, 'c:/Users/foo/Documents/GitHub/ESD-G6TB')
 import amqpSetup
 
-monitorBindingKey='*.inbox'
+monitorBindingKey='#'
 
 def get_inbox_msg():
     amqpSetup.check_setup()
