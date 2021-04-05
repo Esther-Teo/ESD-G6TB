@@ -20,7 +20,8 @@
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
         <title>All Listings</title>
     </head>
-    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.0.js">
+    </script>
     <!-- <script src="js/offerUser.js"></script> -->
     <body class="body1" onload="javascript:getAllOffers()">
         <div id="navbar"></div>
@@ -139,7 +140,8 @@ function deleteit(assignment_ID, tutorId) {
                                         for (each of data.data){
                                             alert(each.childName);
                                             document.getElementById("loadOffers").innerHTML += `
-                                            <div class="card-deck" style="color: black;text-align: center;" id="${each.childName}"><h3>${each.childName}</h3></div>
+                                            <h3  style="color: black;text-align: center;" id="space_below_name">${each.childName}</h3>
+                                            <div class="card-deck" id="${each.childName}"></div>   
                                             `
                                         }
                                     }
@@ -167,12 +169,12 @@ function deleteit(assignment_ID, tutorId) {
                                         
                                     } else {
                                         for (each of huh.message) {
-                                            alert("making me work alone, fking sad :( pls buy me ice cold drinks, thanks");
-                                            console.log("checkmate, bitch");
-                                            console.log(each[0].childName);
+                                            //alert("making me work alone, fking sad :( pls buy me ice cold drinks, thanks");
+                                            //console.log("checkmate, bitch");
+                                            //console.log(each[0].childName);
                                             //console.log(huh.offers[each])
                                             card_status = each[1].status;
-                                            alert(card_status)
+                                            //alert(card_status)
                                             if (card_status==="pending") {
                                                 childName = each[0].childName;
                                                 card_primary = each[0].primary;
@@ -196,8 +198,10 @@ function deleteit(assignment_ID, tutorId) {
                                                 //alert(offer.tutorname)
                                                 
                                                 //alert(assignmentID);
+                                                var space_below_name = childName;
                                                 document.getElementById(childName).innerHTML += `
-                                                 <div class="card border-secondary mb-3" style="max-width: 18rem;">
+                                                <div id="card_template">
+                                                 <div class="card border-secondary mb-3">
                                                 <div class="card-header text-dark" >`+card_tutorname+`</div>
                                                 <div class="card-body text-secondary">
                                                 <h5 class="card-title">${card_preferredDay} @ ${card_time} for $${card_price}/hr</h5>
@@ -207,10 +211,9 @@ function deleteit(assignment_ID, tutorId) {
                                                  <button type="button" class="btn btn-outline-success">Accept</button>
                                                  <button type="button" onclick="deleteit(${assignmentID}, ${tutorId})" class="btn btn-outline-danger">Decline</button>
                                                 </div>
+                                                </div>
                                                 </div>`;
-                                            }
-                                            
-                                                
+                                            }    
                                                 }
                                             }
                                         })  
@@ -223,7 +226,6 @@ function deleteit(assignment_ID, tutorId) {
                                     // Errors when calling the service; such as network error, 
                                     // service offline, etc
                                     console.log( error);
-
                                 });
 
                     },
@@ -336,7 +338,7 @@ function deleteit(assignment_ID, tutorId) {
                     this.getAllOffers();
                     
 
-                    alert('GGGGGG')
+                    //alert('GGGGGG')
                     // var yolo = this.getChildren();
                     // alert(yolo[0]);
                   // document.getElementById("all_assignment").innerHTML += ``;
