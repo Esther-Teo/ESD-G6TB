@@ -85,10 +85,10 @@ COMMIT;
 INSERT INTO `offer` (`assignmentId`, `userID`, `tutorID`, `tutorName`, `status`, `selectedTime`, `expectedPrice`, `preferredDay`) VALUES
 (1, 1, 1, "Bob", 'pending', 1500, 7, "Fri"),
 (1, 1, 2, "Tom", 'pending', 1200, 7, "Mon"),
-(7, 1, 3, "Sue", 'pending', 0800, 7, "Fri"),
 (1, 1, 4, "Mary", 'pending', 1900, 7, "Wed"),
+(1, 1, 5, "Jane", 'accepted', 1900, 7, "Wed"),
+(7, 1, 3, "Sue", 'accepted', 0800, 7, "Fri"),
 (7, 1, 4, "Mary", 'pending', 1900, 7, "Wed"),
-(1, 1, 5, "Jane", 'pending', 1900, 7, "Wed"),
 (2, 2, 2, "Tom", 'accepted', 0900, 6.5, "Sun"),
 (1, 1, 3, "Sue", 'rejected', 2000, 6.5, "Sat"),
 (3, 2, 4, "Mary", 'pending', 1900, 7, "Mon"),
