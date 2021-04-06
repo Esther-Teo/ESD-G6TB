@@ -4,7 +4,9 @@ from flask_cors import CORS
 import os, sys
 
 import requests
-sys.path.insert(0, 'c:/Users/foo/Documents/GitHub/ESD-G6TB')
+# sys.path.insert(0, 'c:/Users/foo/Documents/GitHub/ESD-G6TB')
+sys.path.insert(0, 'C:\wamp64\www\ESD-G6TB')
+
 # To run this file without using your local path as seen above^:
     # Navigate into your own local path at GitHub\ESD-G6TB, then type:
     # set PYTHONPATH=.;.\manageOffersMS
@@ -142,45 +144,6 @@ def manage_offers():
 # Functions for processing
 #-----------------------------------------------------------------------------------------------------
 
-def get_offers(offer):
-    userID = str(offer['userID'])
-    print('\n-----Invoking assignmentMS-----')
-    offer_result = invoke_http(get_offer_URL + userID, method='GET', json=offer)
-
-    code = offer_result["code"] 
-    message = json.dumps(offer_result)
-    print('offer_result', offer_result)
-
-    # Error handling
-    if code not in range(200, 300):
-        print('\n-----Publishing the (offer error) message with routing_key=offer.error-----')
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
-        print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), offer_result)
-
-        return {
-            "code": 500,
-            "data": {"offer_result": message},
-            "message": "Offers failure sent for error handling."
-        }
-
-    # If no error, send deletion results to inbox
-    else:
-        print('\n\n-----Publishing the (offer info) message with routing_key=offer.inbox-----') 
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="inbox", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2))
-
-    print("\nMessage published to RabbitMQ Exchange.\n")
-    # Return success code 
-    return {
-        "code": 201,
-        "data": {
-            "offer_result": offer_result
-        }
-    }
-
-#-----------------------------------------------------------------------------------------------------
-
 # Task 2: Delete assignment from assignment.sql, send {code, message} to inbox as amqp if successful 
 def delete_assignment(offer):
     # if delete == 1, delete. Otherwise, leave it alone
@@ -196,30 +159,6 @@ def delete_assignment(offer):
         if deleted_result:
             print("------Assignment", assignmentId, "has been deleted------")
 
-    else: 
-        return None
-
-    # Error handling
-    if code not in range(200, 300):
-        print('\n-----Publishing the (offer error) message with routing_key=offer.error-----')
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
-        print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), deleted_result)
-
-        return {
-            "code": 500,
-            "data": {"deleted_result": message},
-            "message": "Please specify assignmentId to delete assigment."
-        }
-
-    # If no error, send deletion results to inbox
-    else:
-        print('\n\n-----Publishing the (offer info) message with routing_key=offer.inbox-----') 
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="inbox", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2))
-
-    print("\nMessage published to RabbitMQ Exchange.\n")
-    # Return success code 
     return {
         "code": 201,
         "data": {
@@ -272,8 +211,9 @@ def reject_offers(offer):
     # If reject, delete offer and send {code, message} to inbox 
     if offer['acceptOrReject'] == 'reject':
         assignmentId = str(offer['offer']['assignmentId'])
-        tutorID = '/' + str(0) 
-        print('\n-----Invoking assignmentMS-----')
+        tutorID = '/' + str(offer['offer']['tutorID']) 
+        
+        print('\n-----Invoking assignmentMS-----') 
         offer_result = invoke_http(delete_offer_URL + assignmentId + tutorID, 
                     method='DELETE', json=offer)
 
