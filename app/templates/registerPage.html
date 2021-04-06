@@ -128,26 +128,103 @@
       });
       </script>
         <script src="js/homeui.js"></script>
-        <script>
-            function userClicked(){
-                document.getElementById("different").innerHTML = `<button type="submit" class="btn">Sign Up</button>`;
-                document.getElementById("formallyYours").style.display="block";
-                document.getElementById("buttonUp").style.display="none";
-            }
-            // @SOONZZZZZZ PLS THROW YOUR FANCY CONNECTSTRIPE BELOW HERE
-            function tutorClicked(){
-                document.getElementById("different").innerHTML = `<button type="submit" class="btn" data-toggle="modal" data-target="#stripeModal">Sign Up</button>`;
-                document.getElementById("formallyYours").style.display="block";
-                document.getElementById("buttonUp").style.display="none";
-            }
-            document.getElementById('submit').addEventListener('click',function(event) {
-            event.preventDefault();
-            let dropdownform = document.getElementById('laopuo').innerText
-            let text = document.getElementById('user_input').value
-            window.location = `searched.php?user_input=${text}&user_searched_option=${dropdownform}`
-          })
-        </script>
-       
+<script>
+    function userClicked(){
+        document.getElementById("different").innerHTML = `<button type="submit" class="btn">Sign Up</button>`;
+        document.getElementById("formallyYours").style.display="block";
+        document.getElementById("buttonUp").style.display="none";
+    }
+    // @SOONZZZZZZ PLS THROW YOUR FANCY CONNECTSTRIPE BELOW HERE
+    function tutorClicked(){
+        document.getElementById("different").innerHTML = `<button type="submit" class="btn" data-toggle="modal" data-target="#stripeModal">Sign Up</button>`;
+        document.getElementById("formallyYours").style.display="block";
+        document.getElementById("buttonUp").style.display="none";
+    }
+
+
+        
+        var get_all_URL = "http://localhost:5001/assignmentByUser";
+        var get_childURL = `http://localhost:5004/seeChild`
+  
+    //NOT DONE SETTING UP POST INFO!!!!!! @ALL             
+    function createAssignment(){
+        
+        //retrieves and stores childData from user microservice
+        // alert("check")
+        
+        //retrieves and stores form data
+        // this.childName = document.getElementById("childrens").value;
+        // this.subject = document.getElementById("subjects").value;
+        //alert(selected_subject);
+        // var selected_Eprice = document.getElementById("expected_price").value;
+        var array = [];
+        var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
+        for (var i = 0; i < checkboxes.length; i++) {
+        array.push(checkboxes[i].value)
+        }
+        //alert(array);
+        var w = 0;
+        var selected_days = "";
+        //alert(array.length);
+        for (w=0;w < array.length;w++){
+        if(w == array.length-1){
+        selected_days += `${array[w]}`;
+        }
+        else{
+        selected_days += `${array[w]}`+ " ,";
+        }
+        }
+        // alert(this.subject);
+        //prepares posting data
+        let jsonData = JSON.stringify({
+            "userID": Math.floor((Math.random() * 696969) + 1), 
+            "userName": self.userName, 
+            "userEmail": self.userEmail, 
+            "passw": self.passw, 
+            "userPhone": self.userPhone, 
+            "loc": self.loc
+        });
+        //posts creates a new assignment
+        fetch(`http://localhost:5004/createUser`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: jsonData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                result = data.data;
+                console.log(result);
+                // 3 cases
+                switch (data.code) {
+                    case 201:
+                        alert("yayyyyy")
+
+                        // refresh assignment list
+                        // alert("meeeeep")
+                        
+
+                        // an alternate way is to add this one element into this.books
+                        break;
+                    case 400:
+                    case 500:
+                        alert("not so great")
+                        break;
+                    default:
+                        throw `${data.code}: ${data.message}`;
+                }
+            }).catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    alert("Please complete the form before sending!");
+
+                });
+    }
+
+</script>
       
     </body>
 </html>
