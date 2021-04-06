@@ -58,7 +58,7 @@
                     <div class="input-group-prepend">
                       <label class="input-group-text" for="subjects">Child Name</label>
                     </div>
-                    <select v-model="childName" @change="updateChildInfo" class="custom-select" id="childrens">
+                    <select v-model="childName" @change="updateChildInfo" class="custom-select" id="childrens" required>
                         <option selected disabled>Choose...</option>
                     </select>
                   </div>
@@ -76,20 +76,15 @@
                       <div class="input-group-prepend">
                         <label class="input-group-text" for="subjects">Subject</label>
                       </div>
-                        <select v-model="subject" class="custom-select" id="subjects">
+                        <select v-model="subject" class="custom-select" id="subjects" required>
                           <option selected disabled>Choose...</option>
-                          <option value="English">English</option>
-                          <option value="Chinese">Chinese</option>
-                          <option value="Tamil">Tamil</option>
-                          <option value="Malay">Malay</option>
-                          <option value="Math">Math</option>
-                          <option value="Science">Science</option>
+                          
                         </select>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                           <label for="inputEmail4">Expected Price</label>
-                          <input v-model="expectedPrice" type="email" class="form-control" id="expected_price" placeholder="Please enter the rates /hour">
+                          <input v-model="expectedPrice" type="number" class="form-control" id="expected_price" min="1" max="999.99" placeholder="Please enter the rates /hour" required>
                         </div>
                       </div>
                     <!-- Check box for preferred days -->
@@ -260,8 +255,8 @@ function deleteit(assignment_ID) {
                                     this.primary = data.childData.pri;
                                     var selected_primary =  this.primary;
                                     var selected_level =  this.level;
-                                    alert(selected_primary);
-                                    alert(selected_level);
+                                    // alert(selected_primary);
+                                    // alert(selected_level);
                                     if (selected_primary){
                                       var printed_primary = "Primary ";
                                       document.getElementById('subjects').innerHTML='';
@@ -307,7 +302,7 @@ function deleteit(assignment_ID) {
                     createAssignment: function(){
                       
                       //retrieves and stores childData from user microservice
-                      alert("check")
+                      // alert("check")
                       
                       //retrieves and stores form data
                       // this.childName = document.getElementById("childrens").value;
@@ -331,7 +326,7 @@ function deleteit(assignment_ID) {
                         selected_days += `${array[w]}`+ " ,";
                       }
                       }
-                      alert(this.subject);
+                      // alert(this.subject);
                       //prepares posting data
                       let jsonData = JSON.stringify({
                           "assignmentId": Math.floor((Math.random() * 696969) + 1),
@@ -365,7 +360,7 @@ function deleteit(assignment_ID) {
                                         this.assignmentAdded = true;
     
                                         // refresh assignment list
-                                        alert("meeeeep")
+                                        // alert("meeeeep")
                                         
     
                                         // an alternate way is to add this one element into this.books
@@ -377,7 +372,12 @@ function deleteit(assignment_ID) {
                                     default:
                                         throw `${data.code}: ${data.message}`;
                                 }
-                            })
+                            }).catch(error => {
+                                    // Errors when calling the service; such as network error, 
+                                    // service offline, etc
+                                    alert("Please complete the form before sending!");
+
+                                });
                     },
                     getAllAssignments: function () {
                         // on Vue instance created, load the book list
