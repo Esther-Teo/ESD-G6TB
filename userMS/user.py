@@ -66,8 +66,8 @@ class Child(db.Model):
         "pri": self.pri, 
         "lvl": self.lvl
         }
-        for cs in self.childSubjects:
-            res['subjects'].append(cs.json())
+        # for cs in self.childSubjects:
+        #     res['subjects'].append(cs.json())
 
 
 # GET all Users 
@@ -381,6 +381,30 @@ def delete_child(userID, childName):
                 "message": "There was an error deleting the subject." + str(e)
             }
         ), 404
+        
+# testing for the tutor user
+@app.route("/UserChild/<int:userID>", methods=["GET"])
+def tryout(userID):
+    try:
+        print(userID)
+        test = db.session.query(User, Child).outerjoin(User, Child.userID == User.userID).filter(User.userID==userID, Child.userID==userID)
+        # ape ini idgi 
+        if test:
+            data = []
+            real = []
+            for each in test:
+                for d in each:
+                    data.append(d.json())
+                    print(d.json())
+                # data['assignments']= each.json()
+                real.append(data)
+                data=[]
+            print(data)
+            # return jsonify({"assignments": data})
+            return jsonify({"message": real}),200
+            # return jsonify({"assignments": [assignment.json() for assignment in test[0]]})
+    except Exception as e:
+        return jsonify({"message": "Assignment had a problem fetching" + str(e)}), 500
 
 
 
