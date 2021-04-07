@@ -50,8 +50,8 @@
                 <img class="mr-3" src="../images/teacher.png">
                 <!-- Replace with whatever image you want -->
                 <div class="media-body">
-                    <h2 v-model="tutorName">{{tutorName}}</h2>
-                    <h2 v-model="tutorEmail">{{tutorEmail}}</h2>
+                    <h2 v-bind="tutorName">{{tutorName}}</h2>
+                    <h2 v-bind="tutorEmail">{{tutorEmail}}</h2>
                 </div>
             </div>
             <form id="form-section" class="form-group mx-4" @submit.prevent="processForm">
@@ -111,7 +111,6 @@
         console.log(tutor);
     </script>
     need edit scrips
-    <script src="../js/homeui.js"></script>
     <script>
         var tutor = '';
         console.log(tutor);
@@ -121,11 +120,6 @@
 
         var app = new Vue({
             el: "#app",
-            computed: {
-                hasAssignments: function () {
-                    return this.assignments.length > 0;
-                }
-            },
             data: {
                 tutorID: 1,
                 "assignments": [],
@@ -142,6 +136,7 @@
             methods: {
                 getAllAssignments: function () {
                     // on Vue instance created, load the book list
+                    alert("meep")
                     const response =
                         fetch(get_all_URL + `/${this.tutorID}`)
                         .then(response => response.json())
@@ -203,16 +198,14 @@
                     //prepares posting data
                     console.log("hello");
                     let jsonData = JSON.stringify({
-                        tutorID: 1,
-                        "assignments": [],
-                        message: "There is a problem retrieving the assignment data, please try again later.",
-                        tutorName: this.tutorName,
-                        tutorEmail: this.tutorEmail,
-                        tutorPwd: this.tutorPwd,
-                        tutorPhone: this.tutorPhone,
-                        location: this.location,
-                        tutorBio: this.tutorBio,
-                        expectedPrice: this.expectedPrice,
+                        "tutorID": 1,
+                        "tutorName": this.tutorName,
+                        "tutorEmail": this.tutorEmail,
+                        "passw": this.tutorPwd,
+                        "tutorPhone": this.tutorPhone,
+                        "loc": this.location,
+                        "portfolio": this.tutorBio,
+                        "priceRange": this.expectedPrice,
                     });
                     //posts creates a new assignment
                     fetch(`http://localhost:5006/updateTutor/1`, {
@@ -248,12 +241,14 @@
                             }
                         })
                 },
-                created: function () {
-                    // on Vue instance created, load the book list
+            },
+            created: function () {
+                // on Vue instance created, load the book list
                     this.getAllAssignments();
-                    this.processForm();
-                },
-            }
+                // this.processForm();
+                }
+            ,
+            
         });
     </script>
 
