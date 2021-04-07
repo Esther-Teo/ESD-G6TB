@@ -78,9 +78,6 @@ def get_all():
 	return jsonify({"tutors": [tutor.json() for tutor in Tutor.query.all()]})
 
 # gets one tutor + his subjects by his id
-
-
-
 @app.route("/tutor/<int:tutorId>",methods=['GET'])
 def find_by_tutorId(tutorId):
     try:
@@ -109,7 +106,6 @@ def find_by_tutorId(tutorId):
         ), 404
 
 # creates a tutor
-@app.route("/tutor/<int:tutorId>", methods=['POST'])
 @app.route("/createTutor", methods=['POST'])
 def add_tutor():
     try:
@@ -200,6 +196,38 @@ def update_tutor_details(tutorId):
             }
         ), 500
 
+# checks/authenticates the tutor
+@app.route("/tutorcheck", methods=['POST', 'GET'])
+def check_tutor():
+    data = request.get_json()
+    # print(data)
+    email = data['tutorEmail']
+    # email= "mikescarn@gmail.com"
+    passw = data['password']
+    # passw="helps"
+    try:
+        res = Tutor.query.filter_by(tutorEmail=email, passw=passw).first()
+        if (res):
+            print(res)
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "message":"meep",
+                        "tutorId": res.tutorId,
+                        "tutorName": res.tutorName,
+                        "tutorEmail": res.tutorEmail
+                    },
+                    "message": "Tutor authenticated."
+                }
+            ), 200
+    except Exception as e:
+
+        return jsonify(
+            {
+                "code": 404,
+                "message": "There was an error" + str(e)
+            }), 404
 
 # gets the list of subjects by tutor
 @app.route("/subjectByTutor/<int:tutorId>")
