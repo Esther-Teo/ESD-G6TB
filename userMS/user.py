@@ -107,21 +107,21 @@ def find_by_UserID(userID):
 def add_user():
 
     data = request.get_json()
-    userID = data.userID
-    if (User.query.filter_by(userID=userID).first()):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "userID": userID
-                },
-                "message": "User already exists."
-            }
-        ), 400
+    userID = data['userID']
+    try:
+        if (User.query.filter_by(userID=userID).first()):
+            return jsonify(
+                {
+                    "code": 400,
+                    "data": {
+                        "userID": userID
+                    },
+                    "message": "User already exists."
+                }
+            ), 400
  
     
-    user = User(**data)
-    try:
+        user = User(**data)
         db.session.add(user)
         db.session.commit()
     except Exception as e:

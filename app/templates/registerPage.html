@@ -45,7 +45,7 @@
                         <div class="logo mb-3">
                             
                         </div>
-                        <div class="heading mb-7">
+                        <div class="heading mb-7" id="success">
                             <h4>Register for an account</h4>
                         </div>
                         <div id="buttonUp">
@@ -57,26 +57,26 @@
                             </div>
                         </div>
                             
-                        <form action="database/addUser.php" method="POST" id="formallyYours" style="display:none">
+                        <form id="formallyYours" style="display:none">
                             <div class="form-input">
                                 <span></span>
-                                    <input type="text" name="username" placeholder="Username" required>
+                                    <input type="text" id="username" placeholder="Username" required>
                             </div>
                             <div class="form-input">
                                 <span></span>
-                                    <input type="email" name="email" placeholder="Email Address" required>
+                                    <input type="email" id="email" placeholder="Email Address" required>
                             </div>
                             <div class="form-input">
                                 <span></span>
-                                <input type="password" name="password" placeholder="Password" required>
+                                <input type="password" id="password" placeholder="Password" required>
                             </div>
                             <div class="form-input">
                                 <span></span>
-                                <input type="number" name="phoneNumber" placeholder="Contact Number">
+                                <input type="number" id="phoneNumber" placeholder="Contact Number">
                             </div>
                             <div class="form-input">
                                 <span></span>
-                                <input type="text" name="location" placeholder="location" required>
+                                <input type="text" id="location" placeholder="location" required>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-12 d-flex">
@@ -130,62 +130,45 @@
         <script src="js/homeui.js"></script>
 <script>
     function userClicked(){
-        document.getElementById("different").innerHTML = `<button type="submit" class="btn">Sign Up</button>`;
+        document.getElementById("different").innerHTML = `<button type="button" class="btn" onclick="createUser()">Sign Up</button>`;
         document.getElementById("formallyYours").style.display="block";
         document.getElementById("buttonUp").style.display="none";
     }
     // @SOONZZZZZZ PLS THROW YOUR FANCY CONNECTSTRIPE BELOW HERE
     function tutorClicked(){
-        document.getElementById("different").innerHTML = `<button type="submit" class="btn" data-toggle="modal" data-target="#stripeModal">Sign Up</button>`;
+        document.getElementById("different").innerHTML = `<button type="button" class="btn" data-toggle="modal" data-target="#stripeModal">Sign Up</button>`;
         document.getElementById("formallyYours").style.display="block";
         document.getElementById("buttonUp").style.display="none";
     }
 
 
         
-        var get_all_URL = "http://localhost:5001/assignmentByUser";
-        var get_childURL = `http://localhost:5004/seeChild`
+        var user_URL = "http://localhost:5004/createUser";
+        var tutor_URL = `http://localhost:5004/seeChild`
   
     //NOT DONE SETTING UP POST INFO!!!!!! @ALL             
-    function createAssignment(){
+    function createUser(){
         
         //retrieves and stores childData from user microservice
         // alert("check")
-        
+        alert(document.getElementById("password").value)
         //retrieves and stores form data
         // this.childName = document.getElementById("childrens").value;
         // this.subject = document.getElementById("subjects").value;
         //alert(selected_subject);
         // var selected_Eprice = document.getElementById("expected_price").value;
-        var array = [];
-        var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
-        for (var i = 0; i < checkboxes.length; i++) {
-        array.push(checkboxes[i].value)
-        }
-        //alert(array);
-        var w = 0;
-        var selected_days = "";
-        //alert(array.length);
-        for (w=0;w < array.length;w++){
-        if(w == array.length-1){
-        selected_days += `${array[w]}`;
-        }
-        else{
-        selected_days += `${array[w]}`+ " ,";
-        }
-        }
         // alert(this.subject);
         //prepares posting data
         let jsonData = JSON.stringify({
             "userID": Math.floor((Math.random() * 696969) + 1), 
-            "userName": self.userName, 
-            "userEmail": self.userEmail, 
-            "passw": self.passw, 
-            "userPhone": self.userPhone, 
-            "loc": self.loc
+            "userName": document.getElementById("username").value, 
+            "userEmail": document.getElementById("email").value,
+            "passw": document.getElementById("password").value, 
+            "userPhone": document.getElementById("phoneNumber").value,
+            "loc": document.getElementById("location").value
         });
         //posts creates a new assignment
-        fetch(`http://localhost:5004/createUser`,
+        fetch(user_URL,
             {
                 method: "POST",
                 headers: {
@@ -205,8 +188,13 @@
 
                         // refresh assignment list
                         // alert("meeeeep")
-                        
+                        document.getElementById("formallyYours").style.display="none";
+                        document.getElementById("success").innerHTML = `<h4>Your registration was successful!</h4><p>You will be redirected to the Login Page in a moment</p>`;
+                        window.setTimeout(function(){
+                            // Move to a new location or you can do something else
 
+                            window.location.href = "loginPage.html";
+                        }, 5000);
                         // an alternate way is to add this one element into this.books
                         break;
                     case 400:
