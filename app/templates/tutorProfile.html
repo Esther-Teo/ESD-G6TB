@@ -28,12 +28,13 @@
             border-radius: 50%;
             width: 20%;
         }
+
         /* .form-group{
             justify-content: center;
         } */
-        .container{
+        .container {
             width: fit-content;
-            
+
         }
     </style>
     <title>All Listings</title>
@@ -46,19 +47,21 @@
         <div class="container ">
             <h1 class='mt-3 header text-center display-4'>Tutor Profile</h1>
             <div class="media">
-                <img class="mr-3" src="../images/teacher.png" >
-            <!-- Replace with whatever image you want -->
+                <img class="mr-3" src="../images/teacher.png">
+                <!-- Replace with whatever image you want -->
                 <div class="media-body">
                     <h2 v-model="tutorName">{{tutorName}}</h2>
-                    <h2 v-model="tutorEmail">{{tutorEmail}}</h2>    
+                    <h2 v-model="tutorEmail">{{tutorEmail}}</h2>
                 </div>
             </div>
-            <div id="form-section" class="form-group mx-4">
+            <form id="form-section" class="form-group mx-4" @submit.prevent="processForm">
+                <!-- <form id="form-section" class="form-group mx-4" @submit.prevent="processForm"> -->
                 <div class="form-group row  ">
-                    <label for="inputPassword" class="col-sm-2 col-form-label" >Password</label>
+                    <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
                     <div class="col-sm-10">
                         <input type="password" id="inputPassword" class="form-control " v-model="tutorPwd" required>
-                        <small id="passwordHelp" class="form-text text-muted">Your password must be between 8 to 24 characters</small>
+                        <small id="passwordHelp" class="form-text text-muted">Your password must be between 8 to 24
+                            characters</small>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -76,7 +79,7 @@
                 <div class="form-group row">
                     <label for="expectedPrice" class="col-sm-2 col-form-label">Price Range</label>
                     <div class="col-sm-10">
-                        <input type="number" id="expectedPrice" class="form-control " v-model="expectedPrice" required> 
+                        <input type="number" id="expectedPrice" class="form-control " v-model="expectedPrice" required>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -87,8 +90,9 @@
                     </div>
                 </div>
                 <!-- Add submit button -->
+                <input type="submit" >
 
-            </div>
+            </form>
         </div>
     </div>
     <div>
@@ -165,11 +169,90 @@
                             console.log(this.message + error);
                         });
 
-                }
-            },
-            created: function () {
-                // on Vue instance created, load the book list
-                this.getAllAssignments();
+                },
+                // },
+                processForm: function () {
+                    // on Vue instance created, load the book list
+                    var postingUrl = "http://localhost:5006/updateTutor/";
+                    // const response =
+                    //     fetch(get_all_URL + `/${this.tutorID}`)
+                    //     .then(response => response.json())
+                    //     .then(data => {
+                    //         console.log(response);
+                    //         console.log("meep");
+                    //         if (data.code === 404) {
+                    //             // no book in db
+                    //             this.message = data.message;
+                    //         } else {
+                    //             console.log(data);
+                    //             this.tutorName = data.tutorData.tutorName;
+                    //             this.tutorEmail = data.tutorData.tutorEmail;
+                    //             this.tutorPwd = data.tutorData.passw;
+                    //             this.tutorPhone = data.tutorData.tutorPhone;
+                    //             this.location = data.tutorData.loc;
+                    //             this.expectedPrice = data.tutorData.priceRange;
+                    //             this.tutorBio = data.tutorData.portfolio;
+
+                    //         }
+                    //     })
+                    //     .catch(error => {
+                    //         // Errors when calling the service; such as network error, 
+                    //         // service offline, etc
+                    //         console.log(this.message + error);
+                    //     });
+                    //prepares posting data
+                    console.log("hello");
+                    let jsonData = JSON.stringify({
+                        tutorID: 1,
+                        "assignments": [],
+                        message: "There is a problem retrieving the assignment data, please try again later.",
+                        tutorName: this.tutorName,
+                        tutorEmail: this.tutorEmail,
+                        tutorPwd: this.tutorPwd,
+                        tutorPhone: this.tutorPhone,
+                        location: this.location,
+                        tutorBio: this.tutorBio,
+                        expectedPrice: this.expectedPrice,
+                    });
+                    //posts creates a new assignment
+                    fetch(`http://localhost:5006/updateTutor/1`, {
+                            method: "PUT",
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            body: jsonData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                            result = data.data;
+                            console.log(result);
+                            this.getAllAssignments();
+                            // 3 cases
+                            switch (data.code) {
+                                case 201:
+                                    // this.assignmentAdded = true;
+
+                                    // refresh assignment list
+                                    alert("meeeeep")
+
+
+                                    //                 // an alternate way is to add this one element into this.books
+                                    //                 break;
+                                    //             case 400:
+                                    //             case 500:
+                                    //                 this.addAssignmentError = data.message;
+                                    //                 break;
+                                    //             default:
+                                    //                 throw `${data.code}: ${data.message}`;
+                            }
+                        })
+                },
+                created: function () {
+                    // on Vue instance created, load the book list
+                    this.getAllAssignments();
+                    this.processForm();
+                },
             }
         });
     </script>
