@@ -30,7 +30,7 @@ class Assignment(db.Model):
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
     preferredDay = db.Column(db.String(90), nullable=False)
     tutorID = db.Column(db.Integer, default=0)
-    offers = relationship('Offer', cascade="all, delete-orphan")
+    # offers = relationship('Offer', cascade="all, delete-orphan")
     def __init__(self, assignmentId, userID, childName, primary, level, subject, expectedPrice, preferredDay, tutorID):
         self.assignmentId = assignmentId
         self.userID = userID
@@ -205,6 +205,7 @@ def update_assignment(assignmentId):
         ), 500
 
 # DELETE an assignment by its ID
+#@JOEL PLS MAKE THIS FUNCTION TO GO THROUGH EACH OFFER WITH THIS ID AND DELETE IT
 @app.route("/deleteAssignment/<int:assignmentId>", methods=['DELETE'])
 def delete_assignment(assignmentId):
     try:
