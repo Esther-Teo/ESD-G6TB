@@ -149,7 +149,7 @@ def check_user():
     # print(data)
     email = data['userEmail']
     # email= "mikescarn@gmail.com"
-    passw = data['passw']
+    passw = data['password']
     # passw="helps"
     try:
         res = User.query.filter_by(userEmail=email, passw=passw).first()
@@ -172,7 +172,8 @@ def check_user():
         return jsonify(
             {
                 "code": 404,
-                "message": "There was an error" + str(e)
+                "message": "There was an error" + str(e),
+                "display": "none found"
             }), 404
 
 # Update user details using UserID --> PUT

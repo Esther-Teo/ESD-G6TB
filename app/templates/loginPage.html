@@ -1,9 +1,3 @@
-<!-- <?php
-    if(!isset($_SESSION))
-    {
-      session_start();
-    }
-?> -->
 
 
 <!DOCTYPE html>
@@ -42,14 +36,11 @@
 
                 </div>
                 <div class="col-lg-6 col-md-12 form-container">
-                    <div class="col-lg-8 col-md-12 col-sm-9 col-xs-12 form-box text-center">
-                        <div class="logo mb-3">
-                            
-                        </div>
-                        <div class="heading mb-4">
+                    <div class="col-lg-8 col-md-12 col-sm-9 col-xs-12 form-box text-center" id="formallyYours">
+                        <div class="heading mb-4" id="display">
                             <h4>Login into your account</h4>
                         </div>
-                        <form method="post" action="database/login.php">
+                        <form method="post" action="database/login.php" >
                             <div class="form-input">
                                 <input type="email" name="email" id="email" placeholder="Email Address" required>
                             </div>
@@ -57,34 +48,10 @@
               
                                 <input type="password" name="password" id="password" placeholder="Password" required>
                             </div>
-<!-- 
-                            <?php
-                                if(isset($_SESSION["error"]))
-                                {
-                                  if($_SESSION["error"] == "You have entered the wrong email / password!")
-                                  {
-                                    echo "<div style=' color: yellow;'>Incorrect email or password</div><br>";
-                                    $_SESSION["error"] = "";
-                                  }
-                              
-                                  
-                                }
-                            ?>
- -->
 
-                            <div class="row mb-3">
-                                <div class="col-6 d-flex">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="cb1">
-                                        <label class="custom-control-label text-white" for="cb1">Remember me</label>
-                                    </div>
-                                </div>
-                                <div class="col-6 text-right">
-                                    <!-- For forget password if needed-->
-                                </div>
-                            </div>
+
                             <div class="text-left mb-3">
-                                <button type="button" class="btn" id="login">Login</button>
+                                <button type="button" class="btn" id="login" onclick="checkUser();checkTutor();">Login</button>
                             </div>
                             <div class="text-left mb-3 g-signin2" data-onsuccess="onSignIn">
                               <!-- for google log in button  -->
@@ -105,13 +72,59 @@
         });
         </script>
         <script>
+          var tutorCheck = "";
+          var UserCheck = "";
+          function checkTutor() {
+            email = document.getElementById('email').value
+            pass = document.getElementById('password').value
+            // data to be sent to the POST request
+            var login = {
+              tutorEmail: email,
+              password: pass
+            }
+            fetch('http://localhost:5006/tutorcheck', {
+              method: "POST",
+              body: JSON.stringify(login),
+              headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json()) 
+            .then(json => {
+              console.log(json); 
+              console.log("lol"); 
+              console.log(json.data.userID);
+              $.post("loginPage.html", {tutorId:json.data.tutorID, tutorEmail:json.data.tutorEmail, tutorName:json.data.tutorName});
+              var check = "user";
+              switch (json.code) {
+                    case 200:
+                        alert("yayyyyy")
+
+                        // refresh assignment list
+                        // alert("meeeeep")
+                        document.getElementById("formallyYours").innerHTML=`<h4>Your login was successful!</h4><p>You will be redirected in a moment</p>`;
+                        window.setTimeout(function(){
+                            // Move to a new location or you can do something else
+
+                            window.location.href = "tutorDashboard.html";
+                        }, 5000);
+                        // an alternate way is to add this one element into this.books
+                        break;
+                    default:
+                        document.getElementById("display").innerHTML = `<h4>Login into your account</h4><p style="color:red">Could not authenticate. Please try again!</p>`
+                        throw `${json.code}: ${json.message}`;
+                }
+
+
+            }) 
+            .catch(err => console.log(err));
+
+          }
           document.getElementById('login').addEventListener('click',function(event) {
             event.preventDefault();
             //using fetch, check if there is a user in the database 
             email = document.getElementById('email').value
             pass = document.getElementById('password').value
             // data to be sent to the POST request
-            let login = {
+            var login = {
               userEmail: email,
               password: pass
             }
@@ -128,30 +141,32 @@
               console.log(json.data.userID);
               $.post("loginPage.html", {userID:json.data.userID, userEmail:json.data.userEmail, userName:json.data.userName});
               var check = "user";
+              switch (json.code) {
+                    case 200:
+                        alert("yayyyyy")
+
+                        // refresh assignment list
+                        // alert("meeeeep")
+                        document.getElementById("formallyYours").innerHTML=`<h4>Your login was successful!</h4><p>You will be redirected in a moment</p>`;
+                        window.setTimeout(function(){
+                            // Move to a new location or you can do something else
+
+                            window.location.href = "dashboardUser.html";
+                        }, 5000);
+                        // an alternate way is to add this one element into this.books
+                        break;
+                    default:
+                        checkTutor();
+                        throw `${json.code}: ${json.message}`;
+                }
+
+
             }) 
-            .catch(err => console.log(err));
-            // const response =
+            .catch(err => {
+            console.log(err);
+            checkTutor()
+            });
 
-            //     fetch(get_all_URL+`/${this.userID}`)
-            //         .then(response => response.json())
-            //         .then(data => {
-            //             console.log(response);
-            //             console.log("meep");
-            //             console.log(data.assignments)
-            //             if (data.code === 404) {
-            //                 // no book in db
-            //                 this.message = data.message;
-            //             } else {
-            //                 this.subject = data.data.subjects;
-                            
-            //             }
-            //         })
-            //         .catch(error => {
-            //             // Errors when calling the service; such as network error, 
-            //             // service offline, etc
-            //             console.log(this.message + error);
-
-            //         });
             
           })
 
@@ -161,18 +176,9 @@
             // can get data directly by doing googleUser.getBasicProfile()['At'] --> email 
           }
         </script>
-        <?php
-        $_SESSION['userID'] = $_POST['userID'];
-        $_SESSION['userName'] = $_POST['userName'];
-        $_SESSION['userEmail'] = $_POST['userEmail'];
-        ?>
+
         <!-- check if user or tutor and redirect respectively NOT DONE -->
         <script>
-          console.log(check);
-          alert("meep");
-        if (check=="user") {
-          window.location = `dashboardUser.html`
-        }
         </script>
         
     </body>
