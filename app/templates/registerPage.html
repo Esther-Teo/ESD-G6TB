@@ -17,6 +17,7 @@
         <link rel="stylesheet" href="../static/styles/testHome.css">
         <link rel="stylesheet" href="../static/styles/homeresponsive.css">
         <link rel="stylesheet" href="../static/styles/loginRegister.css">
+        <link rel="stylesheet" href="../static/styles/stripe.css">
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
@@ -99,7 +100,7 @@
             </div>
         </div>
 
-        <!-- Modal -->
+        <!-- Modal FOR STRIPE CONNECT -->
     <div class="modal fade" id="stripeModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -110,16 +111,17 @@
               </button>
             </div>
             <div class="modal-body">
-              meeeeeeeppppp add your button somewhere i guess
+              By registering with our platform, we charges a 5% commision on all payments made to keep our servers running. All tutors are requried to onboard with their stripe account in order to receive payment. 
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+              <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+              <a class="stripe-connect" id="connect"><span>Connect with </span></a>
             </div>
           </div>
         </div>
       </div>
-
+<!-- END OF MODAL  -->
       <script src="//code.jquery.com/jquery.min.js"></script>
       <!-- FIX NAVBAR AFTER SESSION!!! -->
       <script>
@@ -135,6 +137,8 @@
         document.getElementById("buttonUp").style.display="none";
     }
     // @SOONZZZZZZ PLS THROW YOUR FANCY CONNECTSTRIPE BELOW HERE
+    // NOOO i am putting it under the modal m8 can't stop me :D 
+    // but i think the flow a bit weird. but it's fine as long as it works lol. 
     function tutorClicked(){
         document.getElementById("different").innerHTML = `<button type="button" class="btn" data-toggle="modal" data-target="#stripeModal">Sign Up</button>`;
         document.getElementById("formallyYours").style.display="block";
@@ -142,10 +146,44 @@
     }
 
 
-        
-        var user_URL = "http://localhost:5004/createUser";
-        var tutor_URL = `http://localhost:5004/seeChild`
-  
+    // hardcoded URL 
+    var user_URL = "http://localhost:5004/createUser";
+    var tutor_URL = `http://localhost:5004/seeChild`; 
+    // var stripe_url = "http://localhost:5000/onboard-user";
+    var stripe_url="http://127.0.0.1:5000/onboard-user"
+
+    let elmButton = document.getElementById('connect');
+    console.log(elmButton);
+    if (elmButton) {
+    elmButton.addEventListener(
+        "click",
+        e => {
+        elmButton.setAttribute("disabled", "disabled");
+        elmButton.textContent = "Opening...";
+
+        fetch(stripe_url, {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+            if (data.url) {
+                window.location = data.url;
+            } else {
+                elmButton.removeAttribute("disabled");
+                elmButton.textContent = "<Something went wrong>";
+                console.log("data", data);
+            }
+            });
+        },
+        false
+    );
+    }
+
+    
+
     //NOT DONE SETTING UP POST INFO!!!!!! @ALL             
     function createUser(){
         

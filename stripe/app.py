@@ -8,6 +8,7 @@ import string
 from dotenv import load_dotenv, find_dotenv
 #dotenv is for env file. Keys are hardcoded first. configure later. 
 from flask import Flask, jsonify, request, render_template, url_for , redirect , session , send_from_directory, Response
+from flask_cors import CORS
 # r = requests.get('https://httpbin.org/get')
 # print(r.status_code)
 
@@ -15,7 +16,7 @@ app = Flask(__name__)
 # test='sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xMQlTycj80UGIpPWkw7BxO23cTlKRCJlUc3ll00ntxbvemn'
 # tess='sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xMQlTycj80UGIpPWkw7BxO23cTlKRCJlUc3ll00ntxbvemn'
 # using testing environment
-
+CORS(app)
 app.config['STRIPE_PUBLIC_KEY'] = "pk_test_51Ib4VfBvhmRsAY8LWdqkxz5jziPQ1YmxCjuFHuQCaJyMNjoJSipniNaC1lh9ZocTLnpaxVWwgKkFSeX76ACHNqZP007ogKEoHo",
 app.config['STRIPE_SECRET_KEY'] = 'sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xMQlTycj80UGIpPWkw7BxO23cTlKRCJlUc3ll00ntxbvemn',
 app.config['STRIPE_WEBHOOK_SECRET'] = "whsec_UixySdHiQLuh62bwkQiVxWBupQ2j9skd"
@@ -77,7 +78,7 @@ def success():
 
 #ONBOARDING 
 
-@app.route('/onboard-user', methods=['POST'])
+@app.route('/onboard-user', methods=['GET','POST'])
 def onboard_user():
     account = stripe.Account.create(type='standard')
     # Store the account ID.
@@ -115,8 +116,9 @@ def _generate_account_link(account_id, origin):
         # refresh_url=f'{origin}/onboard-user/refresh',
         # return_url=f'{origin}/success.html',
         
-        refresh_url=f'{origin}/onboard-user/refresh',
-        return_url=f'{origin}/success.html',
+        # refresh_url=f'{origin}/onboard-user/refresh',
+        refresh_url=f'http://127.0.0.1:5000/onboard-user/refresh',
+        return_url=f'{origin}/ESD/ESD-G6TB/app/templates/registerPage.html',
    
     )
     print(origin)
