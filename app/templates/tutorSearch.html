@@ -7,27 +7,28 @@
 
         <!-- development version, includes helpful console warnings -->
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-        <link rel="stylesheet" href="css/allListings.css">
+        <link rel="stylesheet" href="../static/styles/allListings.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <script src="https://use.fontawesome.com/a64b47fd82.js"></script>
-        <link rel="stylesheet" href="css/testHome.css">
-        <link rel="stylesheet" href="css/homeresponsive.css">
+        <link rel="stylesheet" href="../static/styles/testHome.css">
+        <link rel="stylesheet" href="../static/styles/homeresponsive.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
         <title>Search Tutor</title>
         <style>
-          #pic{
-              background-image: url("images/emailDefault.jpg");
+          .pic{
+              background-image: url("../images/emailDefault.jpg");
+              background-repeat: no-repeat;
               background-size: contain;
               height: 100%;
           }
           .p-2{
               height: 400px;
           }
-          #midText{
+          .midText{
               background-color: #FAFAFA;
               width: 100%;
               text-align: center;
@@ -37,13 +38,19 @@
           .black{
               color: black;
           }
+
+          .scrollable{
+            overflow-y: auto;
+            max-height: 360px;
+            
+            }
       </style>
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
    
     <body class="body1" >
         
-    <div id="navbar"></div>      
+    <div class="black" id="navbar"></div>      
     
         <div class="overlay" id="app">
             <h1 class='mt-3 header text-center display-4'>Tutor Search</h1>
@@ -51,19 +58,20 @@
                 
                 <div class="d-flex bd-highlight container">
                 <!-- separate the cards from the expanded portion -->
-                    <div id="tutorcard" class="bd-highlight overflow-auto">
+                    <div id="tutorcard" class="bd-highlight scrollable">
                         
                     </div>
-                    <div class="p-2 flex-grow-1 bd-highlight" >
+                    <div class="mx-3 flex-grow-1 bd-highlight midText">
                         <!-- add placeholder here -->
-                        <div class="position-relative" id="expandedInfo" id="pic" >
-                            <div>
-                                <div class="position-absolute top-50 start-50 translate-middle" id="midText"  >
-                                    <h1>No assignments currently selected</h1>
+                        <div class="position-relative mx-5 pic" id="expandedInfo">
+                            <div >
+                                <div class="position-absolute top-50 start-50 translate-middle" >
+                                    <h1 >No assignments currently selected</h1>
                                 </div>
-                                    
+
+                                
+                                
                             </div>
-            
                         </div>
                     </div>
                     
@@ -74,16 +82,20 @@
         </div>
         <script>
             function toBeExpanded(userID){
-                document.getElementById('expandedInfo').innerHTML = 
-                            `
-                            <div>
-                                <div class="position-absolute top-50 start-50 translate-middle" id="midText">
-                                    <h1>No assignments currently selected</h1>
-                                </div>
+                
+                // document.getElementById('expandedInfo').innerHTML = 
+                //             `
+                //             <div>
+                //                 <div class="position-absolute top-50 start-50 translate-middle" id="midText">
+                //                     <h1>No assignments currently selected</h1>
+                //                     <div id="pic"></div>
+                //                 </div>
                                     
-                            </div>
-                            `;
-                    alert('button is clicked mofo');
+                //             </div>
+                //             `;
+                //     alert('button is clicked mofo');
+                var element = document.getElementById("expandedInfo");
+                element.classList.remove("pic");
 
                     const response =
                     fetch(get_user_URL+`/${userID}`)
@@ -132,7 +144,7 @@
                                 // alert(primary1)
                                 //alert(assignmentID);
                                 document.getElementById("expandedInfo").innerHTML = `
-                                <div class="black">
+                                <div class="black" style="text-align:left;">
                                     <h1>You have selected an assignment!</h1>
                                     The tutee details are: 
                                     <ul>
@@ -148,6 +160,10 @@
                                         <li>Parent's Email: ${parentEmail}</li>
                                         <li>Parent's location: ${location}</li>
                                     </ul>
+
+                                    <div>
+                                        <button type="button" class="btn btn-outline-success mb-3">Apply Now! </button>
+                                    </div>
                                 </div>
                                 `;
                                 
@@ -251,8 +267,8 @@
                                     
                                         <div class="card border-dark mb-3" style="max-width: 18rem;">
                                             <div class="card-header black" style="text-align:center;">Assignment Details </div>
-                                            <div class="card-body black" style="text-align:center;"><b>${primary} ${level} ${subject}</b> Tuition Offer
-                                                Amount offered: $${price}/hour
+                                            <div class="card-body black" style="text-align:center;"><b>${primary} ${level} ${subject}</b> Tuition
+                                                <p>Amount Offered: $${price}0/hour</p>
                                                 
                                             
                                             </div>
