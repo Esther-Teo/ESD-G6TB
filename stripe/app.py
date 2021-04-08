@@ -3,34 +3,56 @@ import json
 import stripe
 import random
 import string
-
+import logging # Use this maybe. Think about it. for not it us unused.  
 # i don't think i need send for directory?? Use it later when deploying live. 
 # from dotenv import load_dotenv, find_dotenv
 #dotenv is for env file. Keys are hardcoded first. configure later. 
 from flask import Flask, jsonify, request, render_template, url_for , redirect , session , send_from_directory, Response
 from flask_cors import CORS
+from flask_rabmq import RabbitMQ # trying this instead of PIKA. 
+# import pika  
 # r = requests.get('https://httpbin.org/get')
 # print(r.status_code)
+
 
 app = Flask(__name__)
 # test='sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xMQlTycj80UGIpPWkw7BxO23cTlKRCJlUc3ll00ntxbvemn'
 # tess='sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xMQlTycj80UGIpPWkw7BxO23cTlKRCJlUc3ll00ntxbvemn'
 # using testing environment
 CORS(app)
+
+#ALL CONFIG
+# Stripe config  
 app.config['STRIPE_PUBLIC_KEY'] = "pk_test_51Ib4VfBvhmRsAY8LWdqkxz5jziPQ1YmxCjuFHuQCaJyMNjoJSipniNaC1lh9ZocTLnpaxVWwgKkFSeX76ACHNqZP007ogKEoHo",
 app.config['STRIPE_SECRET_KEY'] = 'sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xMQlTycj80UGIpPWkw7BxO23cTlKRCJlUc3ll00ntxbvemn',
 app.config['STRIPE_WEBHOOK_SECRET'] = "whsec_UixySdHiQLuh62bwkQiVxWBupQ2j9skd"
+# AMQP Config 
+# app.config.setdefault('RABMQ_RABBITMQ_URL', 'amqp://username:password@ip:port/dev_vhost')
+app.config.setdefault('RABMQ_RABBITMQ_URL', 'amqp://guest:guest@localhost:15672')
+app.config.setdefault('RABMQ_SEND_EXCHANGE_NAME', 'payment_exchange')
+app.config.setdefault('RABMQ_SEND_EXCHANGE_TYPE', 'topic')
+app.config.setdefault('RABMQ_SEND_POOL_SIZE', 2)
+app.config.setdefault('RABMQ_SEND_POOL_ACQUIRE_TIMEOUT', 5)
+
 # config is an object for flask
 # The config is actually a subclass of a dictionary and can be modified just like any dictionary
+
+
+# AMQP 
+ramq = RabbitMQ()
+ramq.init_app(app=app)
+
+
 
 # use secret key in the app
 
 PUBLIC='pk_test_51Ib4VfBvhmRsAY8LWdqkxz5jziPQ1YmxCjuFHuQCaJyMNjoJSipniNaC1lh9ZocTLnpaxVWwgKkFSeX76ACHNqZP007ogKEoHo'
 SECRET='sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xMQlTycj80UGIpPWkw7BxO23cTlKRCJlUc3ll00ntxbvemn'
 WEBHOOK='whsec_UixySdHiQLuh62bwkQiVxWBupQ2j9skd'
-# wtf app.config dont work?? 
+# wtf app.config dont work for stripe?? 
 # stripe.api_key = app.config['STRIPE_SECRET_KEY']
 stripe.api_key = 'sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xMQlTycj80UGIpPWkw7BxO23cTlKRCJlUc3ll00ntxbvemn'
+
 
 
 
@@ -178,6 +200,7 @@ def create_payment():
         return jsonify(error=str(e)), 403
 
 # this calls my all connected account to my stripe connect currently theres one
+# Fix this shit later
 @app.route("/recent-accounts", methods=["GET"])
 def get_accounts():
     accounts = stripe.Account.list(limit=100)
@@ -221,15 +244,29 @@ def webhook_received():
 
   return json.dumps({"success": True}), 200
 
-
+@ramq.queue(exchange_name='payment_exchange', routing_key='flask_rabmq.pay_successful')
 def handle_successful_payment_intent(payment_intent):
   # dump the response. 
   # configure to some sucess page 
-  print('PaymentIntent: ' + str(payment_intent))
+
+      # send message
+    ramq.send({'message_id': 23123,'tester':7}, routing_key='flask_rabmq.test', exchange_name='flask_rabmq')
+    # delay send message, expiration second(support float).
+    # ramq.delay_send({'message_id': 333333, 'a': 7}, routing_key='flask_rabmq.test', exchange_name='flask_rabmq',
+    #                 delay=10)
+    print('PaymentIntent: ' + str(payment_intent))
+    return "sent!!"
+
+
   
+# @ramq.queue(exchange_name='payment_exchange', routing_key='flask_rabmq.fail')
+# def broker_successful_payment_intent(payment_intent):
+#     if amqp_setup.channel.basic_public(exchange=amqp_setup.exchangename, routing_key="pay_successful")
+
 
 
 
 if __name__ == '__main__':
+    ramq.run_consumer()
 
     app.run(debug=True, port=5007)
