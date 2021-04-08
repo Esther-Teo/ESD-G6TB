@@ -364,4 +364,4 @@ def update_subject_details(tutorID, subjectId):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5063, debug=True)
+    app.run(host='0.0.0.0', port=5006, debug=True)
