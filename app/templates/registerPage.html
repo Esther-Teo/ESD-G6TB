@@ -140,7 +140,7 @@
     // NOOO i am putting it under the modal m8 can't stop me :D 
     // but i think the flow a bit weird. but it's fine as long as it works lol. 
     function tutorClicked(){
-        document.getElementById("different").innerHTML = `<button type="button" class="btn" data-toggle="modal" data-target="#stripeModal">Sign Up</button>`;
+        document.getElementById("different").innerHTML = `<button type="button" class="btn" onclick="storeData()" data-toggle="modal" data-target="#stripeModal">Sign Up</button>`;
         document.getElementById("formallyYours").style.display="block";
         document.getElementById("buttonUp").style.display="none";
     }
@@ -148,9 +148,9 @@
 
     // hardcoded URL 
     var user_URL = "http://localhost:5004/createUser";
-    var tutor_URL = `http://localhost:5004/seeChild`; 
+    // var tutor_URL = `http://localhost:5004/seeChild`; 
     // var stripe_url = "http://localhost:5000/onboard-user";
-    var stripe_url="http://127.0.0.1:5000/onboard-user"
+    var stripe_url="http://127.0.0.1:5006/onboard-user"
 
     let elmButton = document.getElementById('connect');
     console.log(elmButton);
@@ -181,8 +181,21 @@
         false
     );
     }
-
-    
+    function storeData(){
+        var id = Math.floor((Math.random() * 696969) + 1);
+        var name = document.getElementById("username").value;
+        var email = document.getElementById("email").value;
+        var pwd = document.getElementById("password").value;
+        var phoneNo = document.getElementById("phoneNumber").value;
+        var location = document.getElementById("location").value;
+        document.cookie = `id=${id}; path=registerTutorFallback.html`;
+        document.cookie = `name=${name}; path=registerTutorFallback.html`
+        document.cookie = `email=${email}; path=registerTutorFallback.html` 
+        document.cookie = `pwd=${pwd}; path=registerTutorFallback.html`
+        document.cookie = `phoneNo=${phoneNo}; path=registerTutorFallback.html`
+        document.cookie = `location=${location}; path=registerTutorFallback.html`
+        "document.cookie = " + document.cookie
+    }
 
     //NOT DONE SETTING UP POST INFO!!!!!! @ALL             
     function createUser(){

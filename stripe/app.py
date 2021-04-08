@@ -5,7 +5,7 @@ import random
 import string
 
 # i don't think i need send for directory?? Use it later when deploying live. 
-from dotenv import load_dotenv, find_dotenv
+# from dotenv import load_dotenv, find_dotenv
 #dotenv is for env file. Keys are hardcoded first. configure later. 
 from flask import Flask, jsonify, request, render_template, url_for , redirect , session , send_from_directory, Response
 from flask_cors import CORS
@@ -232,4 +232,4 @@ def handle_successful_payment_intent(payment_intent):
 
 if __name__ == '__main__':
 
-    app.run(debug=True)
+    app.run(debug=True, port=5006)

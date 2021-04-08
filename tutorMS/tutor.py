@@ -14,7 +14,7 @@ CORS(app)
 
 class Tutor(db.Model):
     __tablename__ = 'tutor'
-    tutorId = db.Column(db.Integer, primary_key=True)
+    tutorID = db.Column(db.Integer, primary_key=True)
     tutorName = db.Column(db.String(100), nullable=False)
     tutorEmail = db.Column(db.String(100), nullable=False)
     passw = db.Column(db.String(100), nullable=False)
@@ -23,8 +23,8 @@ class Tutor(db.Model):
     portfolio = db.Column(db.Text(1000))
     priceRange = db.Column(db.INTEGER, nullable=False)
 
-    def __init__(self, tutorId, tutorName, tutorEmail, passw, tutorPhone, loc, portfolio, priceRange):
-        self.tutorId = tutorId
+    def __init__(self, tutorID, tutorName, tutorEmail, passw, tutorPhone, loc, portfolio, priceRange):
+        self.tutorID = tutorID
         self.tutorName = tutorName
         self.tutorEmail = tutorEmail
         self.passw = passw
@@ -35,7 +35,7 @@ class Tutor(db.Model):
 
     def json(self):
         return { 
-            "tutorId": self.tutorId,
+            "tutorID": self.tutorID,
             "tutorName": self.tutorName, 
             "tutorEmail": self.tutorEmail, 
             "passw": self.passw, 
@@ -47,15 +47,15 @@ class Tutor(db.Model):
 
 class TutorSubjects(db.Model):
     __tablename__ = 'tutorSubjects'
-    tutorId = db.Column(db.Integer, db.ForeignKey('tutor.tutorId', ondelete="CASCADE"), primary_key=True)
+    tutorID = db.Column(db.Integer, db.ForeignKey('tutor.tutorID', ondelete="CASCADE"), primary_key=True)
     subjectId = db.Column(db.Integer, nullable=False, primary_key=True)
     pri = db.Column(db.Boolean, nullable=False)
     lvl = db.Column(db.Integer, nullable=False)
     subjects = db.Column(db.String(100), nullable=False)
     user = relationship('Tutor', backref='tutorSubjects')
 
-    def __init__(self, tutorId, subjectId, pri, lvl, subjects):
-        self.tutorId = tutorId
+    def __init__(self, tutorID, subjectId, pri, lvl, subjects):
+        self.tutorID = tutorID
         self.subjectId = subjectId
         self.pri = pri
         self.lvl = lvl
@@ -63,7 +63,7 @@ class TutorSubjects(db.Model):
 
     def json(self):
         return { 
-            "tutorId": self.tutorId, 
+            "tutorID": self.tutorID, 
             "subjectId": self.subjectId, 
             "pri": self.pri, 
             "lvl": self.lvl, 
@@ -78,12 +78,12 @@ def get_all():
 	return jsonify({"tutors": [tutor.json() for tutor in Tutor.query.all()]})
 
 # gets one tutor + his subjects by his id
-@app.route("/tutor/<int:tutorId>",methods=['GET'])
-def find_by_tutorId(tutorId):
+@app.route("/tutor/<int:tutorID>",methods=['GET'])
+def find_by_tutorId(tutorID):
     try:
-        tutorList = Tutor.query.filter_by(tutorId = tutorId).first()
+        tutorList = Tutor.query.filter_by(tutorID = tutorID).first()
         print(tutorList)
-        subject = TutorSubjects.query.filter_by(tutorId = tutorId).all()
+        subject = TutorSubjects.query.filter_by(tutorID = tutorID).all()
         print(subject)
         
         if tutorList:
@@ -99,7 +99,7 @@ def find_by_tutorId(tutorId):
             {
                 "code": 404,
                 "data": {
-                    "tutorID": tutorId
+                    "tutorID": tutorID
                 },
                 "message": "Couldn't find tutor." + str(e)
             }
@@ -110,29 +110,29 @@ def find_by_tutorId(tutorId):
 def add_tutor():
     try:
         data = request.get_json()
-        tutorId = data.tutorId
-        if (Tutor.query.filter_by(tutorId=tutorId).first()):
+        tutorID = data['tutorID']
+        if (Tutor.query.filter_by(tutorID=tutorID).first()):
             return jsonify(
                 {
                     "code": 400,
                     "data": {
-                        "tutorId": tutorId
+                        "tutorID": tutorID
                     },
                     "message": "Tutor already exists."
                 }
             ), 400
         
-        tutor = Tutor(tutorId, data['tutorName'], data['tutorEmail'], data['passw'], data['tutorPhone'], data['loc'], data['portfolio'], data['priceRange'])
-        subject = TutorSubjects(tutorId, data['subjectId'], data['pri'], data['lvl'], data['subjects'])
+        tutor = Tutor(tutorID, data['tutorName'], data['tutorEmail'], data['passw'], data['tutorPhone'], data['loc'], data['portfolio'], data['priceRange'])
+        # subject = TutorSubjects(tutorID, data['subjectId'], data['pri'], data['lvl'], data['subjects'])
         db.session.add(tutor)
-        db.session.add(subject)
+        # db.session.add(subject)
         db.session.commit()
     except Exception as e:
         return jsonify(
             {
                 "code": 500,
                 "data": {
-                    "tutorId": tutorId
+                    "tutorID": tutorID
                 },
                 "message": "An error occurred creating the tutor account. " + str(e)
             }
@@ -142,21 +142,21 @@ def add_tutor():
         {
             "code": 201,
             "data": tutor.json(),
-            "subject": subject.json()
+            # "subject": subject.json()
         }
     ), 201
 
 # edits a tutor with the given tutorid
-@app.route("/updateTutor/<int:tutorId>",methods=['PUT'])
-def update_tutor_details(tutorId):
+@app.route("/updateTutor/<int:tutorID>",methods=['PUT'])
+def update_tutor_details(tutorID):
     try:
-        tutor = Tutor.query.filter_by(tutorId=tutorId).first()
+        tutor = Tutor.query.filter_by(tutorID=tutorID).first()
         if not tutor:
             return jsonify(
                 {
                     "code": 404,
                     "data": {
-                        "tutorId": tutorId
+                        "tutorID": tutorID
                     },
                     "message": "Tutor not found."
                 }
@@ -190,7 +190,7 @@ def update_tutor_details(tutorId):
             {
                 "code": 500,
                 "data": {
-                    "tutorId": tutorId
+                    "tutorID": tutorID
                 },
                 "message": "An error occurred while updating the tutor details. " + str(e)
             }
@@ -214,7 +214,7 @@ def check_tutor():
                     "code": 200,
                     "data": {
                         "message":"meep",
-                        "tutorId": res.tutorId,
+                        "tutorID": res.tutorID,
                         "tutorName": res.tutorName,
                         "tutorEmail": res.tutorEmail
                     },
@@ -230,9 +230,9 @@ def check_tutor():
             }), 404
 
 # gets the list of subjects by tutor
-@app.route("/subjectByTutor/<int:tutorId>")
-def get_tutorSubject(tutorId):
-    subjectList = TutorSubjects.query.filter_by(tutorId=tutorId)
+@app.route("/subjectByTutor/<int:tutorID>")
+def get_tutorSubject(tutorID):
+    subjectList = TutorSubjects.query.filter_by(tutorID=tutorID)
     if subjectList:
         return jsonify(
             {
@@ -250,22 +250,22 @@ def get_tutorSubject(tutorId):
     ), 404
 
 # creates a subject from the tutor
-@app.route("/addSubject/<string:tutorId>", methods=['POST'])
-def add_tutorSubject(tutorId):
+@app.route("/addSubject/<string:tutorID>", methods=['POST'])
+def add_tutorSubject(tutorID):
 
     data = request.get_json()
     subjectId = data['subjectId']
-    if (TutorSubjects.query.filter_by(tutorId=tutorId, subjectId=subjectId).first()):
+    if (TutorSubjects.query.filter_by(tutorID=tutorID, subjectId=subjectId).first()):
         return jsonify(
             {
                 "code": 400,
                 "data": {
-                    "tutorId": tutorId
+                    "tutorID": tutorID
                 },
                 "message": "Subject already exists."
             }
         ), 400
-    subject = TutorSubjects(tutorId, subjectId, data['pri'], data['lvl'], data['subjects'])
+    subject = TutorSubjects(tutorID, subjectId, data['pri'], data['lvl'], data['subjects'])
     try:
         db.session.add(subject)
         db.session.commit()
@@ -274,7 +274,7 @@ def add_tutorSubject(tutorId):
             {
                 "code": 500,
                 "data": {
-                    "tutorId": tutorId
+                    "tutorID": tutorID
                 },
                 "message": "An error occurred creating the tutor subject."
             }
@@ -288,10 +288,10 @@ def add_tutorSubject(tutorId):
     ), 201
 
 # deletes a subject by the tutorid and subject id
-@app.route("/deleteSubject/<int:tutorId>/<int:subjectId>", methods=['DELETE'])
-def delete_subject(tutorId, subjectId):
+@app.route("/deleteSubject/<int:tutorID>/<int:subjectId>", methods=['DELETE'])
+def delete_subject(tutorID, subjectId):
     try:
-        subject = TutorSubjects.query.filter_by(tutorId=tutorId, subjectId=subjectId).first()
+        subject = TutorSubjects.query.filter_by(tutorID=tutorID, subjectId=subjectId).first()
         if subject:
             db.session.delete(subject)
             db.session.commit()
@@ -315,11 +315,11 @@ def delete_subject(tutorId, subjectId):
         ), 404
 
 # edits a subject by tutorid and fetched data
-@app.route("/updateSubject/<int:tutorId>/<int:subjectId>",methods=['PUT'])
-def update_subject_details(tutorId, subjectId):
+@app.route("/updateSubject/<int:tutorID>/<int:subjectId>",methods=['PUT'])
+def update_subject_details(tutorID, subjectId):
     try:
 
-        subject = TutorSubjects.query.filter_by(tutorId=tutorId, subjectId=subjectId).first()
+        subject = TutorSubjects.query.filter_by(tutorID=tutorID, subjectId=subjectId).first()
         
         data = request.get_json()
 
@@ -344,7 +344,7 @@ def update_subject_details(tutorId, subjectId):
                 {
                     "code": 500,
                     "data": {
-                        "tutorId": tutorId
+                        "tutorID": tutorID
                     },
                     "message": "An error occurred while updating the tutor details. " + str(e)
                 }
@@ -355,7 +355,7 @@ def update_subject_details(tutorId, subjectId):
             {
                 "code": 404,
                 "data": {
-                    "tutorId": tutorId
+                    "tutorID": tutorID
                 },
                 "message": "Couldn't find tutor." + str(e)
             }
@@ -364,4 +364,4 @@ def update_subject_details(tutorId, subjectId):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5006, debug=True)
+    app.run(host='0.0.0.0', port=5063, debug=True)
