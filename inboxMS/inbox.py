@@ -1,49 +1,16 @@
-# import json
-# import os, sys
-
-# sys.path.insert(0, 'c:/Users/foo/Documents/GitHub/ESD-G6TB')
-# import amqpSetup
-
-# monitorBindingKey='#'
-
-# def get_inbox_msg():
-#     amqpSetup.check_setup()
-#     queue_name = "Inbox"  
-
-#     amqpSetup.channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
-#     amqpSetup.channel.start_consuming() 
-
-# def callback(channel, method, properties, body): # required signature for the callback; no return
-#     print("\nReceived inbox message by " + __file__)
-#     process_msg(body)
-#     print() 
-
-# def process_msg(inboxMsg):
-#     print("Printing inbox message:")
-#     try:
-#         msg = json.loads(inboxMsg)
-#         print("--JSON:", msg)
-#     except Exception as e:
-#         print("--NOT JSON:", e)
-#         print("--DATA:", inboxMsg)
-#     print()
-
-
-# if __name__ == "__main__":  
-#     print("\nThis is " + os.path.basename(__file__), end='')
-#     print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, amqpSetup.exchange_name))
-#     get_inbox_msg()
-
-
-#!/usr/bin/env python3
-# The above shebang (#!) operator tells Unix-like environments
-# to run this file as a python3 script
-
 import os
 from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
+from os import environ
 from flask_cors import CORS
 
 app = Flask(__name__)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/inbox'# environ.get('dbURL')
+app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
+
+db = SQLAlchemy(app)
 CORS(app)
 
 class RejectedOffer(db.Model):
@@ -51,7 +18,7 @@ class RejectedOffer(db.Model):
 
     assignmentId = db.Column(db.Integer, primary_key=True)
     userID = db.Column(db.Integer, nullable=False)
-    tutorID = db.Column(db.Integer, nullable=False)
+    tutorID = db.Column(db.Integer, primary_key=True, nullable=False)
     status = db.Column(db.String(6), nullable=False)
     selectedTime = db.Column(db.Integer, nullable=False)
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
@@ -80,48 +47,201 @@ class RejectedOffer(db.Model):
             "read": self.read
         }
 
+class CreatedOffer(db.Model):
+    __tablename__ = 'createdOffer'
 
-@app.route("/inboxUser/<int:userID>", methods=['POST'])
-def receiveOrder():
+    assignmentId = db.Column(db.Integer, primary_key=True)
+    userID = db.Column(db.Integer, nullable=False)
+    tutorID = db.Column(db.Integer, primary_key=True, nullable=False)
+    status = db.Column(db.String(6), nullable=False)
+    selectedTime = db.Column(db.Integer, nullable=False)
+    expectedPrice = db.Column(db.Float(precision=2), nullable=False)
+    preferredDay = db.Column(db.String(10), nullable=False)
+    read = db.Column(db.Boolean, nullable=False)
+ 
+    def __init__(self, assignmentId, userID, tutorID, status, selectedTime, expectedPrice, preferredDay, read):
+        self.assignmentId = assignmentId
+        self.userID = userID
+        self.tutorID = tutorID
+        self.status = status
+        self.selectedTime = selectedTime
+        self.expectedPrice = expectedPrice
+        self.preferredDay = preferredDay
+        self.read = read
+ 
+    def json(self):
+        return {
+            "assignmentId": self.assignmentId, 
+            "userID": self.userID,
+            "tutorID": self.tutorID, 
+            "status": self.status,
+            "selectedTime": self.selectedTime, 
+            "expectedPrice": self.expectedPrice, 
+            "preferredDay": self.preferredDay,
+            "read": self.read
+        }
+class AcceptedOffer(db.Model):
+    __tablename__ = 'acceptedOffer'
+
+    assignmentId = db.Column(db.Integer, primary_key=True)
+    userID = db.Column(db.Integer, nullable=False)
+    tutorID = db.Column(db.Integer, primary_key=True, nullable=False)
+    status = db.Column(db.String(6), nullable=False)
+    selectedTime = db.Column(db.Integer, nullable=False)
+    expectedPrice = db.Column(db.Float(precision=2), nullable=False)
+    preferredDay = db.Column(db.String(10), nullable=False)
+    read = db.Column(db.Boolean, nullable=False)
+ 
+    def __init__(self, assignmentId, userID, tutorID, status, selectedTime, expectedPrice, preferredDay, read):
+        self.assignmentId = assignmentId
+        self.userID = userID
+        self.tutorID = tutorID
+        self.status = status
+        self.selectedTime = selectedTime
+        self.expectedPrice = expectedPrice
+        self.preferredDay = preferredDay
+        self.read = read
+ 
+    def json(self):
+        return {
+            "assignmentId": self.assignmentId, 
+            "userID": self.userID,
+            "tutorID": self.tutorID, 
+            "status": self.status,
+            "selectedTime": self.selectedTime, 
+            "expectedPrice": self.expectedPrice, 
+            "preferredDay": self.preferredDay,
+            "read": self.read
+        }
+
+# receives and stores created offers via POST
+@app.route("/createOffer", methods=['POST'])
+def receiveCreatedOffer():
     # Check if the order contains valid JSON
-    order = None
-    if request.is_json:
-        order = request.get_json()
-        result = processOrder(order)
-        return jsonify(result), result["code"]
-    else:
-        data = request.get_data()
-        print("Received an invalid order:")
-        print(data)
-        return jsonify({"code": 400,
-                        # make the data string as we dunno what could be the actual format
-                        "data": str(data),
-                        "message": "Order should be in JSON."}), 400  # Bad Request input
+    try:
+        data = request.get_json()
+        tutorID = data['tutorID']
+        assignmentId = data['assignmentId']
+        if (CreatedOffer.query.filter_by(tutorID=tutorID, assignmentId=assignmentId).first()):
+            return jsonify(
+                {
+                    "code": 400,
+                    "data": {
+                        "tutorID": tutorID
+                    },
+                    "message": "Tutor already exists."
+                }
+            ), 400
+        
+        createdOffer = CreatedOffer(assignmentId, data['userID'], tutorID, data['status'], data['selectedTime'], data['expectedPrice'], data['preferredDay'], False)
+        # subject = TutorSubjects(tutorID, data['subjectId'], data['pri'], data['lvl'], data['subjects'])
+        db.session.add(createdOffer)
+        # db.session.add(subject)
+        db.session.commit()
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "tutorID": tutorID
+                },
+                "message": "An error occurred creating the tutor account. " + str(e)
+            }
+        ), 500
 
+    return jsonify(
+        {
+            "code": 201,
+            "data": createdOffer.json(),
+            # "subject": subject.json()
+        }
+    ), 201
 
-def processOrder(order):
-    print("Processing an order for shipping:")
-    print(order)
-    # Can do anything here, but aiming to keep it simple (atomic)
-    order_id = order['order_id']
-    # If customer id contains "ERROR", simulate failure
-    if "ERROR" in order['customer_id']:
-        code = 400
-        message = 'Simulated failure in shipping record creation.'
-    else:  # simulate success
-        code = 201
-        message = 'Simulated success in shipping record creation.'
+# receives and stores rejected offers via POST
+@app.route("/rejectOffer", methods=['POST'])
+def receiveRejectedOffer():
+    # Check if the order contains valid JSON
+    try:
+        data = request.get_json()
+        tutorID = data['tutorID']
+        assignmentId = data['assignmentId']
+        if (RejectedOffer.query.filter_by(tutorID=tutorID, assignmentId=assignmentId).first()):
+            return jsonify(
+                {
+                    "code": 400,
+                    "data": {
+                        "tutorID": tutorID
+                    },
+                    "message": "Tutor already exists."
+                }
+            ), 400
+        
+        rejectedOffer = RejectedOffer(assignmentId, data['userID'], tutorID, data['status'], data['selectedTime'], data['expectedPrice'], data['preferredDay'], False)
+        # subject = TutorSubjects(tutorID, data['subjectId'], data['pri'], data['lvl'], data['subjects'])
+        db.session.add(rejectedOffer)
+        # db.session.add(subject)
+        db.session.commit()
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "tutorID": tutorID
+                },
+                "message": "An error occurred creating the tutor account. " + str(e)
+            }
+        ), 500
 
-    print(message)
-    print()  # print a new line feed as a separator
+    return jsonify(
+        {
+            "code": 201,
+            "data": rejectedOffer.json(),
+            # "subject": subject.json()
+        }
+    ), 201
 
-    return {
-        'code': code,
-        'data': {
-            'order_id': order_id
-        },
-        'message': message
-    }
+# receives and stores accepted offers via POST
+@app.route("/acceptOffer", methods=['POST'])
+def receiveAcceptedOffer():
+    # Check if the order contains valid JSON
+    try:
+        data = request.get_json()
+        tutorID = data['tutorID']
+        assignmentId = data['assignmentId']
+        if (AcceptedOffer.query.filter_by(tutorID=tutorID, assignmentId=assignmentId).first()):
+            return jsonify(
+                {
+                    "code": 400,
+                    "data": {
+                        "tutorID": tutorID
+                    },
+                    "message": "Tutor already exists."
+                }
+            ), 400
+        
+        acceptedOffer = AcceptedOffer(assignmentId, data['userID'], tutorID, data['status'], data['selectedTime'], data['expectedPrice'], data['preferredDay'], False)
+        # subject = TutorSubjects(tutorID, data['subjectId'], data['pri'], data['lvl'], data['subjects'])
+        db.session.add(acceptedOffer)
+        # db.session.add(subject)
+        db.session.commit()
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "tutorID": tutorID
+                },
+                "message": "An error occurred creating the tutor account. " + str(e)
+            }
+        ), 500
+
+    return jsonify(
+        {
+            "code": 201,
+            "data": acceptedOffer.json(),
+            # "subject": subject.json()
+        }
+    ), 201
 
 
 
