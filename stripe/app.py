@@ -180,7 +180,7 @@ def create_payment():
 # this calls my all connected account to my stripe connect currently theres one
 @app.route("/recent-accounts", methods=["GET"])
 def get_accounts():
-    accounts = stripe.Account.list(limit=10)
+    accounts = stripe.Account.list(limit=100)
     return jsonify({'accounts': accounts})
 
 
