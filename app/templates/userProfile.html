@@ -17,9 +17,30 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
         <title>All Listings</title>
+
+        <script>
+            console.log(localStorage.getItem("userID"));
+            console.log(localStorage.getItem("userName"));
+            console.log(localStorage.getItem("email"));
+
+            var userID = localStorage.getItem("userID");
+            var userName = localStorage.getItem("userName").split(" ");
+            userName = userName[1];
+            console.log("userID: ",userID);
+            console.log("userName: ", userName);
+
+            // page must check if log in
+            // if userID is null, redirect log in page
+            //sessionStorage.clear() --> logout
+        </script>
+
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-   
+
+    
+
+    
+
     <body class="body1" >
         <div id="navbar"></div>
                     
@@ -46,7 +67,7 @@
           </br>
       </br>
         </div>
-        <script src="//code.jquery.com/jquery.min.js"></script>
+        <scrip??? src="//code.jquery.com/jquery.min.js"></scrip???>
         <script>
         $.get("navbarUser.html", function(data){
             $("#navbar").replaceWith(data);

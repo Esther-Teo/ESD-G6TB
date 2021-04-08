@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS tutorSubjects (
 --
 
 INSERT INTO tutor (tutorId, tutorName, tutorEmail, passw, tutorPhone, loc, portfolio, priceRange) VALUES
-(1, 'Bob','bob@gmail.com', '123', 9001889,'Fort Canning','Taught Sec 3 students for 1 month',100),
+(1, 'Bob','bcoskitt@gmail.com', '123', 9001889,'Fort Canning','Taught Sec 3 students for 1 month',100),
 (2, 'Tom','tom@hotmail.com','123', 999,'Dover','Taught Pri 1 students for 1 month', 160),
 (3, 'Sue','suesue@gmail.com', '123',112,'Marymount','Taught Sec 4 students for 1 month', 105),
 (4, 'Mary','MaryTan@gmail.com','123', 123,'Pasir Ris','', 125),

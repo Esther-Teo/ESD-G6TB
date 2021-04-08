@@ -176,6 +176,40 @@ def check_user():
                 "display": "none found"
             }), 404
 
+# check user google log in 
+@app.route("/googlecheck", methods=['POST', 'GET'])
+def check_google_user():
+    data = request.get_json()
+    # print(data)
+    email = data['userEmail']
+    # email= "mikescarn@gmail.com"
+    
+    try:
+        res = User.query.filter_by(userEmail=email).first()
+        if (res):
+            print(res)
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "message":"meep",
+                        "userID": res.userID,
+                        "userName": res.userName,
+                        "userEmail": res.userEmail
+                    },
+                    "message": "User authenticated."
+                }
+            ), 200
+    except Exception as e:
+
+        return jsonify(
+            {
+                "code": 404,
+                "message": "There was an error" + str(e),
+                "display": "none found"
+            }), 404
+
+
 # Update user details using UserID --> PUT
 @app.route("/editUser/<int:userID>", methods=['PUT'])
 def update_user_details(userID):
