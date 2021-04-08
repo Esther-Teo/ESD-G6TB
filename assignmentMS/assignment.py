@@ -303,34 +303,43 @@ def findO_by_assignment(assignmentId):
         return jsonify({"message": "Offer not found." + str(e)}), 404
 
 # DELETE an offer by its ID
-@app.route("/deleteOffer/<int:assignmentId>/<int:tutorID>", methods=['DELETE'])
+@app.route("/deleteOffer/<int:assignmentId>/<int:tutorID>", methods=['PUT'])
 def delete_offer(assignmentId, tutorID):
     try:
         offer = Offer.query.filter_by(assignmentId=assignmentId, tutorID=tutorID).first()
-        if offer:
-            db.session.delete(offer)
-            db.session.commit()
+        if not offer:
             return jsonify(
                 {
-                    "code": 200,
+                    "code": 404,
                     "data": {
                         "assignmentId": assignmentId,
                         "tutorID": tutorID
-                    }
+                    },
+                    "message": "Order not found."
                 }
-            )
+            ), 404
+
+        # update status
+        offer.status = "rejected"
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": offer.json()
+            }
+        ), 200
     except Exception as e:
         return jsonify(
             {
-                "code": 404,
+                "code": 500,
                 "data": {
                     "assignmentId": assignmentId,
                     "tutorID": tutorID
                 },
-                "message": "Offer had a problem deleting. " + str(e)
+                "message": "An error occurred while updating the order. " + str(e)
             }
-        ), 404
-
+        ), 500
+   
 # PUT to edit, but no use for it atm (NOT DONE!!!!!)
 @app.route("/offer/<int:assignmentId>/<int:tutorID>", methods=['PUT'])
 def update_offer(assignmentId, tutorID):
