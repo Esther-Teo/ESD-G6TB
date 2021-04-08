@@ -44,7 +44,7 @@
     
         <div class="overlay" id="app">
             <h1 class='mt-3 header text-center display-4'>Payment</h1>
-              <div id="cardsss">
+              <div class="container" id="cardsss">
                 
               </div>
             </br>
@@ -219,7 +219,7 @@
                 }
             });
             // can be used on localhost 5000
-            test_url="http://localhost:5000/connect_pay.html"
+            test_url="http://localhost:5007/connect_pay.html"
             default_url="http://127.0.0.1:5000/connect_pay.html"
             function stripe_redirect(assignmentID, tutorId, card_price){
                 console.log(assignmentID,tutorId,card_price)
