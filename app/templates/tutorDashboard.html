@@ -1,12 +1,4 @@
-<?php
-    session_start();
-    if ( !isset($_SESSION["tutor"]) ) {
-        $user = 'no';
-    }
-    else{
-        $user = $_SESSION["tutor"];
-    }
-?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -15,14 +7,14 @@
 
         <!-- development version, includes helpful console warnings -->
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-        <link rel="stylesheet" href="css/allListings.css">
+        <link rel="stylesheet" href="../static/styles/allListings.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <script src="https://use.fontawesome.com/a64b47fd82.js"></script>
-        <link rel="stylesheet" href="css/testHome.css">
-        <link rel="stylesheet" href="css/homeresponsive.css">
+        <link rel="stylesheet" href="../static/styles/testHome.css">
+        <link rel="stylesheet" href="../static/styles/homeresponsive.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
         <title>All Listings</title>
@@ -31,47 +23,7 @@
    
     <body class="body1" >
         
-        <nav class="navbar navbar-expand-lg navbar-dark bg-light" id="test1">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon" style="color: white;"></span>
-            </button>
-            <div class="collapse navbar-collapse " id="navbarNav">
-              <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                  <a class="nav-link" href="tutor.html">Home</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="tutorProfile.html">Profile</a>
-                </li>
-                <a class="nav-link" href="tutorSearch.html">Search</a>
-                </li>
-                <a class="nav-link" href="tutorOffer.html">Offers</a>
-                </li>
-            <!-- <?php 
-              //Displays different buttons depending on tutor session status (whether user is logged in or not)
-              if ( !isset($_SESSION["tutor"]) ) {
-                echo "
-                <li class='nav-item'>
-                  <a class='nav-link' href='loginPage.html' id='login'>Log In</a>
-                </li>
-                <li class='nav-item'>
-                  <a class='nav-link' href='registerPage.html' id='signup'>Sign Up</a>
-                </li>
-                ";
-              }
-              else{
-                echo "
-                <li class='nav-item'>
-                  <a class='nav-link' href='logout.php' id='login'>Log Out</a>
-                </li>
-                ";
-              }
-            ?> -->
-      
-                
-              </ul>
-            </div>
-          </nav>
+        <div id="navbarTutor"></div>
                     
     
         <div class="overlay" id="app">
@@ -87,45 +39,13 @@
         });
         </script>
 
-        <script> var user = "<?=$userID ?>"; console.log(user);</script>
-        need edit scrips
-        <!-- <script src="./js/homeui.js"></script> -->
-        <script>
+<script>
+    $.get("navbarTutor.html", function (data) {
+        $("#navbarTutor").replaceWith(data);
+    });
+</script>
 
 
-          $( ".target" ).change(function() {
-          //alert( "Now option is at Primary" );
-          document.getElementById('subjects').innerHTML='';
-          document.getElementById('subjects').innerHTML += `
-                        <option selected disabled>Choose...</option>
-                        <option value="English">English</option>
-                        <option value="Chinese">Chinese</option>
-                        <option value="Tamil">Tamil</option>
-                        <option value="Malay">Malay</option>
-                        <option value="Math">Math</option>
-                        <option value="Science">Science</option>`
-          });
-          $( ".target2" ).change(function() {
-          //alert( "Now option is at Secondary" );
-          document.getElementById('subjects').innerHTML='';
-          document.getElementById('subjects').innerHTML += `
-                        <option selected disabled>Choose...</option>
-                        <option value="English">English</option>
-                        <option value="Chinese">Chinese</option>
-                        <option value="Tamil">Tamil</option>
-                        <option value="Malay">Malay</option>
-                        <option value="A_Math">Math</option>
-                        <option value="E_Math">Math</option>
-                        <option value="Biology">Biology</option>
-                        <option value="Chemistry">Chemistry</option>
-                        <option value="Physics">Physics</option>
-                        <option value="Geography">Geography</option>
-                        <option value="History">History</option>
-                        <option value="Literature">Literature</option>
-                        <option value="Principles of Accounts">Principles of Accounts</option>`;
-          });
-          
-        </script>
         <script>
 
             var username  = '<?php echo $user;?>';

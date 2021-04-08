@@ -138,8 +138,8 @@
                         window.setTimeout(function(){
                             // Move to a new location or you can do something else
 
-                            window.location.href = "loginPage.html";
-                        }, 5000);
+                            
+                        }, 2000);
                         // an alternate way is to add this one element into this.books
                         break;
                     case 400:
@@ -153,7 +153,7 @@
                     // Errors when calling the service; such as network error, 
                     // service offline, etc
                     alert("Please complete the form before sending!");
-
+                    window.location.href = "loginPage.html";
                 });
     }
 
