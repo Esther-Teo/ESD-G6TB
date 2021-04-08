@@ -22,88 +22,7 @@
 
   </head>
   <body onload="clickSearchIcon()">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-light" id="test1">
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon" style="color: white;"></span>
-      </button>
-      <div class="collapse navbar-collapse " id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-          <!-- <li class="nav-item active">
-            <button type="button" class="btn btn-linkNav" style="margin-top: 15px; padding-top:12px;" onclick="toggleSearch()"></button>
-          </li> -->
-          <li class="nav-item active">
-            <a class="nav-link" href="index.html">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="about.html">About</a>
-          </li>
-      <?php 
-        //Displays different buttons depending on user session status (whether user is logged in or not)
-        if ( !isset($_SESSION["user"]) ) {
-          echo "
-          <li class='nav-item'>
-            <a class='nav-link' href='loginPage.html' id='login'>Log In</a>
-          </li>
-          <li class='nav-item'>
-            <a class='nav-link' href='registerPage.html' id='signup'>Sign Up</a>
-          </li>
-
-          ";
-        }
-        else{
-          echo "
-          <li class='nav-item'>
-            <a class='nav-link' href='myCurrentListings.html'>Profile</a>
-          </li>
-          <li class='nav-item'>
-            <a class='nav-link' href='logout.php' id='login'>Log Out</a>
-          </li>
-          ";
-        }
-      ?>
-
-          
-        </ul>
-      
-
-      </div>
-    </nav>
-
-    
-    
-    <!-- SearchBar -->
-    <section id="searchBar" class="search-bar">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-10 mx-auto">
-            <!-- <form action="registerPage.html" method="GET"> -->
-              <form action="searched.php" method="POST" name='form6'>
-              <div class="p-1 bg-light shadow-sm">
-                <div class="input-group">
-                  <input id='user_input' type="search" name="user_input" placeholder="Search based on title, genre, author" class="form-control border-0 bg-light">
-                  <div class="input-group-append" name='form5'>
-                    <!-- Button -->
-                    <div class="btn-group">
-                      <button id='dropBtn' type="button" name="form" class="btn btn-secondary dropdown-toggle smallscreen" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Title</button>
-                      <div class="dropdown-menu">
-                        <option class="dropdown-item" id="book" name="Title" value="book" onclick="ChangeDropDownBox('Title')" selected>Title</option>
-                        <option class="dropdown-item" id="author" name="Author" value="author" onclick="ChangeDropDownBox('Author')">Author</option>
-                        <option class="dropdown-item" id="genre" name="Genre" value="genre" onclick="ChangeDropDownBox('Genre')">Genre</option>
-                        <option class="dropdown-item" id="user" name="User" value="user" onclick="ChangeDropDownBox('User')">User</option> 
-                      </div>
-                    </div>
-                    <div class="input-group-append">
-                      <button id="submit"  class="btn btn-link"><a  class="searchIcon"></a></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-   
+    <div id="navbar"></div>
 
 
     <!-- Carousel -->
@@ -111,24 +30,18 @@
       <ol class="carousel-indicators">
         <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
         <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-        <?php
-          if(isset($_SESSION["user"]))
-          {
-            echo '<li data-target="#carouselExampleIndicators" data-slide-to="2"></li>';
-          }
-          
-        ?>
+
       </ol>
       <div class="carousel-inner" >
         <div class="carousel-item active">
-          <div class="banner" style="background-image: linear-gradient( rgba(32, 31, 31, 0.632), rgba(27, 27, 27, 0.802)), url(images/bookshop.jpg) ;">
+          <div class="banner" style="background-image: linear-gradient( rgba(32, 31, 31, 0.632), rgba(27, 27, 27, 0.802)), url(../images/bookshop.jpg) ;">
               <div class="carousel-caption d-none d-md-block">
                   <h2>Get your tutor here today!</h2>
               </div>
           </div>
         </div>
         <div class="carousel-item">
-          <div class="banner" style="background-image: linear-gradient( rgba(32, 31, 31, 0.632), rgba(27, 27, 27, 0.802)),url(images/studentbackground.jpg) ;">
+          <div class="banner" style="background-image: linear-gradient( rgba(32, 31, 31, 0.632), rgba(27, 27, 27, 0.802)),url(../images/studentbackground.jpg) ;">
               <div class="carousel-caption d-none d-md-block">
                   <h2>Find out more about our team and our goal</h2>
                   <form method="GET" action="about.html">
@@ -137,23 +50,7 @@
               </div>
           </div>
         </div>
-        <?php
-          if(isset($_SESSION["user"]))
-          {
-            echo '<div class="carousel-item">
-              <div class="banner" style="background-image: linear-gradient( rgba(32, 31, 31, 0.632), rgba(27, 27, 27, 0.802)), url(images/slide3.jpg) ;"> 
-                  <div class="carousel-caption d-none d-md-block">
-                      <h2>Start listing your books for everyone to see</h2>
-                      <form method="GET" action="myCurrentListings.html">
-                        <button type="submit" class="btn btn-info">Go to my listings</button>
-                      </form>
-                  </div>
-              </div>
-            </div>';
-          }
-            
-        ?>
-      </div>
+
       <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
         <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="sr-only">Previous</span> -->
@@ -163,17 +60,12 @@
         <span class="sr-only">Next</span> -->
       </a>
     </div>
+<script src="//code.jquery.com/jquery.min.js"></script>
+<script>
+    $.get("navbarGuest.html", function(data){
+      $("#navbar").replaceWith(data);
+  });
+</script>
 
-
-
-    <script src="js/homeui.js"></script>
-    <script>
-      document.getElementById('submit').addEventListener('click',function(event) {
-        event.preventDefault();
-        let dropdownform = document.getElementById('dropBtn').innerText
-        let text = document.getElementById('user_input').value
-        window.location = `searched.php?user_input=${text}&user_searched_option=${dropdownform}`
-      })
-    </script>
   </body>
 </html>
