@@ -66,8 +66,6 @@
 </script>
 
             <script>
-            var username  = '<?php echo $user;?>';
-            console.log(user)
 
             var get_all_URL = "http://localhost:5001/assignmentByUser";
             // var place_order_URL = "http://localhost:5100/place_order";
@@ -119,49 +117,6 @@
     
                                 });
     
-                    },
-                    addBook: function () {
-                        // reset data
-                        this.bookAdded = false;
-                        this.addBookError = "";
-    
-                        let jsonData = JSON.stringify({
-                            title: this.newTitle,
-                            price: this.newPrice,
-                            availability: this.newAvailability
-                        });
-    
-                        fetch(`${get_all_URL}/${this.newISBN13}`,
-                            {
-                                method: "POST",
-                                headers: {
-                                    "Content-type": "application/json"
-                                },
-                                body: jsonData
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log(data);
-                                result = data.data;
-                                console.log(result);
-                                // 3 cases
-                                switch (data.code) {
-                                    case 201:
-                                        this.bookAdded = true;
-    
-                                        // refresh book list
-                                        this.getAllBooks();
-    
-                                        // an alternate way is to add this one element into this.books
-                                        break;
-                                    case 400:
-                                    case 500:
-                                        this.addBookError = data.message;
-                                        break;
-                                    default:
-                                        throw `${data.code}: ${data.message}`;
-                                }
-                            })
                     }
                   },
                 created: function () {
@@ -177,8 +132,6 @@
     });
     </script>
 
-    <script> var user = "<?=$userID ?>"; console.log(user);</script>
-    need edit scrips
-    <!-- <script src="./js/homeui.js"></script> -->
+
     </body>
 </html>

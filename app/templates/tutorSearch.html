@@ -47,53 +47,8 @@
       </style>
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-   
-    <body class="body1" >
-        
-    <div class="black" id="navbar"></div>      
-    
-        <div class="overlay" id="app">
-            <h1 class='mt-3 header text-center display-4'>Tutor Search</h1>
-            <div style="margin: 50px;">
-                
-                <div class="d-flex bd-highlight container">
-                <!-- separate the cards from the expanded portion -->
-                    <div id="tutorcard" class="bd-highlight scrollable">
-                        
-                    </div>
-                    <div class="mx-3 flex-grow-1 bd-highlight midText">
-                        <!-- add placeholder here -->
-                        <div class="position-relative mx-5 pic" id="expandedInfo">
-                            <div >
-                                <div class="position-absolute top-50 start-50 translate-middle" >
-                                    <h1 >No assignments currently selected</h1>
-                                </div>
-
-                                
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div>
-                
-
-            </div>
-        </div>
-        <script>
-            function toBeExpanded(userID){
-                
-                // document.getElementById('expandedInfo').innerHTML = 
-                //             `
-                //             <div>
-                //                 <div class="position-absolute top-50 start-50 translate-middle" id="midText">
-                //                     <h1>No assignments currently selected</h1>
-                //                     <div id="pic"></div>
-                //                 </div>
-                                    
-                //             </div>
-                //             `;
-                //     alert('button is clicked mofo');
+    <script>
+            function toBeExpanded(assignmentId, userID){
                 var element = document.getElementById("expandedInfo");
                 element.classList.remove("pic");
 
@@ -139,13 +94,13 @@
                                 
 
                                 console.log("level");
-                                console.log(level);
+                                console.log(Primary);
                                 
                                 // alert(primary1)
                                 //alert(assignmentID);
                                 document.getElementById("expandedInfo").innerHTML = `
                                 <div class="black" style="text-align:left;">
-                                    <h1>You have selected an assignment!</h1>
+                                    <h1>${Primary} and ${level} </h1>
                                     The tutee details are: 
                                     <ul>
                                         <li>Tutee Name: ${childName}</li>
@@ -161,9 +116,7 @@
                                         <li>Parent's location: ${location}</li>
                                     </ul>
 
-                                    <div>
-                                        <button type="button" class="btn btn-outline-success mb-3">Apply Now! </button>
-                                    </div>
+                                    <button type="button" class="btn btn-outline-success mb-3" data-toggle="modal" data-target="#testModal" onclick="sendOffer(${pri}, ${level}, ${subject}, ${price}, ${preferredDay}, ${userID})">Apply Now!</button>
                                 </div>
                                 `;
                                 
@@ -178,14 +131,190 @@
                             });
                             
                         
+                    }
+            function createOffer(primary, level, subject, price, preferredDay, userID){
+                var time = document.getElementById("time").value;
+                console.log(time)
+                var expectedPrice = document.getElementById("expected_price").value;
+                var preferredDay = $("input[type='radio'][name='rate']:checked").val();
+                // alert("ofc, la, stupid fk")
+                json = {
+                    "assignmentId": assignmentId, 
+                    "userID": userID,
+                    "tutorID": 1, 
+                    "tutorName": "Bob",
+                    "tutorEmail": "bob@gmail.com",
+                    "status": "pending", 
+                    "selectedTime": time, 
+                    "expectedPrice": expectedPrice, 
+                    "preferredDay": preferredDay
+                }
+                console.log(assignmentId)
+                const response =
+                    fetch(get_user_URL+`/${userID}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("why");
+                            console.log(response);
+                            console.log("even");
+                            console.log(data.message);
+                            if (data.code === 404) {
+                                // no book in db
+                                this.message = data.message;
+                            } else {
+                                for (each of data.message){
+                                //NOT DONE YET
+                                
+                                console.log("brr");
+                                console.log(each)
+                                // alert("For each assignemnt it willl loop")
+                                var parentName =each[0].userName;
+                                var parentPhone =each[0].userPhone;
+                                var parentEmail =each[0].userEmail;
+                                var location =each[0].loc;
+                                
+                                console.log('yooooo');
+                                console.log(location);
+
+                                
+                                var childName = each[1].childName;
+                                var school = each[1].school;
+                                var level = each[1].lvl;
+                                var Primary = each[1].pri;
+
+                                if(Primary){
+                                    Primary = "Primary";
+                                }
+                                else{
+                                    Primary = "Secondary"
+                                }
+
+                            }
                         }
-                    
+                    })
+
+            }     
                             
                             
 
 
             
-        </script>
+    </script>
+   
+    <body class="body1" >
+        
+    <div class="black" id="navbar"></div>      
+    
+        <div class="overlay" id="app">
+            <h1 class='mt-3 header text-center display-4'>Tutor Search</h1>
+            <div style="margin: 50px;">
+                
+                <div class="d-flex bd-highlight container">
+                <!-- separate the cards from the expanded portion -->
+                    <div id="tutorcard" class="bd-highlight scrollable">
+                        
+                    </div>
+                    <div class="mx-3 flex-grow-1 bd-highlight midText">
+                        <!-- add placeholder here -->
+                        <div class="position-relative m-5 " >
+                            <div>
+                            </div>
+                            <div id="expandedInfo"> 
+                                
+                        
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+
+            </div>
+        </div>
+        
+        <div class="modal fade" id="testModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLong">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                        <form>
+                            
+                            <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="inputEmail4">Selected Time</label>
+                                        <input type="time" class="form-control" id="time" value="23:59" required>
+                                    </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                <label for="inputEmail4">Expected Price</label>
+                                <input v-model="expectedPrice" type="number" class="form-control" id="expected_price" min="1" max="999.99" placeholder="Please enter the rates /hour" required>
+                                </div>
+                            </div>
+                                <!-- Check box for preferred days -->
+                                <label>Preferred Day</label>
+                                <div class="form-row">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="preferredDay" id="Mon" value="Mon">
+                                            <label class="form-check-label" for="Mon">
+                                            Monday
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="preferredDay" id="Tue" value="Tue">
+                                            <label class="form-check-label" for="Tue">
+                                            Tuesday
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="preferredDay" id="Wed" value="Wed">
+                                            <label class="form-check-label" for="Wed">
+                                            Wednesday
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="preferredDay" id="Thu" value="Thu">
+                                            <label class="form-check-label" for="Thu">
+                                            Thursday
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="preferredDay" id="Fri" value="Fri">
+                                            <label class="form-check-label" for="Fri">
+                                            Friday
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="preferredDay" id="Sat" value="Sat">
+                                            <label class="form-check-label" for="Sat">
+                                            Saturday
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="preferredDay" id="Sun" value="Sun">
+                                            <label class="form-check-label" for="Sun">
+                                            Sunday
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                                <button class="btn btn-primary" onclick="createOffer()">Send Offer</button>
+
+                            </div>
+                        </form> 
+                </div>
+                </div>
+            </div>
+        </div>
+
         <script>
           $.get("navbarTutor.html", function(data){
               $("#navbar").replaceWith(data);
@@ -215,7 +344,7 @@
                     location: "",
                     expectedPrice: "",
                     preferredDay: "",
-                    assignmentAdded: false,
+                    selectedTime: 0,
                     addAssignmentError: "",
                     createdAssignment: "",
                     assignmentCreated: false,
@@ -245,8 +374,8 @@
                                     console.log("SUbject is: ", subject);
                                     var primary = each.primary;
                                     var userID = each.userID;
-                                    
-
+                                    var assignmentId = each.assignmentId
+                                    var preferredDay = each.preferredDay
                                     if (primary){
                                         primary = "Primary";
                                     }
@@ -273,7 +402,7 @@
                                             
                                             </div>
                                             <div class="card-footer">
-                                            <button type="button" class="btn btn-outline-primary" id="expand" onclick="toBeExpanded(${userID})">Check Offer</button>
+                                            <button type="button" class="btn btn-outline-primary" id="expand" onclick="toBeExpanded(${assignmentId}, ${userID})">Check Offer</button>
                                             </div>
                                     </div>
                                     `;

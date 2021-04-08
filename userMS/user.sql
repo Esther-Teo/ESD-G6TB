@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS users (
 --
 
 INSERT INTO users (userID, userName, userEmail, passw, userPhone, loc) VALUES
-(1, 'Michael Scarn', 'mikescarn@gmail.com', "helps",'12354678', 'Jurong East'),
+(1, 'Michael Scarn', 'mikeyscarn69@gmail.com', "helps",'12354678', 'Jurong East'),
 (2, 'Dwight Snoot', 'dwightsnoot@gmail.com', "gg", '96857412', 'Yishun'),
 (3, 'Nard Dog', 'andybernard@gmail.com',"helps", '21325465', 'Sengkang'),
 (4, 'Mary Juana', 'maryjuana@gmail.com', "helps",'78459865', 'Tampines'),

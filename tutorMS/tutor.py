@@ -361,6 +361,40 @@ def update_subject_details(tutorID, subjectId):
             }
         ), 404
 
+# check tutor google log in 
+# port 5006 
+@app.route("/tutorgoogle", methods=['POST', 'GET'])
+def check_google_tutor():
+    data = request.get_json()
+    # print(data)
+    email = data['tutorEmail']
+    # email= "mikescarn@gmail.com"
+    
+    try:
+        res = Tutor.query.filter_by(tutorEmail=email).first()
+        if (res):
+            print(res)
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "message":"meep",
+                        "tutorID": res.tutorID,
+                        "tutorName": res.tutorName,
+                        "tutorEmail": res.tutorEmail
+                    },
+                    "message": "User authenticated."
+                }
+            ), 200
+    except Exception as e:
+
+        return jsonify(
+            {
+                "code": 404,
+                "message": "There was an error" + str(e),
+                "display": "none found"
+            }), 404
+
 
 
 if __name__ == "__main__":

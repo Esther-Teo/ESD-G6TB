@@ -53,7 +53,7 @@
                             <div class="text-left mb-3">
                                 <button type="button" class="btn" id="login" onclick="checkUser();checkTutor();">Login</button>
                             </div>
-                            <div class="text-left mb-3 g-signin2" data-onsuccess="onSignIn">
+                            <div class="text-left mb-3 g-signin2" id="googlesignin" onclick="onSignIn();tutorGoogle();" data-onsuccess="onSignIn">
                               <!-- for google log in button  -->
                             </div>
                             <div style="color: #fff">Don't have an account?
@@ -130,7 +130,7 @@
             }
 
             fetch('http://localhost:5004/usercheck', {
-              method: "POST",
+              method: "GET",
               body: JSON.stringify(login),
               headers: {"Content-type": "application/json; charset=UTF-8"}
             })
@@ -167,14 +167,160 @@
             checkTutor()
             });
 
-            
+            x
           })
 
+          var googleUser = gapi.auth2.getAuthInstance().currentUser.get();
+
           function onSignIn(googleUser){
-            console.log(googleUser.getBasicProfile())
+
+            
+
+            var userGoogle = googleUser.getBasicProfile();
+
+            var userID = userGoogle.getId();
+            console.log("userid is", userID);
+
+            var userName = userGoogle.getName();
+            console.log("userName is", userName);
+
+            var userEmail = userGoogle.getEmail();
+            console.log("email is", userEmail);
+
+            localStorage.setItem("userID",userID);
+            localStorage.setItem("userName",userName);
+            localStorage.setItem("userEmail",userEmail);
+
+            console.log("bop");
+            console.log(localStorage.getItem("userID"));
+            console.log(localStorage.getItem("userName"));
+            console.log(localStorage.getItem("userEmail"));
+
+            // window.location.replace("dashboardUser.html");
+
+            if(userEmail != null){
+              console.log("email has some value");
+
+              
+              // event.preventDefault();
+
+              var login = {
+              userEmail: userEmail
+              }
+
+              console.log("log in deets are: ", login);
+              
+
+              fetch('http://localhost:5004/googlecheck', {
+                method: "POST",
+                body: JSON.stringify(login),
+                headers: {"Content-type": "application/json; charset=UTF-8"}
+              })
+              .then(response => response.json()) 
+              .then(json => {
+                console.log(json); 
+                console.log("lol"); 
+                console.log(json.data.userEmail);
+                $.post("loginPage.html", {userEmail:json.data.userEmail});
+                var check = "user";
+                switch (json.code) {
+                      case 200:
+                          alert("yayyyyy")
+
+                          // refresh assignment list
+                          // alert("meeeeep")
+                          document.getElementById("formallyYours").innerHTML=`<h4>Your login was successful!</h4><p>You will be redirected in a moment</p>`;
+                          window.setTimeout(function(){
+                              // Move to a new location or you can do something else
+
+                              window.location.replace("dashboardUser.html");
+                          }, 5000);
+                          // an alternate way is to add this one element into this.books
+                          break;
+                      default:
+                          tutorGoogle();
+                          throw `${json.code}: ${json.message}`;
+                  }
+
+
+              }) 
+              .catch(err => {
+              console.log(err);
+              tutorGoogle()
+              });
+
+              
+            
+
+
+            }
 
             // can get data directly by doing googleUser.getBasicProfile()['At'] --> email 
+
           }
+
+          function tutorGoogle(googleUser){
+            var googleUser = gapi.auth2.getAuthInstance().currentUser.get();
+            var googleTutor = googleUser.getBasicProfile();
+            var tutorEmail = googleTutor.getEmail();
+
+            localStorage.setItem("tutorEmail",tutorEmail);
+
+            console.log(localStorage.getItem("tutorEmail"));
+
+            if(tutorEmail != null){
+              console.log("certified tutor");
+
+              
+              // event.preventDefault();
+
+              var login = {
+              tutorEmail: tutorEmail
+              }
+
+              console.log("log in deets are: ", login);
+              
+
+              fetch('http://localhost:5006/tutorgoogle', {
+                method: "POST",
+                body: JSON.stringify(login),
+                headers: {"Content-type": "application/json; charset=UTF-8"}
+              })
+              .then(response => response.json()) 
+              .then(json => {
+                console.log(json); 
+                console.log("lol"); 
+                console.log(json.data.tutorEmail);
+                $.post("loginPage.html", {tutorEmail:json.data.tutorEmail});
+                var check = "tutor";
+                switch (json.code) {
+                      case 200:
+                          alert("Tutor Log in Successful")
+
+                          // refresh assignment list
+                          // alert("meeeeep")
+                          document.getElementById("formallyYours").innerHTML=`<h4>Your login was successful!</h4><p>You will be redirected in a moment</p>`;
+                          window.setTimeout(function(){
+                              // Move to a new location or you can do something else
+
+                              window.location.replace("tutorDashboard.html");
+                          }, 5000);
+                          // an alternate way is to add this one element into this.books
+                          break;
+                      default:
+                          tutorGoogle();
+                          throw `${json.code}: ${json.message}`;
+                  }
+
+
+              }) 
+              .catch(err => {
+              console.log(err);
+              tutorGoogle()
+              });
+            
+          }
+        }
         </script>
 
         <!-- check if user or tutor and redirect respectively NOT DONE -->
