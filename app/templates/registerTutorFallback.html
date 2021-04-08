@@ -66,27 +66,38 @@
       </script>
         <script src="js/homeui.js"></script>
 <script>
-    var tutor_URL = "http://localhost:5063/createTutor"
+    var tutor_URL = "http://localhost:5006/createTutor"
     function createTutor(){
         //retrieves and stores childData from user microservice
         // alert("check")
         lst = ["tutorID", "tutorName", "tutorEmail", "passw", "tutorPhone", "loc"]
         help = document.cookie;
-        console.log(help);
+        // console.log(help);
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(';');
         console.log(ca)
         var json = {}
-        for(var i = 0; i <6; i++) {
+        for(var i = 0; i < ca.length; i++) {
             var c = ca[i];
-
-            var name = lst[i];
-            check= c.indexOf("=")+1
-            json[`${name}`]= c.substring(check, c.length)
-            console.log(c.substring(check, c.length))
+            check= c.indexOf("=")+1;
+            for (each of lst){
+                if (c.indexOf(each) > -1){
+                    json[`${each}`]= c.substring(check, c.length)
+                    alert(c.substring(check, c.length))
+                }
+            }
         
         }
         console.log(json);
+        // clearing all cookies
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i];
+            var eqPos = cookie.indexOf("=");
+            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+
         json["portfolio"] = "No bio has been created yet";
         json["priceRange"] = 7;
         //retrieves and stores form data
@@ -100,7 +111,7 @@
         let jsonData = JSON.stringify(
             json
         );
-        console.log(jsonData)
+        // console.log(jsonData)
         //posts creates a new assignment
         fetch(tutor_URL,
             {

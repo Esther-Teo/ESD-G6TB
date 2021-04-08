@@ -182,19 +182,20 @@
     );
     }
     function storeData(){
-        var id = Math.floor((Math.random() * 696969) + 1);
-        var name = document.getElementById("username").value;
-        var email = document.getElementById("email").value;
-        var pwd = document.getElementById("password").value;
-        var phoneNo = document.getElementById("phoneNumber").value;
-        var location = document.getElementById("location").value;
-        document.cookie = `id=${id}; path=registerTutorFallback.html`;
-        document.cookie = `name=${name}; path=registerTutorFallback.html`
-        document.cookie = `email=${email}; path=registerTutorFallback.html` 
-        document.cookie = `pwd=${pwd}; path=registerTutorFallback.html`
-        document.cookie = `phoneNo=${phoneNo}; path=registerTutorFallback.html`
-        document.cookie = `location=${location}; path=registerTutorFallback.html`
-        "document.cookie = " + document.cookie
+
+        var tutorID = Math.floor((Math.random() * 696969) + 1);
+        var tutorName = document.getElementById("username").value;
+        var tutorEmail = document.getElementById("email").value;
+        var passw = document.getElementById("password").value;
+        var tutorPhone = document.getElementById("phoneNumber").value;
+        var loc = document.getElementById("location").value;
+        document.cookie = `tutorID=${tutorID}; path=registerTutorFallback.html`;
+        document.cookie = `tutorName=${tutorName}; path=registerTutorFallback.html`
+        document.cookie = `tutorEmail=${tutorEmail}; path=registerTutorFallback.html` 
+        document.cookie = `passw=${passw}; path=registerTutorFallback.html`
+        document.cookie = `tutorPhone=${tutorPhone}; path=registerTutorFallback.html`
+        document.cookie = `loc=${loc}; path=registerTutorFallback.html`
+        "document.cookie = "+document.cookie
     }
 
     //NOT DONE SETTING UP POST INFO!!!!!! @ALL             
