@@ -64,7 +64,7 @@ class Offer(db.Model):
     tutorName = db.Column(db.String(90), nullable=False)
     tutorEmail = db.Column(db.String(40), nullable=False)
     status = db.Column(db.String(6), nullable=False)
-    selectedTime = db.Column(db.Integer, nullable=False)
+    selectedTime = db.Column(db.String(50), nullable=False)
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
     preferredDay = db.Column(db.String(10), nullable=False)
     assignment = db.relationship(
