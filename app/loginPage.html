@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login Form</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <meta name="google-signin-client_id" content="946441955207-3mgitbnfn3vmvve30damv8qd3hsnla82.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <script src="https://use.fontawesome.com/a64b47fd82.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
+        <!-- <link rel="stylesheet" type="text/css" href="css/loginRegister.css"> -->
+
+        <link rel="stylesheet" href="../static/styles/loginRegister.css">
+       
+        <!-- <link rel="stylesheet" href="css/testHome.css"> -->
+        <link rel="stylesheet" href="../static/styles/testHome.css">
+        <!-- <link rel="stylesheet" href="../static/styles/homeresponsive.css">
+        <link rel="stylesheet" href="../static/styles/allListings.css"> -->
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Poppins:ital,wght@0,400;0,500;0,700;1,500&display=swap" rel="stylesheet"> 
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <title>Login</title>
+    </head>
+    <body>
+      <div id="navbar"></div>
+      
+        <div class="banner">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 d-none d-md-block image-container">
+
+                </div>
+                <div class="col-lg-6 col-md-12 form-container">
+                    <div class="col-lg-8 col-md-12 col-sm-9 col-xs-12 form-box text-center" id="formallyYours">
+                        <div class="heading mb-4" id="display">
+                            <h4>Login into your account</h4>
+                        </div>
+                        <form method="post" action="database/login.php" >
+                            <div class="form-input">
+                                <input type="email" name="email" id="email" placeholder="Email Address" required>
+                            </div>
+                            <div class="form-input">
+              
+                                <input type="password" name="password" id="password" placeholder="Password" required>
+                            </div>
+
+
+                            <div class="text-left mb-3">
+                                <button type="button" class="btn" id="login" onclick="checkUser();checkTutor();">Login</button>
+                            </div>
+                            <div class="text-left mb-3 g-signin2" id="googlesignin" onclick="onSignIn();tutorGoogle();" data-onsuccess="onSignIn">
+                              <!-- for google log in button  -->
+                            </div>
+                            <div style="color: #fff">Don't have an account?
+                                <a href="registerPage.html" class="registerLink">Click Here to Register</a>
+                            </div> 
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="//code.jquery.com/jquery.min.js"></script>
+        <!-- ajax javascript -->
+        <script>
+        $.get("navbarGuest.html", function(data){
+            $("#navbar").replaceWith(data);
+        });
+        </script>
+        <script>
+          var tutorCheck = "";
+          var UserCheck = "";
+          function checkTutor() {
+            email = document.getElementById('email').value
+            pass = document.getElementById('password').value
+            // data to be sent to the POST request
+            var login = {
+              tutorEmail: email,
+              password: pass
+            }
+            fetch('http://localhost:5006/tutorcheck', {
+              method: "POST",
+              body: JSON.stringify(login),
+              headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json()) 
+            .then(json => {
+              console.log(json); 
+              console.log("lol"); 
+              console.log(json.data.userID);
+              $.post("loginPage.html", {tutorId:json.data.tutorID, tutorEmail:json.data.tutorEmail, tutorName:json.data.tutorName});
+              var check = "user";
+              switch (json.code) {
+                    case 200:
+                        alert("yayyyyy")
+
+                        // refresh assignment list
+                        // alert("meeeeep")
+                        document.getElementById("formallyYours").innerHTML=`<h4>Your login was successful!</h4><p>You will be redirected in a moment</p>`;
+                        window.setTimeout(function(){
+                            // Move to a new location or you can do something else
+
+                            window.location.replace("tutorDashboard.html");
+                        }, 1000);
+                        // an alternate way is to add this one element into this.books
+                        break;
+                    default:
+                        document.getElementById("display").innerHTML = `<h4>Login into your account</h4><p style="color:red">Could not authenticate. Please try again!</p>`
+                        throw `${json.code}: ${json.message}`;
+                }
+
+
+            }) 
+            .catch(err => console.log(err));
+
+          }
+          document.getElementById('login').addEventListener('click',function(event) {
+            event.preventDefault();
+            //using fetch, check if there is a user in the database 
+            email = document.getElementById('email').value
+            pass = document.getElementById('password').value
+            // data to be sent to the POST request
+            var login = {
+              userEmail: email,
+              password: pass
+            }
+
+            fetch('http://localhost:5004/usercheck', {
+              method: "POST",
+              body: JSON.stringify(login),
+              headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json()) 
+            .then(json => {
+              console.log(json); 
+              console.log("lol"); 
+              console.log(json.data.userID);
+              $.post("loginPage.html", {userID:json.data.userID, userEmail:json.data.userEmail, userName:json.data.userName});
+              var check = "user";
+              switch (json.code) {
+                    case 200:
+                        alert("yayyyyy")
+
+                        // refresh assignment list
+                        // alert("meeeeep")
+                        document.getElementById("formallyYours").innerHTML=`<h4>Your login was successful!</h4><p>You will be redirected in a moment</p>`;
+                        window.setTimeout(function(){
+                            // Move to a new location or you can do something else
+
+                            window.location.replace("dashboardUser.html");
+                        }, 1000);
+                        // an alternate way is to add this one element into this.books
+                        break;
+                    default:
+                        checkTutor();
+                        throw `${json.code}: ${json.message}`;
+                }
+
+
+            }) 
+            .catch(err => {
+            console.log(err);
+            checkTutor()
+            });
+
+            x
+          })
+
+          var googleUser = gapi.auth2.getAuthInstance().currentUser.get();
+
+          function onSignIn(googleUser){
+
+            
+            // edena??
+            var userGoogle = googleUser.getBasicProfile();
+
+            // var userID = userGoogle.getId();
+            // console.log("userid is", userID);
+
+            var userName = userGoogle.getName();
+            console.log("userName is", userName);
+
+            var userEmail = userGoogle.getEmail();
+            console.log("email is", userEmail);
+
+            
+            localStorage.setItem("userName",userName);
+            localStorage.setItem("userEmail",userEmail);
+
+            console.log("bop");
+            console.log(localStorage.getItem("userID"));
+            console.log(localStorage.getItem("userName"));
+            console.log(localStorage.getItem("userEmail"));
+
+            // window.location.replace("dashboardUser.html");
+
+            if(userEmail != null){
+              console.log("email has some value");
+
+              
+              // event.preventDefault();
+
+              var login = {
+              userEmail: userEmail
+              }
+
+              console.log("log in deets are: ", login);
+              
+
+              fetch('http://localhost:5004/googlecheck', {
+                method: "POST",
+                body: JSON.stringify(login),
+                headers: {"Content-type": "application/json; charset=UTF-8"}
+              })
+              .then(response => response.json()) 
+              .then(json => {
+                console.log(json); 
+                console.log("lol"); 
+                console.log(json.data.userEmail);
+                console.log("bioioioi");
+                console.log(json.data.userID);
+
+                var userID = json.data.userID;
+                localStorage.setItem("userID",userID);
+                console.log("iahfoiasf");
+                console.log(localStorage.getItem("userID"));
+                //edena take note
+                
+                $.post("loginPage.html", {userEmail:json.data.userEmail});
+                var check = "user";
+                switch (json.code) {
+                      case 200:
+                          alert("yayyyyy")
+
+                          // refresh assignment list
+                          // alert("meeeeep")
+                          document.getElementById("formallyYours").innerHTML=`<h4>Your login was successful!</h4><p>You will be redirected in a moment</p>`;
+                          window.setTimeout(function(){
+                              // Move to a new location or you can do something else
+
+                              window.location.replace("dashboardUser.html");
+                          }, 1000);
+                          // an alternate way is to add this one element into this.books
+                          break;
+                      default:
+                          tutorGoogle();
+                          throw `${json.code}: ${json.message}`;
+                  }
+
+
+              }) 
+              .catch(err => {
+              console.log(err);
+              tutorGoogle()
+              });
+
+              
+            
+
+
+            }
+
+            // can get data directly by doing googleUser.getBasicProfile()['At'] --> email 
+
+          }
+
+          function tutorGoogle(googleUser){
+            var googleUser = gapi.auth2.getAuthInstance().currentUser.get();
+            var googleTutor = googleUser.getBasicProfile();
+
+            var tutorEmail = googleTutor.getEmail();
+            var tutorName = googleTutor.getName();
+
+            localStorage.setItem("tutorEmail",tutorEmail);
+            localStorage.setItem("tutorName",tutorName);
+
+            console.log(localStorage.getItem("tutorEmail"));
+
+            if(tutorEmail != null){
+              console.log("certified tutor");
+
+              
+              // event.preventDefault();
+
+              var login = {
+              tutorEmail: tutorEmail
+              }
+
+              console.log("log in deets are: ", login);
+              
+
+              fetch('http://localhost:5006/tutorgoogle', {
+                method: "POST",
+                body: JSON.stringify(login),
+                headers: {"Content-type": "application/json; charset=UTF-8"}
+              })
+              .then(response => response.json()) 
+              .then(json => {
+                console.log(json); 
+                console.log("lol"); 
+                console.log(json.data.tutorEmail);
+
+                var tutorID = json.data.tutorID;
+                localStorage.setItem("tutorID",tutorID);
+                console.log("oeasofuvwe");
+                console.log(localStorage.getItem("tutorID"));
+                //edena take note 
+
+
+                $.post("loginPage.html", {tutorEmail:json.data.tutorEmail});
+                var check = "tutor";
+                switch (json.code) {
+                      case 200:
+                          alert("Tutor Log in Successful")
+
+                          // refresh assignment list
+                          // alert("meeeeep")
+                          document.getElementById("formallyYours").innerHTML=`<h4>Your login was successful!</h4><p>You will be redirected in a moment</p>`;
+                          window.setTimeout(function(){
+                              // Move to a new location or you can do something else
+
+                              window.location.replace("tutorDashboard.html");
+                          }, 1000);
+                          // an alternate way is to add this one element into this.books
+                          break;
+                      default:
+                      document.getElementById("formallyYours").innerHTML=`<h4>You have not registered with us :(</h4><p>You will be redirected in a moment to register</p>`;
+                          window.setTimeout(function(){
+                              // Move to a new location or you can do something else
+
+                              window.location.replace("registerPage.html");
+                          }, 1000);
+                          throw `${json.code}: ${json.message}`;
+                  }
+
+
+              }) 
+              .catch(err => {
+              console.log(err);
+              document.getElementById("formallyYours").innerHTML=`<h4>You have not registered with us :(</h4><p>You will be redirected in a moment to register</p>`;
+                          window.setTimeout(function(){
+                              // Move to a new location or you can do something else
+
+                              window.location.replace("registerPage.html");
+                          }, 1000);
+              });
+            
+          }
+        }
+        </script>
+
+        <!-- check if user or tutor and redirect respectively NOT DONE -->
+        <script>
+        </script>
+        
+    </body>
+</html>

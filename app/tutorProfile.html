@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <link rel="stylesheet" href="../static/styles/allListings.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
+    <script src="https://use.fontawesome.com/a64b47fd82.js"></script>
+    <link rel="stylesheet" href="../static/styles/testHome.css">
+    <link rel="stylesheet" href="../static/styles/homeresponsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        img {
+            border-radius: 50%;
+            width: 20%;
+        }
+
+        /* .form-group{
+            justify-content: center;
+        } */
+        .container {
+            width: fit-content;
+
+        }
+    </style>
+    <title>All Listings</title>
+
+    
+</head>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+
+<body class="body1">
+    <div id="navbarTutor"></div>
+    <div class="overlay " id="app">
+        <div class="container ">
+            <h1 class='mt-3 header text-center display-4'>Tutor Profile</h1>
+            <div class="media">
+                <img class="mr-3" src="../images/teacher.png">
+                <!-- Replace with whatever image you want -->
+                <div class="media-body">
+                    <h2>{{tutorName}}</h2>
+                    <h2>{{tutorEmail}}</h2>
+                </div>
+            </div>
+            <form id="form-section" class="form-group mx-4" @submit.prevent="processForm">
+                <!-- <form id="form-section" class="form-group mx-4" @submit.prevent="processForm"> -->
+                <div class="form-group row  ">
+                    <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+                    <div class="col-sm-10">
+                        <input type="password" id="inputPassword" class="form-control " v-model="tutorPwd" required>
+                        <small id="passwordHelp" class="form-text text-muted">Your password must be between 8 to 24
+                            characters</small>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="phoneNum" class="col-sm-2 col-form-label">Phone Number</label>
+                    <div class="col-sm-10">
+                        <input type="number" name="" id="phoneNum" class="form-control " v-model="tutorPhone" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="location" class="col-sm-2 col-form-label">Location</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="location" class="form-control " v-model="location" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="expectedPrice" class="col-sm-2 col-form-label">Price Range</label>
+                    <div class="col-sm-10">
+                        <input type="number" id="expectedPrice" class="form-control " v-model="expectedPrice" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="tutorBio" class="col-sm-2 col-form-label">Bio</label>
+                    <div class="col-sm-10">
+                        <textarea name="" id="tutorBio" class="form-control" v-model="tutorBio" required></textarea>
+                        <!-- <input type="text" id="tutorBio" class="form-control col-sm-3" v-model="tutorBio"> -->
+                    </div>
+                </div>
+                <!-- Add submit button -->
+                <input type="submit" >
+
+            </form>
+        </div>
+    </div>
+    <div>
+        <!-- notes -->
+        <!-- need to link to database/submit form to confirm data-->
+    </div>
+    <script src="//code.jquery.com/jquery.min.js"></script>
+    <script>
+        $.get("navbarTutor.html", function (data) {
+            $("#navbarTutor").replaceWith(data);
+        });
+    </script>
+
+    <script>
+        var tutor = "1";
+        console.log(tutor);
+    </script>
+    need edit scrips
+    <script>
+        var tutor = '';
+        console.log(tutor);
+
+        var get_all_URL = "http://localhost:5006/tutor";
+        // var place_order_URL = "http://localhost:5100/place_order";
+
+        var app = new Vue({
+            el: "#app",
+            data: {
+                tutorID: 1,
+                "assignments": [],
+                message: "There is a problem retrieving the assignment data, please try again later.",
+                tutorName: "",
+                tutorEmail: "",
+                tutorPwd: "",
+                tutorPhone: "",
+                location: "",
+                tutorBio: "",
+                expectedPrice: "",
+
+            },
+            methods: {
+                getAllAssignments: function () {
+                    // on Vue instance created, load the book list
+                    alert("meep")
+                    const response =
+                        fetch(get_all_URL + `/${this.tutorID}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(response);
+                            console.log("meep");
+                            if (data.code === 404) {
+                                // no book in db
+                                this.message = data.message;
+                            } else {
+                                console.log(data);
+                                this.tutorName = data.tutorData.tutorName;
+                                this.tutorEmail = data.tutorData.tutorEmail;
+                                this.tutorPwd = data.tutorData.passw;
+                                this.tutorPhone = data.tutorData.tutorPhone;
+                                this.location = data.tutorData.loc;
+                                this.expectedPrice = data.tutorData.priceRange;
+                                this.tutorBio = data.tutorData.portfolio;
+
+                            }
+                        })
+                        .catch(error => {
+                            // Errors when calling the service; such as network error, 
+                            // service offline, etc
+                            console.log(this.message + error);
+                        });
+
+                },
+                // },
+                processForm: function () {
+                    // on Vue instance created, load the book list
+                    var postingUrl = "http://localhost:5006/updateTutor/";
+                    // const response =
+                    //     fetch(get_all_URL + `/${this.tutorID}`)
+                    //     .then(response => response.json())
+                    //     .then(data => {
+                    //         console.log(response);
+                    //         console.log("meep");
+                    //         if (data.code === 404) {
+                    //             // no book in db
+                    //             this.message = data.message;
+                    //         } else {
+                    //             console.log(data);
+                    //             this.tutorName = data.tutorData.tutorName;
+                    //             this.tutorEmail = data.tutorData.tutorEmail;
+                    //             this.tutorPwd = data.tutorData.passw;
+                    //             this.tutorPhone = data.tutorData.tutorPhone;
+                    //             this.location = data.tutorData.loc;
+                    //             this.expectedPrice = data.tutorData.priceRange;
+                    //             this.tutorBio = data.tutorData.portfolio;
+
+                    //         }
+                    //     })
+                    //     .catch(error => {
+                    //         // Errors when calling the service; such as network error, 
+                    //         // service offline, etc
+                    //         console.log(this.message + error);
+                    //     });
+                    //prepares posting data
+                    console.log("hello");
+                    let jsonData = JSON.stringify({
+                        "tutorID": 1,
+                        "tutorName": this.tutorName,
+                        "tutorEmail": this.tutorEmail,
+                        "passw": this.tutorPwd,
+                        "tutorPhone": this.tutorPhone,
+                        "loc": this.location,
+                        "portfolio": this.tutorBio,
+                        "priceRange": this.expectedPrice,
+                    });
+                    //posts creates a new assignment
+                    fetch(`http://localhost:5006/updateTutor/1`, {
+                            method: "PUT",
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            body: jsonData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                            result = data.data;
+                            console.log(result);
+                            this.getAllAssignments();
+                            // 3 cases
+                            switch (data.code) {
+                                case 201:
+                                    // this.assignmentAdded = true;
+
+                                    // refresh assignment list
+                                    alert("meeeeep")
+
+
+                                    //                 // an alternate way is to add this one element into this.books
+                                    //                 break;
+                                    //             case 400:
+                                    //             case 500:
+                                    //                 this.addAssignmentError = data.message;
+                                    //                 break;
+                                    //             default:
+                                    //                 throw `${data.code}: ${data.message}`;
+                            }
+                        })
+                },
+            },
+            created: function () {
+                // on Vue instance created, load the book list
+                    this.getAllAssignments();
+                // this.processForm();
+                }
+            ,
+            
+        });
+    </script>
+
+</body>
+
+</html>
