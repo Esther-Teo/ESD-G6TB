@@ -150,7 +150,7 @@ def create_assignment():
     print(data['assignmentId'])
     assignmentId = data['assignmentId']
     if (Assignment.query.filter_by(assignmentId=assignmentId).first()):
-        return jsonify({"message": "An assignment with the ID '{}' already exists.".format(assignmentId)}), 400
+        return jsonify({"code": 400,"message": "An assignment with the ID '{}' already exists.".format(assignmentId)}), 400
  
     
     assignment = Assignment(**data)
@@ -159,9 +159,9 @@ def create_assignment():
         db.session.add(assignment)
         db.session.commit()
     except Exception as e:
-        return jsonify({"message": "An error occurred creating the assignment." + str(e)}), 500
+        return jsonify({"code": 500, "message": "An error occurred creating the assignment." + str(e)}), 500
  
-    return jsonify(assignment.json()), 201
+    return jsonify({"code": 201, "data": assignment.json()}), 201
 
 # PUT to edit, but no use for it atm
 @app.route("/assignment/<int:assignmentId>", methods=['PUT'])

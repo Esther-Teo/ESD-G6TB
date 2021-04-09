@@ -24,11 +24,13 @@ CORS(app)
 
 # Assignment
 get_offer_URL = "http://localhost:5001/offerByUser/" # GETS offer (specify userID <int:userID>)
+get_offer_by_assignment_URL = "http://localhost:5001/offerByAssignment/" # GET offer (specify assignmentId <int:assignmentId>)
 create_offer_URL = "http://localhost:5001/createOffer" # POST new offer 
+delete_offer_URL = "http://localhost:5001/deleteOffer/" # DELETE offer (assignmentId and tutorID <int:assignmentId>/<int:tutorID>)
 
+update_assignment_URL = "http://localhost:5001/assignment/" # PUT assignment (specify assignmentId <int:assignmentId>)
 create_assignment_URL = "http://localhost:5001/makeAssignment" # POST new assignment 
 delete_assignment_URL = "http://localhost:5001/deleteAssignment/" # DELETE assignment (specify assignmentID <int:assignmentId>)
-delete_offer_URL = "http://localhost:5001/deleteOffer/" # DELETE offer (assignmentId and tutorID <int:assignmentId>/<int:tutorID>)
 
 # Inbox
 inbox_create_offer_URL = "http://localhost:5002/createOffer" # POST new offer
@@ -48,7 +50,9 @@ def manage_assignment():
             print("\nReceived request in JSON:", offer)
 
             # Delete assignment 
-            result = delete_assignment(offer)
+            if offer['delete'] == 1:
+                result = delete_assignment(offer)
+
             print('\n------------------------')
             print('\nresult: ', result)
             return jsonify(result), result["code"]
@@ -129,11 +133,29 @@ def tutor_creates_offers():
 #-----------------------------------------------------------------------------------------------------
 # Task 0: Delete assignment based on assignmentId (COMPLETED, TEST SUCCESSFUL)
 def delete_assignment(offer):
-    # if delete == 1, delete. Otherwise, leave it alone
-    if offer['delete'] == 1:
-        assignmentId = str(offer['assignment']['assignmentId']) 
-        print('\n-----Invoking assignmentMS-----')
-        deleted_result = invoke_http(delete_assignment_URL + assignmentId, method='DELETE', json=offer)
+    # delete assignment and deletes offers with that assignmentId
+    assignmentId = str(offer['assignment']['assignmentId']) 
+    print('\n-----Invoking assignmentMS-----')
+    deleted_result = invoke_http(delete_assignment_URL + assignmentId, method='DELETE', json=offer)
+
+    code = deleted_result["code"] 
+    message = json.dumps(deleted_result)
+    print('deleted_result', deleted_result)
+
+    # Error handling
+    if code not in range(200, 300):
+        print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
+        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="assignment.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), deleted_result)
+        return {"code": 500, "data": {"deleted_result": deleted_result}, "message": "Offer creation failure sent for error handling."}
+
+    # Populate returnedOffer table in inbox.sql with deleted offers 
+    print('\n-----Sending to inboxMS-----')
+    offer_dict = {}
+    for offer in deleted_result['deleted']:
+        offer_dict['offer'] = offer
+        inbox_result = invoke_http(inbox_reject_offer_URL, method='POST', json=offer_dict)
 
     return {"code": 201, "data": {"deleted_result": deleted_result,}}
 
@@ -176,28 +198,47 @@ def reject_offers(offer):
     # Return offer if no errors
     return {"code": 201, "data": { "offer_result": offer_result}}
 #-----------------------------------------------------------------------------------------------------
-# Task 2: User accepts offer (NOT TESTED YET)
-# def accept_offers(offer):
-#     # If accept, create new assignment, delete other offers for that assignment
-#     if offer['acceptOrReject'] == 'accept':
-#         print('\n-----Invoking assignmentMS-----')
-#         assignment_result = invoke_http(create_assignment_URL, method='POST', json=offer['offer'])
+# Task 2: User accepts offer (Kinda tested, super long)
+# not a lot of error handling here...otherwise will be q messy
+def accept_offers(offer):
+    # get all offers with the same assignmentId
+    print('\n-----Invoking assignmentMS-----')
+    assignmentId = str(offer['offer']['assignmentId'])
+    offer_result = invoke_http(get_offer_by_assignment_URL + assignmentId, method='GET', json=offer['offer'])
 
-#         code = assignment_result["code"] 
-#         message = json.dumps(assignment_result)
-#         print('assignment_result', assignment_result)
+    # for each offer, reject using reject_offers (changes status and sends to returnedoffer in inbox.sql)
+    print('-----Rejecting Offers-----')
+    temp = {}
+    for rej_offer in offer_result['offers']: 
+        temp['offer'] = rej_offer
+        print(reject_offers(temp))
 
-#         if code not in range(200, 300):
-#             print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
-#             amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
-#                 body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
-#             print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), assignment_result)
+    # for each offer, delete offers using delete_assignment 
+    print('-----Deleting offers-----')
+    temp2 = {}
+    for del_offer in offer_result['offers']: 
+        temp2['assignment'] = del_offer
+        print(delete_assignment(temp2))
+    
+    # update assignment 
+    print('-----Updating offers-----')
+    assignment_result = invoke_http(update_assignment_URL + assignmentId, method='PUT', json=offer['offer'])
+    code = assignment_result["code"] 
+    message = json.dumps(assignment_result)
+    print('Updated assignment_result', assignment_result)
 
-#             return {
-#                 "code": 500,
-#                 "data": {"offer_result": assignment_result},
-#                 "message": "Inbox failure sent for error handling."
-#             }  
+    # Error handling
+    if code not in range(200, 300):
+        print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
+        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), assignment_result)
+
+        return {
+            "code": 500,
+            "data": {"assignment_result": assignment_result},
+            "message": "Inbox failure sent for error handling."
+        }  
 
     return {
         "code": 201,
