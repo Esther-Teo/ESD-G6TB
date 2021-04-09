@@ -27,7 +27,7 @@ create_offer_URL = "http://localhost:5001/createOffer" # creates new offer in as
 create_assignment_URL = "http://localhost:5001/makeAssignment" # creates new assignment in assignment.py with POST 
 delete_assignment_URL = "http://localhost:5001/deleteAssignment/" # specify assignmentID to delete: <int:assignmentId>
 delete_offer_URL = "http://localhost:5001/deleteOffer/" # specify assignmentId and tutorID: <int:assignmentId>/<int:tutorID>
-inbox_URL = "http://localhost:5002/inboxUser/" # specify userID: <int:userID>
+inbox_create_offer_URL = "http://localhost:5002/createOffer" 
 
 #-----------------------------------------------------------------------------------------------------
 
@@ -190,54 +190,41 @@ def accept_offers(offer):
     }
 
 #-----------------------------------------------------------------------------------------------------
-
 # Task 3: Tutor creates an offer 
 def create_offer(offer):
     # POST a new offer 
     print('\n-----Invoking assignmentMS-----') 
     offer_result = invoke_http(create_offer_URL, method='POST', json=offer)
-
     code = offer_result["code"] 
     message = json.dumps(offer_result)
     print("offer_result", offer_result)
 
+    # Error handling
     if code not in range(200, 300):
         print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
         amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), offer_result)
+        return {"code": 500, "data": {"offer_result": offer_result}, "message": "Offer creation failure sent for error handling."}
 
-        return {
-            "code": 500,
-            "data": {"offer_result": offer_result},
-            "message": "Offer creation failure sent for error handling."
-        }
-
-        # If successful, send offer to inboxMS
+    # If successful, send offer to inboxMS
     print('\n-----Sending to inboxMS-----')
     userID = str(offer['userID'])
-    inbox_result = invoke_http(inbox_URL + userID, method='POST', json=offer)
-    print(inbox_result)
+    inbox_result = invoke_http(inbox_create_offer_URL, method='POST', json=offer)
     inbox_code = inbox_result["code"] 
     inbox_message = json.dumps(inbox_result)
+    print("inbox_result", inbox_result)
 
+    # Error handling
     if code not in range(200, 300):
         print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
         amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
             body=inbox_message, properties=pika.BasicProperties(delivery_mode = 2)) 
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(inbox_code), inbox_result)
+        return {"code": 500, "data": {"inbox_result": inbox_result}, "message": "Inbox failure sent for error handling."}  
 
-        return {
-            "code": 500,
-            "data": {"inbox_result": inbox_result},
-            "message": "Inbox failure sent for error handling."
-        }  
-    return {
-        "code": 201,
-        "data": {
-            "offer_result": offer_result,
-        }
-    }
+    # Return offer if no errors
+    return {"code": 201, "data": { "offer_result": offer_result}}
 
 #-----------------------------------------------------------------------------------------------------
 
