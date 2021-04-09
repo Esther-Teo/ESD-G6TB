@@ -103,9 +103,14 @@ def success():
 # END OF BUY SHIT 
 
 #ONBOARDING 
-
+#An email address associated with the account. You can treat this as metadata: it is not used for authentication or messaging account holders.
+# fix email to stripe account.
 @app.route('/onboard-user', methods=['GET','POST'])
 def onboard_user():
+    # HAHAHHAHHAHAHAHHAHAHAHHAHAHHAH PROBLEM SOLVED!!!!! WORK SMART NOT HARD!!!
+    data = json.loads(request.data)
+    # user_email=data['userEmail']
+    print(f"Data passed is: {data}")
     account = stripe.Account.create(type='standard')
     # Store the account ID.
     print(account.id)
@@ -119,12 +124,11 @@ def onboard_user():
         return jsonify(error=str(e)), 403
 
 # route here after clicking the connect button 
-# SESSIONS WHEN USERS REFRESH LIKE A FKER USERS ARE 
+# Sessions for users when they redirect 
 @app.route('/onboard-user/refresh', methods=['GET'])
 def onboard_user_refresh():
     if 'account_id' not in session:
         return redirect('/')
-    # wdym session not define fk u
     account_id = session['account_id']
 
     origin = ('https://' if request.is_secure else 'http://') + request.headers['host']
