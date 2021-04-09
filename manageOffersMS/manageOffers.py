@@ -21,53 +21,16 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-# assignment_URL = "http://localhost:5001/assignment"
-# offer_URL = "http://localhost:5003/offer"
-
 get_offer_URL = "http://localhost:5001/offerByUser/" # specify userID <int:userID>
 create_offer_URL = "http://localhost:5001/createOffer" # creates new offer in assignment.py with POST
 create_assignment_URL = "http://localhost:5001/makeAssignment" # creates new assignment in assignment.py with POST 
 delete_assignment_URL = "http://localhost:5001/deleteAssignment/" # specify assignmentID to delete: <int:assignmentId>
 delete_offer_URL = "http://localhost:5001/deleteOffer/" # specify assignmentId and tutorID: <int:assignmentId>/<int:tutorID>
-
-# Routing
-#-----------------------------------------------------------------------------------------------------
-
-# Get all offers 
-@app.route("/getUserOffers", methods=['GET'])
-def get_user_offers():
-    if request.is_json:
-        try:
-            offer = request.get_json()
-            print("\nReceived request in JSON:", offer)
-
-            # Task 1: Get offers for a user
-            result = get_offers(offer)
-            print('\n------------------------')
-            print('\nresult: ', result)
-            # return jsonify(result), result["code"]
-            return jsonify(result)
-
-        except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
-            print(ex_str)
-
-            return jsonify({
-                "code": 500,
-                "message": "manageOffersMS.py internal error: " + ex_str
-            }), 500
-
-    return jsonify({
-        "code": 400,
-        "message": "Invalid JSON input: " + str(request.get_data())
-    }), 400   
-           
+inbox_URL = "http://localhost:5002/inboxUser/" # specify userID: <int:userID>
 
 #-----------------------------------------------------------------------------------------------------
 
-# Manage Assignments
+# Delete Assignments
 @app.route("/deleteAssignment", methods=['POST'])
 def manage_assignment():
     '''
@@ -100,10 +63,10 @@ def manage_assignment():
         "code": 400,
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400   
-
+           
 #-----------------------------------------------------------------------------------------------------
 
-# Manage offer (has error)
+# User accepts or rejects offer
 @app.route("/manageOffers", methods=['POST'])
 def manage_offers():
     '''
@@ -121,6 +84,40 @@ def manage_offers():
                 result = accept_offers(offer)
             elif offer['acceptOrReject'] == 'reject':
                 result = reject_offers(offer)
+
+            print('\n------------------------')
+            print('\nresult: ', result)
+            return jsonify(result), result["code"]
+
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
+            print(ex_str)
+
+            return jsonify({
+                "code": 500,
+                "message": "manageOffersMS.py internal error: " + ex_str
+            }), 500
+
+    return jsonify({
+        "code": 400,
+        "message": "Invalid JSON input: " + str(request.get_data())
+    }), 400   
+
+#-----------------------------------------------------------------------------------------------------
+
+# Tutor creates offers
+@app.route("/tutorOffers", methods=['POST'])
+def tutor_creates_offers():
+    '''
+    Tutor creates new offer and sends info to inbox 
+    '''
+    if request.is_json:
+        try:
+            offer = request.get_json()
+            print("\nReceived request in JSON:", offer)
+            result = create_offer(offer)
             print('\n------------------------')
             print('\nresult: ', result)
             return jsonify(result), result["code"]
@@ -144,20 +141,13 @@ def manage_offers():
 # Functions for processing
 #-----------------------------------------------------------------------------------------------------
 
-# Task 2: Delete assignment from assignment.sql, send {code, message} to inbox as amqp if successful 
+# Task 1: Delete assignment based on assignmentId (COMPLETED AND TESTED)
 def delete_assignment(offer):
     # if delete == 1, delete. Otherwise, leave it alone
     if offer['delete'] == 1:
         assignmentId = str(offer['assignment']['assignmentId']) 
         print('\n-----Invoking assignmentMS-----')
-        deleted_result = invoke_http(delete_assignment_URL + assignmentId, 
-                    method='DELETE', json=offer['assignment'])
-
-        code = deleted_result["code"] 
-        message = json.dumps(deleted_result)
-        print('deleted_result', deleted_result)
-        if deleted_result:
-            print("------Assignment", assignmentId, "has been deleted------")
+        deleted_result = invoke_http(delete_assignment_URL + assignmentId, method='DELETE', json=offer)
 
     return {
         "code": 201,
@@ -168,7 +158,7 @@ def delete_assignment(offer):
 
 #-----------------------------------------------------------------------------------------------------
 
-# Task 3a: User accepts offer 
+# Task 2a: User accepts offer (NOT TESTED YET)
 def accept_offers(offer):
     # If accept, create new assignment, delete other offers for that assignment
     if offer['acceptOrReject'] == 'accept':
@@ -188,14 +178,8 @@ def accept_offers(offer):
             return {
                 "code": 500,
                 "data": {"offer_result": assignment_result},
-                "message": "Acceptance/rejection failure sent for error handling."
-            }   
-        
-    else:
-        print('\n\n-----Publishing the (offer info) message with routing_key=offer.inbox-----') 
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="inbox.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2))
-    print("\nMessage published to RabbitMQ Exchange.\n")
+                "message": "Inbox failure sent for error handling."
+            }  
 
     return {
         "code": 201,
@@ -206,20 +190,31 @@ def accept_offers(offer):
 
 #-----------------------------------------------------------------------------------------------------
 
-# Task 3b: User rejects offer 
-def reject_offers(offer):
-    # If reject, delete offer and send {code, message} to inbox 
-    if offer['acceptOrReject'] == 'reject':
-        assignmentId = str(offer['offer']['assignmentId'])
-        tutorID = '/' + str(offer['offer']['tutorID']) 
-        
-        print('\n-----Invoking assignmentMS-----') 
-        offer_result = invoke_http(delete_offer_URL + assignmentId + tutorID, 
-                    method='DELETE', json=offer)
+# Task 3: Tutor creates an offer 
+def create_offer(offer):
+    print('\n-----Invoking assignmentMS-----') 
+    offer_result = invoke_http(create_offer_URL, method='POST', json=offer)
 
+    code = offer_result["code"] 
+    message = json.dumps(offer_result)
+    print("offer_result", offer_result)
+
+    if code not in range(200, 300):
+        print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
+        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), offer_result)
+
+        return {
+            "code": 500,
+            "data": {"offer_result": offer_result},
+            "message": "Offer creation failure sent for error handling."
+        }
+        print('\n-----Sending to inboxMS-----')
+        userID = str(offer['offer']['userID'])
+        offer_result = invoke_http(inbox_URL + userID, method='POST', json=offer)
         code = offer_result["code"] 
         message = json.dumps(offer_result)
-        print("offer_result", offer_result)
 
         if code not in range(200, 300):
             print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
@@ -230,21 +225,16 @@ def reject_offers(offer):
             return {
                 "code": 500,
                 "data": {"offer_result": offer_result},
-                "message": "Rejection failure sent for error handling."
-            }   
-        
-    else:
-        print('\n\n-----Publishing the (offer info) message with routing_key=offer.inbox-----') 
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="inbox.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2))
-    print("\nMessage published to RabbitMQ Exchange.\n")
-
+                "message": "Inbox failure sent for error handling."
+            }  
     return {
         "code": 201,
         "data": {
             "offer_result": offer_result,
         }
     }
+
+#-----------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for managing offers...")
