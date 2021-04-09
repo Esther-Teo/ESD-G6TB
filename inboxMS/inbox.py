@@ -133,8 +133,8 @@ def receiveReturnedOffer():
     # Check if the order contains valid JSON
     try:
         data = request.get_json()
-        tutorID = data['tutorID']
-        assignmentId = data['assignmentId']
+        tutorID = data['offer']['tutorID']
+        assignmentId = data['offer']['assignmentId']
         if (ReturnedOffer.query.filter_by(tutorID=tutorID, assignmentId=assignmentId).first()):
             return jsonify(
                 {
@@ -146,7 +146,8 @@ def receiveReturnedOffer():
                 }
             ), 400
         
-        returnedOffer = ReturnedOffer(assignmentId, data['userID'], tutorID, data['status'], data['selectedTime'], data['expectedPrice'], data['preferredDay'], False)
+        returnedOffer = ReturnedOffer(assignmentId, data['offer']['userID'], tutorID, data['offer']['status'], 
+                        data['offer']['selectedTime'], data['offer']['expectedPrice'], data['offer']['preferredDay'], False)
         # subject = TutorSubjects(tutorID, data['subjectId'], data['pri'], data['lvl'], data['subjects'])
         db.session.add(returnedOffer)
         # db.session.add(subject)
