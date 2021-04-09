@@ -247,7 +247,7 @@
                         //alert(assignmentID);
                         document.getElementById("fancypokeball").innerHTML = `
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Nerpppp</button>
-                        <button class="btn btn-primary"  onclick="return createOffer(${assignmentId}, ${userID})">Send Offer</button>
+                        <button type="button" class="btn btn-primary"  onclick="return createOffer(${assignmentId}, ${userID})">Send Offer</button>
                         `;
                         document.getElementById("expandedInfo").innerHTML = `
                         <div class="black" style="text-align:left;">
@@ -289,10 +289,10 @@
     <script>
     function createOffer(assignmentId, userID){
         var time = document.getElementById("time").value;
-        console.log(time.toTimeString())
+        console.log(time)
         var expectedPrice = document.getElementById("expected_price").value;
         console.log(expectedPrice)
-        var preferredDay = $("input[type='radio'][name='rate']:checked").val();
+        var preferredDay = $("input[type='radio'][name='preferredDay']:checked").val();
         console.log(preferredDay)
         // alert("ofc, la, stupid fk")
         json = {
