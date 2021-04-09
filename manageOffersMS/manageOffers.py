@@ -4,13 +4,14 @@ from flask_cors import CORS
 import os, sys
 
 import requests
-# sys.path.insert(0, 'c:/Users/foo/Documents/GitHub/ESD-G6TB')
 sys.path.insert(0, 'C:\wamp64\www\ESD-G6TB')
 
-# To run this file without using your local path as seen above^:
+# HI PLS NOTE!: To run this file without using your local path as seen above^:
     # Navigate into your own local path at GitHub\ESD-G6TB, then type:
     # set PYTHONPATH=.;.\manageOffersMS
     # python manageOffersMS\manageOffers.py
+
+# ALSO: need docker to run amqp stuff (to test in cmd prompt)
 
 from invokes import invoke_http
 import amqpSetup
@@ -192,6 +193,7 @@ def accept_offers(offer):
 
 # Task 3: Tutor creates an offer 
 def create_offer(offer):
+    # POST a new offer 
     print('\n-----Invoking assignmentMS-----') 
     offer_result = invoke_http(create_offer_URL, method='POST', json=offer)
 
@@ -210,6 +212,8 @@ def create_offer(offer):
             "data": {"offer_result": offer_result},
             "message": "Offer creation failure sent for error handling."
         }
+
+        # If successful, send offer to inboxMS
         print('\n-----Sending to inboxMS-----')
         userID = str(offer['offer']['userID'])
         offer_result = invoke_http(inbox_URL + userID, method='POST', json=offer)
