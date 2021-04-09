@@ -32,7 +32,8 @@
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 
-    <body class="body1" >
+    <!-- certified freak, 7 days a week -->
+    <body class="body1" onload=javascript:getAllOffers1()>
         <div id="navbar"></div>
                     
     
@@ -50,36 +51,9 @@
                 </h4>
 
                 <div class="row">
-                    <div class="col-sm-7">
+                    <div class="col-sm-7" id="offer_notification">
                         <h2 class="mb-3">Offers</h2>
-                        <h3>You have 2 Offer Notifications! </h3>
-                        
-                        <div class="card text-center border-light mb-3" style="max-width: 30rem;">
-                            <div class="card-header">Offer Notification</div>
-                            <div class="card-body">
-                            <h5 class="card-title">Tuition for {childID}</h5>
-                            <p class="card-text"><b>{tutorName}</b> has agreed to teach {childID} for Primary 4 Mathematics!</p>
-                            </div>
-                        
-
-                            <div class="mx-3" style="text-align:center;">
-                                <a href="offer.html" type="button" class="btn btn-outline-primary mb-3" >Check Offer!</a>
-                            </div>
-                        </div>
-                        
-                        <div class="card text-center border-light mb-3" style="max-width: 30rem;">
-                            <div class="card-header">Offer Notification</div>
-                            <div class="card-body">
-                            <h5 class="card-title">Tuition for {childID}</h5>
-                            <p class="card-text"><b>{tutorName}</b> has agreed to teach {childID} for Secondary 4 Physics!</p>
-                            </div>
-                        
-
-                            <div class="mx-3" style="text-align:center;">
-                                <a href="offer.html" type="button" class="btn btn-outline-primary mb-3" >Check Offer!</a>
-                            </div>
-                        </div>
-
+                        <h3 id="offer_header"></h3>        
                     </div>
 
                     <div class="col-sm-5">
@@ -180,9 +154,12 @@
         <script> var user = "<?=$user ?>"; console.log(user);</script>
 
         <script>
-
-        
-
+            var array_of_child = [];
+            var array_of_tutor = [];
+            var childName1 = "";
+            var offer_subject = "";
+            var offer_level = "";
+            var offer_tutor = "";
             var get_all_URL = "http://localhost:5001/assignmentByUser";
             // var place_order_URL = "http://localhost:5100/place_order";
     
@@ -215,22 +192,37 @@
                             fetch(get_all_URL+`/${this.userID}`)
                                 .then(response => response.json())
                                 .then(data => {
-                                    console.log(response);
-                                    console.log("meep");
+                                     console.log(response);
+                                    // console.log("meep");
                                     console.log(data.assignments)
+                                    for (assignment of data.assignments){
+                                        // console.log(assignment.assignmentId);
+                                        // console.log(assignment.childName);
+                                        array_of_child.push(assignment.assignmentId);
+                                        array_of_child.push(assignment.childName);
+                                        if (assignment.primary){
+                                            offer_level = "Primary ";
+                                        }
+                                        else {
+                                            offer_level = "Secondary "
+                                        }
+                                        offer_level += assignment.level;
+                                        array_of_child.push(offer_level);
+                                        array_of_child.push(assignment.subject);
+                                        array_of_child.push(assignment.tutorID);
+                                    }
+
                                     if (data.code === 404) {
                                         // no book in db
                                         this.message = data.message;
                                     } else {
                                         this.subject = data.data.subjects;
-                                        
                                     }
                                 })
                                 .catch(error => {
                                     // Errors when calling the service; such as network error, 
                                     // service offline, etc
                                     console.log(this.message + error);
-    
                                 });
     
                     },
@@ -283,7 +275,101 @@
                     this.getAllAssignments();
                 }
             });
+            </script>
+            <script>
+            function getAllOffers() {
+                var userID = 1
+                            const response = 
+                            fetch("http://localhost:5002/created"+`/${userID}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        // console.log(data)
+                                        if (data.code === 404) {
+                                            //alert("You got no offers dude")
+                                            this.message = data.message;
+                                        } else {
+                                           //console.log(data.offers);
+                                           var no_of_offers = (data.offers).length
+                                           //alert(no_of_offers)
+                                           if (no_of_offers == 0){
+                                               document.getElementById("offer_header").innerHTML = "You got no new offers!"
+                                           }
+                                           else {
+                                            document.getElementById("offer_header").innerHTML = `You have ${no_of_offers} Offer Notifications!`
+                                           }
+                                           for (offer of data.offers){
+                                                for (i=0;i<array_of_child.length;i+=5){
+                                                //alert(array_of_child[i]);
+                                                if (array_of_child[i]==offer.assignmentId){
+                                                    childName1 = array_of_child[i+1]
+                                                    offer_subject = array_of_child[i+3]
+                                                    offer_level = array_of_child[i+2]
+                                                    offer_tutor = array_of_child[i+4]
+                                                    alert(array_of_child);
+                                                    for (m=0; m < array_of_tutor.length;m++){
+                                                        if (array_of_tutor[m] == offer_tutor){
+                                                            offer_tutor = array_of_tutor[m+1]
+                                                        }
+                                                    }
+                                                    document.getElementById("offer_notification").innerHTML += `
+                                                    <div class="card text-center border-light mb-3" style="max-width: 30rem;">
+                                                    <div class="card-header">Offer Notification</div>
+                                                    <div class="card-body">
+                                                    <h5 class="card-title">Tuition for ${childName1}</h5>
+                                                    <p class="card-text"><b>${offer_tutor}</b> has offered to teach <b>${childName1}</b> for ${offer_level} ${offer_subject}!</p>
+                                                    <p class="card-text"><b>${offer.preferredDay} @ ${offer.selectedTime} for $${offer.expectedPrice}/Hr</b></p>                            
+                                                    </div>
+                                                    <div class="mx-3" style="text-align:center;">
+                                                    <a href="offer.html" type="button" class="btn btn-outline-primary mb-3" >Check Offer!</a>
+                                                    </div>
+                                                    </div>
+                                                    `
+                                                }
+                                           }
+                                           }
+                                          
+                                        }
+                                    })
+                                    .catch(error => {
+                                        // Errors when calling the service; such as network error, 
+                                        // service offline, etc
+                                        //console.log(this.message + error);
+        
+                                    });
+            }
         </script>
+        <script>
+        function getAllOffers1() {
+        // on Vue instance created, load the book list
+        var userID = 1;
+        const response =
+            fetch(`http://localhost:5001/test/` + `${userID}`)
+                .then(response => response.json())
+                .then(huh => {
+                    //console.log(huh);
+                    if (huh.code === 400) {
+                        message = huh.message;
+                    } else {
+                            console.log(huh.message)
+                            for (temp1 of huh.message){
+                                console.log(temp1[1]);
+                                // console.log(temp1[1].tutorID);
+                                // console.log(temp1[1].tutorName);
+                                array_of_tutor.push(temp1[1].tutorID);
+                                array_of_tutor.push(temp1[1].tutorName);
+                             }
+                            alert(array_of_tutor);
+                                }
+                            }
+                         )  
+                .catch(error => {
+                    console.log( error);
+                });
+                getAllOffers()
+    }
+        //console.log(array_of_tutor);
+        </script>
+        
     
     </body>
 </html>

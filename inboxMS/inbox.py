@@ -177,10 +177,6 @@ def push_created(userID):
     try:
         offer = CreatedOffer.query.filter_by(userID=userID, read="!=").all()
         if offer:
-            for each in offer:
-                # print("input")
-                each.read = 1
-                db.session.commit()
             return jsonify(
                 {
                     "code": 200,
@@ -188,6 +184,11 @@ def push_created(userID):
                     
                 }
             ), 200
+                # for each in offer:
+                # print("input")
+                # each.read = 1
+                # db.session.commit()
+            
         return jsonify(
             {
                 "code": 404,
@@ -216,10 +217,10 @@ def push_returned(tutorID):
         offer = ReturnedOffer.query.filter_by(tutorID=tutorID, read="!=").all()
         if offer:
             # print("in")
-            for each in offer:
-                each.read = 1
+            # for each in offer:
+                # each.read = 1
                 # print(each.read)
-                db.session.commit()
+                # db.session.commit()
             return jsonify(
                 {
                     "code": 200,
