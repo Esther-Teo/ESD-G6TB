@@ -211,16 +211,25 @@ def delete_assignment(assignmentId):
     try:
         assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
         if assignment:
+            offers = Offer.query.filter_by(assignmentId=assignmentId).all()
+            for offer in offers:
+                if offer:
+                    db.session.delete(offer)
+                    db.session.commit()
             db.session.delete(assignment)
             db.session.commit()
             return jsonify(
                 {
                     "code": 200,
                     "data": {
-                        "assignmentId": assignmentId
+                        "assignmentDeleted": assignment.json(),
+                        "offersDeleted": [offer.json() for offer in offers]
+                        ####OOOOH WE ARE HALFWAY THERE, OHHH OHHH. LIVING ON A PRAYER TAKE MY HAND. WE WILL MAKE IT I SWEAR. 
                     }
                 }
             )
+
+            
     except Exception as e:
         return jsonify(
             {
