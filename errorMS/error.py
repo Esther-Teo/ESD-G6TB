@@ -17,7 +17,7 @@ monitorBindingKey='*.error'
 def receiveError():
     amqpSetup.check_setup()
     
-    queue_name = "Payment"  
+    queue_name = "Error"  
 
     # set up a consumer and start to wait for coming messages
     amqpSetup.channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
