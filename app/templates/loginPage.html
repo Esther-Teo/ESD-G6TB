@@ -175,11 +175,11 @@
           function onSignIn(googleUser){
 
             
-
+            // edena??
             var userGoogle = googleUser.getBasicProfile();
 
-            var userID = userGoogle.getId();
-            console.log("userid is", userID);
+            // var userID = userGoogle.getId();
+            // console.log("userid is", userID);
 
             var userName = userGoogle.getName();
             console.log("userName is", userName);
@@ -187,7 +187,7 @@
             var userEmail = userGoogle.getEmail();
             console.log("email is", userEmail);
 
-            localStorage.setItem("userID",userID);
+            
             localStorage.setItem("userName",userName);
             localStorage.setItem("userEmail",userEmail);
 
@@ -221,6 +221,15 @@
                 console.log(json); 
                 console.log("lol"); 
                 console.log(json.data.userEmail);
+                console.log("bioioioi");
+                console.log(json.data.userID);
+
+                var userID = json.data.userID;
+                localStorage.setItem("userID",userID);
+                console.log("iahfoiasf");
+                console.log(localStorage.getItem("userID"));
+                //edena take note
+                
                 $.post("loginPage.html", {userEmail:json.data.userEmail});
                 var check = "user";
                 switch (json.code) {
@@ -262,9 +271,12 @@
           function tutorGoogle(googleUser){
             var googleUser = gapi.auth2.getAuthInstance().currentUser.get();
             var googleTutor = googleUser.getBasicProfile();
+
             var tutorEmail = googleTutor.getEmail();
+            var tutorName = googleTutor.getName();
 
             localStorage.setItem("tutorEmail",tutorEmail);
+            localStorage.setItem("tutorName",tutorName);
 
             console.log(localStorage.getItem("tutorEmail"));
 
@@ -291,6 +303,14 @@
                 console.log(json); 
                 console.log("lol"); 
                 console.log(json.data.tutorEmail);
+
+                var tutorID = json.data.tutorID;
+                localStorage.setItem("tutorID",tutorID);
+                console.log("oeasofuvwe");
+                console.log(localStorage.getItem("tutorID"));
+                //edena take note 
+
+
                 $.post("loginPage.html", {tutorEmail:json.data.tutorEmail});
                 var check = "tutor";
                 switch (json.code) {
