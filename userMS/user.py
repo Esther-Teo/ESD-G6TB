@@ -119,7 +119,7 @@ def add_user():
                     "message": "User already exists."
                 }
             ), 400
- 
+
     
         user = User(**data)
         db.session.add(user)
@@ -134,7 +134,7 @@ def add_user():
                 "message": "An error occurred creating the User." + str(e)
             }
         ), 500
- 
+
     return jsonify(
         {
             "code": 201,
