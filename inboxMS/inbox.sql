@@ -28,11 +28,11 @@ USE `inbox`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `rejectedOffer`
+-- Table structure for table `returnedOffer`
 --
 
-DROP TABLE IF EXISTS `rejectedOffer`;
-CREATE TABLE IF NOT EXISTS `rejectedOffer` (
+DROP TABLE IF EXISTS `returnedOffer`;
+CREATE TABLE IF NOT EXISTS `returnedOffer` (
   `assignmentId` int NOT NULL,
   `userID` int NOT NULL,
   `tutorID` int NOT NULL,
@@ -66,33 +66,16 @@ CREATE TABLE IF NOT EXISTS `createdOffer` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
---
--- Table structure for table `acceptedOffer`
---
-DROP TABLE IF EXISTS `acceptedOffer`;
-CREATE TABLE IF NOT EXISTS `acceptedOffer` (
-  `assignmentId` int NOT NULL,
-  `userID` int NOT NULL,
-  `tutorID` int NOT NULL,
-  `status` varchar(10) NOT NULL,
-  `selectedTime` int NOT NULL,
-  `expectedPrice` decimal(5,2) NOT NULL,
-  `preferredDay` varchar(3) NOT NULL,
-  `read` boolean NOT NULL, 
-  
-  PRIMARY KEY (`assignmentId`, `tutorID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 --
 -- Dumping data for table `rejectedOffer`
 --
 
-INSERT INTO `rejectedOffer` (`assignmentId`, `userID`, `tutorID`, `status`, `selectedTime`,`expectedPrice`, `preferredDay`, `read`) VALUES
+INSERT INTO `returnedOffer` (`assignmentId`, `userID`, `tutorID`, `status`, `selectedTime`,`expectedPrice`, `preferredDay`, `read`) VALUES
 (1,2, 1, "rejected",1200, 2.5, "Fri", FALSE),
-(7,2, 1, "rejected", 1300, 66, "Sun", FALSE),
+(7,2, 1, "accepted", 1300, 66, "Sun", FALSE),
 (2,4, 1, "rejected",1230, 4, "Sat", FALSE),
-(3,6, 1, "rejected", 1400, 3, "Sun", FALSE),
+(3,6, 1, "accepted", 1400, 3, "Sun", FALSE),
 (4,8, 4, "rejected", 1500, 6, "Mon", FALSE),
 (5,7, 5, "rejected", 0900, 3.7, "Thu", FALSE),
 (6,9, 1, "rejected", 2100, 2, "Wed", FALSE);
@@ -104,11 +87,11 @@ COMMIT;
 INSERT INTO `createdOffer` (`assignmentId`, `userID`, `tutorID`, `status`, `selectedTime`,`expectedPrice`, `preferredDay`, `read`) VALUES
 (1,2, 1, "pending",1200, 2.5, "Fri", FALSE),
 (7,2, 1, "pending", 1300, 66, "Sun", FALSE),
-(2,4, 1, "pending",1230, 4, "Sat", FALSE),
+(2,1, 1, "pending",1230, 4, "Sat", FALSE),
 (3,6, 1, "pending", 1400, 3, "Sun", FALSE),
-(4,8, 4, "pending", 1500, 6, "Mon", FALSE),
-(5,7, 5, "pending", 0900, 3.7, "Thu", FALSE),
-(6,9, 1, "pending", 2100, 2, "Wed", FALSE);
+(4,1, 4, "pending", 1500, 6, "Mon", FALSE),
+(5,1, 5, "pending", 0900, 3.7, "Thu", FALSE),
+(6,1, 1, "pending", 2100, 2, "Wed", FALSE);
 COMMIT;
 
 
