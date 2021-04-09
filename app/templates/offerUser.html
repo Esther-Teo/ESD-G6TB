@@ -107,8 +107,8 @@
             fetch(get_all_URL+`/${userID}`)
                 .then(response => response.json())
                 .then(huh => {
-                    console.log(response);
-                    console.log("meep");
+                    // console.log(response);
+                    // console.log("meep");
                     console.log(huh)
                     if (huh.code === 400) {
                         message = huh.message;
@@ -182,8 +182,6 @@
                         
                     } else {
                         for (each of huh.message) {
-                            //alert("making me work alone, fking sad :( pls buy me ice cold drinks, thanks");
-                            //console.log("checkmate, bitch");
                             //console.log(each[0].childName);
                             //console.log(huh.offers[each])
                             card_status = each[1].status;

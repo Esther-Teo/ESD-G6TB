@@ -47,159 +47,7 @@
       </style>
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-    <script>
-            function toBeExpanded(assignmentId, userID){
-                var element = document.getElementById("expandedInfo");
-                element.classList.remove("pic");
-
-                    const response =
-                    fetch(get_user_URL+`/${userID}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log("why");
-                            console.log(response);
-                            console.log("even");
-                            console.log(data.message);
-                            if (data.code === 404) {
-                                // no book in db
-                                this.message = data.message;
-                            } else {
-                                for (each of data.message){
-                                //NOT DONE YET
-                                
-                                console.log("brr");
-                                console.log(each)
-                                // alert("For each assignemnt it willl loop")
-                                var parentName =each[0].userName;
-                                var parentPhone =each[0].userPhone;
-                                var parentEmail =each[0].userEmail;
-                                var location =each[0].loc;
-                                
-                                console.log('yooooo');
-                                console.log(location);
-
-                                
-                                var childName = each[1].childName;
-                                var school = each[1].school;
-                                var level = each[1].lvl;
-                                var Primary = each[1].pri;
-
-                                if(Primary){
-                                    Primary = "Primary";
-                                }
-                                else{
-                                    Primary = "Secondary"
-                                }
-
-                                
-
-                                console.log("level");
-                                console.log(Primary);
-                                
-                                // alert(primary1)
-                                //alert(assignmentID);
-                                document.getElementById("expandedInfo").innerHTML = `
-                                <div class="black" style="text-align:left;">
-                                    <h1>${Primary} and ${level} </h1>
-                                    The tutee details are: 
-                                    <ul>
-                                        <li>Tutee Name: ${childName}</li>
-                                        <li>Tutee's School: ${school}</li>
-                                        <li>Tutee Level: ${Primary} ${level}</li>
-                                    </ul>
-
-                                    The parent details are: 
-                                    <ul>
-                                        <li>Parent's name: ${parentName}</li>
-                                        <li>Parent's Phone Number: ${parentPhone}</li>
-                                        <li>Parent's Email: ${parentEmail}</li>
-                                        <li>Parent's location: ${location}</li>
-                                    </ul>
-
-                                    <button type="button" class="btn btn-outline-success mb-3" data-toggle="modal" data-target="#testModal" onclick="sendOffer(${pri}, ${level}, ${subject}, ${price}, ${preferredDay}, ${userID})">Apply Now!</button>
-                                </div>
-                                `;
-                                
-                        }
-                        }
-                            })
-                            .catch(error => {
-                                // Errors when calling the service; such as network error, 
-                                // service offline, etc
-                                console.log(this.message + error);
-
-                            });
-                            
-                        
-                    }
-            function createOffer(primary, level, subject, price, preferredDay, userID){
-                var time = document.getElementById("time").value;
-                console.log(time)
-                var expectedPrice = document.getElementById("expected_price").value;
-                var preferredDay = $("input[type='radio'][name='rate']:checked").val();
-                // alert("ofc, la, stupid fk")
-                json = {
-                    "assignmentId": assignmentId, 
-                    "userID": userID,
-                    "tutorID": 1, 
-                    "tutorName": "Bob",
-                    "tutorEmail": "bob@gmail.com",
-                    "status": "pending", 
-                    "selectedTime": time, 
-                    "expectedPrice": expectedPrice, 
-                    "preferredDay": preferredDay
-                }
-                console.log(assignmentId)
-                const response =
-                    fetch(get_user_URL+`/${userID}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log("why");
-                            console.log(response);
-                            console.log("even");
-                            console.log(data.message);
-                            if (data.code === 404) {
-                                // no book in db
-                                this.message = data.message;
-                            } else {
-                                for (each of data.message){
-                                //NOT DONE YET
-                                
-                                console.log("brr");
-                                console.log(each)
-                                // alert("For each assignemnt it willl loop")
-                                var parentName =each[0].userName;
-                                var parentPhone =each[0].userPhone;
-                                var parentEmail =each[0].userEmail;
-                                var location =each[0].loc;
-                                
-                                console.log('yooooo');
-                                console.log(location);
-
-                                
-                                var childName = each[1].childName;
-                                var school = each[1].school;
-                                var level = each[1].lvl;
-                                var Primary = each[1].pri;
-
-                                if(Primary){
-                                    Primary = "Primary";
-                                }
-                                else{
-                                    Primary = "Secondary"
-                                }
-
-                            }
-                        }
-                    })
-
-            }     
-                            
-                            
-
-
-            
-    </script>
+    
    
     <body class="body1" >
         
@@ -232,7 +80,8 @@
 
             </div>
         </div>
-        
+
+        <!--Modal-->
         <div class="modal fade" id="testModal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -304,23 +153,220 @@
                                         </div>
                                     </div>
 
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                
                                 <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
-                                <button class="btn btn-primary" onclick="createOffer()">Send Offer</button>
-
-                            </div>
+                                <div id="fancypokeball">
+                                    <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button class="btn btn-primary"  onclick="createOffer()">Send Offer</button> -->
+                                </div>
+                            
                         </form> 
                 </div>
                 </div>
             </div>
         </div>
 
+        <!--Navbar-->
         <script>
           $.get("navbarTutor.html", function(data){
               $("#navbar").replaceWith(data);
           });
         </script>
-            <script>
+        <!--JAVASCRIPT scripts-->
+<script>
+    function toBeExpanded(assignmentId, userID){
+        var element = document.getElementById("expandedInfo");
+        element.classList.remove("pic");
+        // console.log(typeof subj)
+        // if (String(subj)){
+        //     meep = String(subj)
+        //     subject = meep.substring(7, meep.length-1)
+        // } else {
+        //     subject = subj
+        // }
+        // console.log(subject)
+        const first = 
+        fetch("http://localhost:5001/assignmentById/" + `${assignmentId}`)
+        .then(response => response.json())
+        .then(data=>{
+            if (data.code ===404){
+                this.message = data.message;
+            } else {
+                // console.log(data)
+                subject = data.subject;
+                // console.log(subject)
+                price = data.expectedPrice;
+                preferredDay = data.preferredDay;
+            }
+        })
+            const response =
+            fetch(get_user_URL+`/${userID}`)
+                .then(response => response.json())
+                .then(data => {
+                    // console.log("why");
+                    // console.log(response);
+                    // console.log("even");
+                    // console.log(data.message);
+                    if (data.code === 404) {
+                        // no book in db
+                        this.message = data.message;
+                    } else {
+                        for (each of data.message){
+                        //NOT DONE YET
+                        
+                        // console.log("brr");
+                        // console.log(each)
+                        // alert("For each assignemnt it willl loop")
+                        var parentName = each[0].userName;
+                        var parentPhone = each[0].userPhone;
+                        var parentEmail = each[0].userEmail;
+                        var location = each[0].loc;
+                        // console.log('yooooo');
+                        // console.log(location);
+
+                        
+                        var childName = each[1].childName;
+                        var school = each[1].school;
+                        var level = each[1].lvl;
+                        var Primary = each[1].pri;
+
+
+                        if(Primary){
+                            Primary = "Primary";
+                        }
+                        else{
+                            Primary = "Secondary"
+                        }
+
+                        
+
+                        // console.log("level");
+                        // console.log(Primary);
+                        
+                        // alert(primary1)
+                        //alert(assignmentID);
+                        document.getElementById("fancypokeball").innerHTML = `
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Nerpppp</button>
+                        <button class="btn btn-primary"  onclick="return createOffer(${assignmentId}, ${userID})">Send Offer</button>
+                        `;
+                        document.getElementById("expandedInfo").innerHTML = `
+                        <div class="black" style="text-align:left;">
+                            <h1>${Primary} ${level} ${subject} @ $${price}/hr</h1>
+                            The tutee details are: 
+                            <ul>
+                                <li>Tutee Name: ${childName}</li>
+                                <li>Tutee's School: ${school}</li>
+                                <li>Tutee Level: ${Primary} ${level}</li>
+                            </ul>
+
+                            The parent details are: 
+                            <ul>
+                                <li>Parent's name: ${parentName}</li>
+                                <li>Parent's Phone Number: ${parentPhone}</li>
+                                <li>Parent's Email: ${parentEmail}</li>
+                                <li>Parent's location: ${location}</li>
+                            </ul>
+                            <p>
+                            Preferred Day(s): ${preferredDay}
+                            </p>
+                            <button type="button" class="btn btn-outline-success mb-3" data-toggle="modal" data-target="#testModal" >Apply Now!</button>
+                        </div>
+                        `;
+                        
+                }
+                }
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    console.log(this.message + error);
+
+                });
+                
+                return false;
+            }
+    </script>
+    <script>
+    function createOffer(assignmentId, userID){
+        var time = document.getElementById("time").value;
+        console.log(time.toTimeString())
+        var expectedPrice = document.getElementById("expected_price").value;
+        console.log(expectedPrice)
+        var preferredDay = $("input[type='radio'][name='rate']:checked").val();
+        console.log(preferredDay)
+        // alert("ofc, la, stupid fk")
+        json = {
+            "assignmentId": assignmentId, 
+            "expectedPrice": expectedPrice, 
+            "preferredDay": preferredDay,
+            "selectedTime": time, 
+            "status": "pending", 
+            "tutorEmail": "bob@gmail.com",
+            "tutorID": 1, 
+            "tutorName": "Bob",
+            "userID": userID
+        }
+        console.log(assignmentId)
+        const response =
+            fetch("http://localhost:5100/tutorOffers", {
+                    method: "POST",
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify(json)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("why");
+                    console.log(response);
+                    console.log("even");
+                    console.log(data.message);
+                    if (data.code === 404) {
+                        // no book in db
+                        this.message = data.message;
+                    } else {
+                        for (each of data.message){
+                        //NOT DONE YET
+                        
+                        console.log("brr");
+                        console.log(each)
+                        // alert("For each assignemnt it willl loop")
+                        var parentName =each[0].userName;
+                        var parentPhone =each[0].userPhone;
+                        var parentEmail =each[0].userEmail;
+                        var location =each[0].loc;
+                        
+                        console.log('yooooo');
+                        console.log(location);
+
+                        
+                        var childName = each[1].childName;
+                        var school = each[1].school;
+                        var level = each[1].lvl;
+                        var Primary = each[1].pri;
+
+                        if(Primary){
+                            Primary = "Primary";
+                        }
+                        else{
+                            Primary = "Secondary"
+                        }
+
+                    }
+                }
+            })
+
+    }     
+                            
+                            
+
+
+            
+</script>
+
+
+        <!--VUE scripts-->
+        <script>
             var username  = "meep";
             // console.log(username)
 
@@ -356,10 +402,10 @@
                         fetch(get_all_URL)
                             .then(response => response.json())
                             .then(data => {
-                                console.log("bro");
-                                console.log(response);
-                                console.log("sis");
-                                console.log(data.assignments)
+                                // console.log("bro");
+                                // console.log(response);
+                                // console.log("sis");
+                                // console.log(data.assignments)
                                 if (data.code === 404) {
                                     // no book in db
                                     this.message = data.message;
@@ -367,28 +413,30 @@
                                     for (each of data.assignments){
                                     //NOT DONE YET
                                     // this.assignments += each.;
-                                    console.log("zzz");
-                                    console.log(each)
+                                    // console.log("zzz");
+                                    // console.log(each)
                                     // alert("For each assignemnt it willl loop")
                                     var subject = each.subject;
-                                    console.log("SUbject is: ", subject);
+                                    // console.log("SUbject is: ", subject);
                                     var primary = each.primary;
                                     var userID = each.userID;
                                     var assignmentId = each.assignmentId
                                     var preferredDay = each.preferredDay
+                                    // alert(preferredDay)
                                     if (primary){
                                         primary = "Primary";
                                     }
                                     else {
                                         primary = "Secondary";
                                     }
-
-                                    console.log("primary is: ", primary);
+                                    console.log(typeof each.subject)
+                                    console.log("placeholderrr")
+                                    // console.log("primary is: ", primary);
 
                                     var level = each.level;
                                     var price = each.expectedPrice;
-                                    console.log("level");
-                                    console.log(level);
+                                    // console.log("level");
+                                    // console.log(level);
                                     
                                     // alert(primary1)
                                     //alert(assignmentID);
@@ -398,6 +446,7 @@
                                             <div class="card-header black" style="text-align:center;">Assignment Details </div>
                                             <div class="card-body black" style="text-align:center;"><b>${primary} ${level} ${subject}</b> Tuition
                                                 <p>Amount Offered: $${price}0/hour</p>
+                                                <p>Preferred Day(s): ${preferredDay}</p>
                                                 
                                             
                                             </div>
@@ -407,7 +456,7 @@
                                     </div>
                                     `;
                                     
-                              }
+                                }
                             }
                         })
                         .catch(error => {
@@ -423,7 +472,7 @@
 
 
                     
-                  },
+                },
                 created: function () {
                     // on Vue instance created, load the book list
                     

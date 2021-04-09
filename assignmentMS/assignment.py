@@ -64,16 +64,16 @@ class Offer(db.Model):
     tutorName = db.Column(db.String(90), nullable=False)
     tutorEmail = db.Column(db.String(40), nullable=False)
     status = db.Column(db.String(6), nullable=False)
-    selectedTime = db.Column(db.Integer, nullable=False)
+    selectedTime = db.Column(db.String(50), nullable=False)
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
     preferredDay = db.Column(db.String(10), nullable=False)
     assignment = db.relationship(
     'Assignment', primaryjoin='Offer.assignmentId == Assignment.assignmentId', backref='offer')
  
-    def __init__(self, assignmentId, userID, tutorName, tutorEmail, status, selectedTime, expectedPrice, preferredDay):
+    def __init__(self, assignmentId, userID, tutorID, tutorName, tutorEmail, status, selectedTime, expectedPrice, preferredDay):
         self.assignmentId = assignmentId
         self.userID = userID
-        self.tutorID = 0
+        self.tutorID = tutorID
         self.tutorName = tutorName
         self.tutorEmail = tutorEmail
         self.status = status
@@ -211,16 +211,25 @@ def delete_assignment(assignmentId):
     try:
         assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
         if assignment:
+            offers = Offer.query.filter_by(assignmentId=assignmentId).all()
+            for offer in offers:
+                if offer:
+                    db.session.delete(offer)
+                    db.session.commit()
             db.session.delete(assignment)
             db.session.commit()
             return jsonify(
                 {
                     "code": 200,
                     "data": {
-                        "assignmentId": assignmentId
+                        "assignmentDeleted": assignment.json(),
+                        "offersDeleted": [offer.json() for offer in offers]
+                        ####OOOOH WE ARE HALFWAY THERE, OHHH OHHH. LIVING ON A PRAYER TAKE MY HAND. WE WILL MAKE IT I SWEAR. 
                     }
                 }
             )
+
+            
     except Exception as e:
         return jsonify(
             {

@@ -4,13 +4,14 @@ from flask_cors import CORS
 import os, sys
 
 import requests
-# sys.path.insert(0, 'c:/Users/foo/Documents/GitHub/ESD-G6TB')
 sys.path.insert(0, 'C:\wamp64\www\ESD-G6TB')
 
-# To run this file without using your local path as seen above^:
+# HI PLS NOTE!: To run this file without using your local path as seen above^:
     # Navigate into your own local path at GitHub\ESD-G6TB, then type:
     # set PYTHONPATH=.;.\manageOffersMS
     # python manageOffersMS\manageOffers.py
+
+# ALSO: need docker to run amqp stuff (to test in cmd prompt)
 
 from invokes import invoke_http
 import amqpSetup
@@ -26,7 +27,7 @@ create_offer_URL = "http://localhost:5001/createOffer" # creates new offer in as
 create_assignment_URL = "http://localhost:5001/makeAssignment" # creates new assignment in assignment.py with POST 
 delete_assignment_URL = "http://localhost:5001/deleteAssignment/" # specify assignmentID to delete: <int:assignmentId>
 delete_offer_URL = "http://localhost:5001/deleteOffer/" # specify assignmentId and tutorID: <int:assignmentId>/<int:tutorID>
-inbox_URL = "http://localhost:5002/inboxUser/" # specify userID: <int:userID>
+inbox_create_offer_URL = "http://localhost:5002/createOffer" 
 
 #-----------------------------------------------------------------------------------------------------
 
@@ -189,50 +190,41 @@ def accept_offers(offer):
     }
 
 #-----------------------------------------------------------------------------------------------------
-
 # Task 3: Tutor creates an offer 
 def create_offer(offer):
+    # POST a new offer 
     print('\n-----Invoking assignmentMS-----') 
     offer_result = invoke_http(create_offer_URL, method='POST', json=offer)
-
     code = offer_result["code"] 
     message = json.dumps(offer_result)
     print("offer_result", offer_result)
 
+    # Error handling
     if code not in range(200, 300):
         print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
         amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), offer_result)
+        return {"code": 500, "data": {"offer_result": offer_result}, "message": "Offer creation failure sent for error handling."}
 
-        return {
-            "code": 500,
-            "data": {"offer_result": offer_result},
-            "message": "Offer creation failure sent for error handling."
-        }
-        print('\n-----Sending to inboxMS-----')
-        userID = str(offer['offer']['userID'])
-        offer_result = invoke_http(inbox_URL + userID, method='POST', json=offer)
-        code = offer_result["code"] 
-        message = json.dumps(offer_result)
+    # If successful, send offer to inboxMS
+    print('\n-----Sending to inboxMS-----')
+    userID = str(offer['userID'])
+    inbox_result = invoke_http(inbox_create_offer_URL, method='POST', json=offer)
+    inbox_code = inbox_result["code"] 
+    inbox_message = json.dumps(inbox_result)
+    print("inbox_result", inbox_result)
 
-        if code not in range(200, 300):
-            print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
-            amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
-                body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
-            print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), offer_result)
+    # Error handling
+    if code not in range(200, 300):
+        print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
+        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
+            body=inbox_message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(inbox_code), inbox_result)
+        return {"code": 500, "data": {"inbox_result": inbox_result}, "message": "Inbox failure sent for error handling."}  
 
-            return {
-                "code": 500,
-                "data": {"offer_result": offer_result},
-                "message": "Inbox failure sent for error handling."
-            }  
-    return {
-        "code": 201,
-        "data": {
-            "offer_result": offer_result,
-        }
-    }
+    # Return offer if no errors
+    return {"code": 201, "data": { "offer_result": offer_result}}
 
 #-----------------------------------------------------------------------------------------------------
 

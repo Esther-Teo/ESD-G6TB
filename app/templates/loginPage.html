@@ -105,7 +105,7 @@
                             // Move to a new location or you can do something else
 
                             window.location.replace("tutorDashboard.html");
-                        }, 5000);
+                        }, 1000);
                         // an alternate way is to add this one element into this.books
                         break;
                     default:
@@ -130,7 +130,7 @@
             }
 
             fetch('http://localhost:5004/usercheck', {
-              method: "GET",
+              method: "POST",
               body: JSON.stringify(login),
               headers: {"Content-type": "application/json; charset=UTF-8"}
             })
@@ -152,7 +152,7 @@
                             // Move to a new location or you can do something else
 
                             window.location.replace("dashboardUser.html");
-                        }, 5000);
+                        }, 1000);
                         // an alternate way is to add this one element into this.books
                         break;
                     default:
@@ -234,7 +234,7 @@
                               // Move to a new location or you can do something else
 
                               window.location.replace("dashboardUser.html");
-                          }, 5000);
+                          }, 1000);
                           // an alternate way is to add this one element into this.books
                           break;
                       default:
@@ -304,11 +304,16 @@
                               // Move to a new location or you can do something else
 
                               window.location.replace("tutorDashboard.html");
-                          }, 5000);
+                          }, 1000);
                           // an alternate way is to add this one element into this.books
                           break;
                       default:
-                          tutorGoogle();
+                      document.getElementById("formallyYours").innerHTML=`<h4>You have not registered with us :(</h4><p>You will be redirected in a moment to register</p>`;
+                          window.setTimeout(function(){
+                              // Move to a new location or you can do something else
+
+                              window.location.replace("registerPage.html");
+                          }, 1000);
                           throw `${json.code}: ${json.message}`;
                   }
 
@@ -316,7 +321,12 @@
               }) 
               .catch(err => {
               console.log(err);
-              tutorGoogle()
+              document.getElementById("formallyYours").innerHTML=`<h4>You have not registered with us :(</h4><p>You will be redirected in a moment to register</p>`;
+                          window.setTimeout(function(){
+                              // Move to a new location or you can do something else
+
+                              window.location.replace("registerPage.html");
+                          }, 1000);
               });
             
           }
