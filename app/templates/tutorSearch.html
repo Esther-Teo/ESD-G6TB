@@ -287,6 +287,7 @@
             }
     </script>
     <script>
+        // @crystal, pls help me test
     function createOffer(assignmentId, userID){
         var time = document.getElementById("time").value;
         console.log(time)
@@ -325,36 +326,14 @@
                         // no book in db
                         this.message = data.message;
                     } else {
-                        for (each of data.message){
+                        data
                         //NOT DONE YET
                         
-                        console.log("brr");
-                        console.log(each)
-                        // alert("For each assignemnt it willl loop")
-                        var parentName =each[0].userName;
-                        var parentPhone =each[0].userPhone;
-                        var parentEmail =each[0].userEmail;
-                        var location =each[0].loc;
                         
-                        console.log('yooooo');
-                        console.log(location);
-
-                        
-                        var childName = each[1].childName;
-                        var school = each[1].school;
-                        var level = each[1].lvl;
-                        var Primary = each[1].pri;
-
-                        if(Primary){
-                            Primary = "Primary";
-                        }
-                        else{
-                            Primary = "Secondary"
-                        }
 
                     }
-                }
-            })
+                })
+
 
     }     
                             

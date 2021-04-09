@@ -331,6 +331,16 @@ def findO_by_assignment(assignmentId):
     except Exception as e:
         return jsonify({"message": "Offer not found." + str(e)}), 404
 
+# GET offer by tutor and assignment IDs
+@app.route("/theOffer/<int:assignmentId>/<int:tutorID>")
+def findO(assignmentId, tutorID):
+    try: 
+        offer = Offer.query.filter_by(assignmentId=assignmentId, tutorID=tutorID).first()
+        if offer:
+            return jsonify(offer.json())
+    except Exception as e:
+        return jsonify({"message": "Offer not found." + str(e)}), 404
+
 # DELETE an offer by its ID
 @app.route("/deleteOffer/<int:assignmentId>/<int:tutorID>", methods=['PUT'])
 def delete_offer(assignmentId, tutorID):

@@ -68,25 +68,51 @@
             </script>
     
             <script> var user = "idk"; console.log(user);</script>
-
-            <script>
-                console.log("user localStorage check")
-                console.log(localStorage.getItem("userID"));
-                console.log(localStorage.getItem("userName"));
-                console.log(localStorage.getItem("userEmail"));
-            </script>
     
 <script>
-        var delete_child_URL = "http://localhost:5001/deleteOffer/";
+    console.log("user localStorage check")
+    console.log(localStorage.getItem("userID"));
+    console.log(localStorage.getItem("userName"));
+    console.log(localStorage.getItem("userEmail"));
+</script>
+    
+<script>
+        var delete_child_URL = "http://localhost:5100/manageOffers/";
         var get_all_URL = "http://localhost:5001/test/";
         var offer_URL = "http://localhost:5001/offer/";
+        var get_one_offer_URL = 'http://localhost:5001/theOffer'
         var userID = 1;
+
+    // @CRYSTAL, pls help me test
     function deleteit(assignment_ID, tutorId) {
         // alert(tutorId);
-        message="";
-        response =
-        fetch(delete_child_URL + `${assignment_ID}/${tutorId}`,
-        {method: "DELETE"})
+        gg =
+        fetch(get_one_offer_URL +`/${assignment_ID}/${tutorID}`)
+        .then(response => response.json())
+        .then(data => {
+            json = {
+                "acceptOrReject": "reject",
+                "offer": {
+                    "assignmentId": assignment_ID,
+                    "expectedPrice": data.expectedPrice, 
+                    "preferredDay": data.preferredDay,
+                    "selectedTime": data.selectedTime, 
+                    "status": "pending", 
+                    "tutorEmail": data.tutorEmail,
+                    "tutorID": tutorID, 
+                    "tutorName": data.tutorName,
+                    "userID": userID
+                }
+            }
+        })
+        
+        response = 
+        fetch(delete_child_URL,
+        {method: "POST",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(json)})
         .then(response =>response.json())
         .then(data => {
             console.log("oof");
