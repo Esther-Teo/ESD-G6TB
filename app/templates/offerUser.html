@@ -93,6 +93,57 @@
         .then(data => {
             console.log("whelp")
             json = {
+                "acceptOrReject": "accept",
+                "offer": {
+                    "assignmentId": assignment_ID,
+                    "expectedPrice": data.expectedPrice, 
+                    "preferredDay": data.preferredDay,
+                    "selectedTime": data.selectedTime, 
+                    "status": "accepted", 
+                    "tutorEmail": data.tutorEmail,
+                    "tutorID": tutorId, 
+                    "tutorName": data.tutorName,
+                    "userID": userID
+                }
+            }
+            response = 
+                fetch(delete_child_URL,
+                {method: "POST",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify(json)})
+                .then(response =>response.json())
+                .then(data => {
+                    // console.log("oof");
+                    // console.log(":ehhh");
+                    // console.log(data.code);
+                    if (data.code !== 201) {
+                        // no book in db
+                        message = data.message;
+                    } else {
+                        // message += data;
+                        location.reload(true);
+                    }
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    console.log(message + error);
+                });
+        })
+        
+    }
+
+    function acceptOffer(assignment_ID, tutorId) {
+        // alert("yeboiiiii")
+        
+        meep =
+        fetch(get_one_offer_URL +`/${assignment_ID}/${tutorId}`)
+        .then(meep => meep.json())
+        .then(data => {
+            console.log("whelp")
+            json = {
                 "acceptOrReject": "reject",
                 "offer": {
                     "assignmentId": assignment_ID,
@@ -133,72 +184,6 @@
                 });
         })
         
-    }
-
-    function acceptOffer(assignment_ID, tutorId) {
-        // alert("yeboiiiii")
-        message=""
-        const response =
-            fetch(get_all_URL+`/${userID}`)
-                .then(response => response.json())
-                .then(huh => {
-                    // console.log(response);
-                    // console.log("meep");
-                    console.log(huh)
-                    if (huh.code === 400) {
-                        message = huh.message;
-                    } else {
-                        for (each of huh.message) {
-                            var assignmentID2 = each[1].assignmentId;
-                            var tutorId2 = each[1].tutorID;
-                            
-                            if (tutorId2 ==tutorId && assignmentID2 == assignment_ID){
-                                var tutorname = each[1].tutorName;
-                                var email = each[1].tutorEmail;
-                                var preferredDay = each[1].preferredDay;
-                                var time = each[1].selectedTime;
-                                var price = each[1].expectedPrice;
-                                var jsonData = JSON.stringify({
-                                    "assignmentId": assignment_ID,
-                                    "expectedPrice": price,
-                                    "preferredDay": preferredDay,
-                                    "selectedTime": time,
-                                    "status": "accepted",
-                                    "tutorEmail": email,
-                                    "tutorID": tutorId,
-                                    "tutorName": tutorname,
-                                    "userID": userID
-                                });
-
-                                n_response =
-                                fetch(offer_URL + `${assignment_ID}/${tutorId}`,
-                                {method: "PUT",
-                                headers: {
-                                    "Content-type": "application/json"
-                                },
-                                body: jsonData})
-                                .then(n_response =>n_response.json())
-                                .then(data => {
-                                    console.log("oof");
-                                    console.log(":ehhh");
-                                    console.log(data);
-                                    if (data.code !== 200) {
-                                        // no book in db
-                                        message = data.message;
-                                    } else {
-                                        message += data;
-                                        location.reload(true);
-                                    }
-                                })
-                                .catch(error => {
-                                    // Errors when calling the service; such as network error, 
-                                    // service offline, etc
-                                    console.log(message + error);
-                                });
-                            }
-                        }
-                    }
-                })
         
     }
     function getAllOffers() {
@@ -363,108 +348,6 @@
                             }
                         },
                         
-                        updateChildInfo: function() {
-                            const response =
-                            fetch(get_childURL+ `/${this.userID}/${this.childName}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log(data);
-                                    console.log(":ooooofff");
-                                    // console.log(data.data)
-                                    if (data.code !== 200) {
-                                        // no book in db
-                                        this.message = data.message;
-                                    } else {
-                                        console.log("pls work, i wna sleep")
-                                        console.log(data.childData.lvl)
-                                      // for (names of data.data) {
-                                        // console.log(names.childName);
-                                        this.level = data.childData.lvl;
-                                        this.primary = data.childData.pri;
-                                      // }
-                                    }
-                                })
-                                .catch(error => {
-                                    // Errors when calling the service; such as network error, 
-                                    // service offline, etc
-                                    console.log(this.message + error);
-    
-                                });
-                        },
-                        createAssignment: function(){
-                        
-                        //retrieves and stores childData from user microservice
-                        // alert("check")
-                        
-                        //retrieves and stores form data
-                        // this.childName = document.getElementById("childrens").value;
-                        // this.subject = document.getElementById("subjects").value;
-                        //alert(selected_subject);
-                        // var selected_Eprice = document.getElementById("expected_price").value;
-                        var array = [];
-                        var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
-                        for (var i = 0; i < checkboxes.length; i++) {
-                        array.push(checkboxes[i].value)
-                        }
-                        //alert(array);
-                        var w = 0;
-                        var selected_days = "";
-                        //alert(array.length);
-                        for (w=0;w < array.length;w++){
-                        if(w == array.length-1){
-                        selected_days += `${array[w]}`;
-                        }
-                        else{
-                        selected_days += `${array[w]}`+ " ,";
-                        }
-                        }
-                        // alert(this.subject);
-                        //prepares posting data
-                        let jsonData = JSON.stringify({
-                            "assignmentId": Math.floor((Math.random() * 696969) + 1),
-                            "userID": this.userID,
-                            "childName": this.childName,
-                            "primary": this.primary,
-                            "level": this.level,
-                            "subject": this.subject,
-                            "expectedPrice": this.expectedPrice, 
-                            "preferredDay": this.preferredDay.toString(),
-                            });
-                            //posts creates a new assignment
-                            fetch(`http://localhost:5001/makeAssignment`,
-                                {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-type": "application/json"
-                                    },
-                                    body: jsonData
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log(data);
-                                    result = data.data;
-                                    console.log(result);
-                                    this.getAllAssignments();
-                                    // 3 cases
-                                    switch (data.code) {
-                                        case 201:
-                                            this.assignmentAdded = true;
-        
-                                            // refresh assignment list
-                                            // alert("meeeeep")
-                                            
-        
-                                            // an alternate way is to add this one element into this.books
-                                            break;
-                                        case 400:
-                                        case 500:
-                                            this.addAssignmentError = data.message;
-                                            break;
-                                        default:
-                                            throw `${data.code}: ${data.message}`;
-                                    }
-                                })
-                        },
                     }, 
                     created: function () {
                         // on Vue instance created, load the children
