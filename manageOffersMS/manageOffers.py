@@ -201,31 +201,12 @@ def reject_offers(offer):
 # Task 2: User accepts offer (Kinda tested, super long)
 # not a lot of error handling here...otherwise will be q messy
 def accept_offers(offer):
-    # get all offers with the same assignmentId
+    # make new assignment 
     print('\n-----Invoking assignmentMS-----')
-    assignmentId = str(offer['offer']['assignmentId'])
-    offer_result = invoke_http(get_offer_by_assignment_URL + assignmentId, method='GET', json=offer['offer'])
-
-    # for each offer, reject using reject_offers (changes status and sends to returnedoffer in inbox.sql)
-    print('-----Rejecting Offers-----')
-    temp = {}
-    for rej_offer in offer_result['offers']: 
-        temp['offer'] = rej_offer
-        print(reject_offers(temp))
-
-    # for each offer, delete offers using delete_assignment 
-    print('-----Deleting offers-----')
-    temp2 = {}
-    for del_offer in offer_result['offers']: 
-        temp2['assignment'] = del_offer
-        print(delete_assignment(temp2))
-    
-    # update assignment 
-    print('-----Updating offers-----')
-    assignment_result = invoke_http(update_assignment_URL + assignmentId, method='PUT', json=offer['offer'])
+    assignment_result = invoke_http(create_assignment_URL, method='POST', json=offer['offer'])
     code = assignment_result["code"] 
     message = json.dumps(assignment_result)
-    print('Updated assignment_result', assignment_result)
+    print("New Assignment:", assignment_result)
 
     # Error handling
     if code not in range(200, 300):
@@ -237,8 +218,42 @@ def accept_offers(offer):
         return {
             "code": 500,
             "data": {"assignment_result": assignment_result},
-            "message": "Inbox failure sent for error handling."
+            "message": "Assignment failure sent for error handling."
         }  
+
+    # If successful, send offer to inboxMS
+    print('\n-----Sending to inboxMS-----')
+    # userID = str(offer['userID'])
+    inbox_result = invoke_http(inbox_create_offer_URL, method='POST', json=offer)
+    inbox_code = inbox_result["code"] 
+    inbox_message = json.dumps(inbox_result)
+    print("inbox_result", inbox_result)
+
+    # get all offers with the same assignmentId
+    # print('\n-----Invoking assignmentMS-----')
+    # assignmentId = str(offer['offer']['assignmentId'])
+    # offer_result = invoke_http(get_offer_by_assignment_URL + assignmentId, method='GET', json=offer['offer'])
+
+    # # for each offer, reject using reject_offers (changes status and sends to returnedoffer in inbox.sql)
+    # print('-----Rejecting Offers-----')
+    # temp = {}
+    # for rej_offer in offer_result['offers']: 
+    #     temp['offer'] = rej_offer
+    #     print(reject_offers(temp))
+
+    # # for each offer, delete offers using delete_assignment 
+    # print('-----Deleting offers-----')
+    # temp2 = {}
+    # for del_offer in offer_result['offers']: 
+    #     temp2['assignment'] = del_offer
+    #     print(delete_assignment(temp2))
+    
+    # # update assignment 
+    # print('-----Updating offers-----')
+    # assignment_result = invoke_http(update_assignment_URL + assignmentId, method='PUT', json=offer['offer'])
+    # code = assignment_result["code"] 
+    # message = json.dumps(assignment_result)
+    # print('Updated assignment_result', assignment_result)
 
     return {
         "code": 201,
@@ -267,7 +282,7 @@ def create_offer(offer):
 
     # If successful, send offer to inboxMS
     print('\n-----Sending to inboxMS-----')
-    userID = str(offer['userID'])
+    # userID = str(offer['userID'])
     inbox_result = invoke_http(inbox_create_offer_URL, method='POST', json=offer)
     inbox_code = inbox_result["code"] 
     inbox_message = json.dumps(inbox_result)
