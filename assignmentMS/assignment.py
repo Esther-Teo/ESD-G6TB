@@ -105,6 +105,7 @@ def tryout(userId):
     try:
         print(userId)
         test = db.session.query(Assignment, Offer).outerjoin(Offer, Assignment.assignmentId == Offer.assignmentId).filter(Assignment.userID==userId, Offer.userID==userId)
+        
 
         if test:
             data = []

@@ -53,34 +53,43 @@
         <div class="overlay" id="app">
             <h1 class='mt-3 header text-center display-4'>User Profile</h1>
             <div class='text-center m-2'>
-                    <button class="btn btn-primary m-2" type="button" data-toggle="collapse" data-target="#userProfile">
+                    <button class="btn btn-primary m-2" type="button" data-toggle="collapse" data-target="#userProfile" onclick="switcheroo2()">
                         Manage Your Profile
                     </button>
-                    <button class="btn btn-primary m-2 collapsed" type="button" data-toggle="collapse" data-target="#childProfile">
+                    <button class="btn btn-primary m-2 collapsed" type="button" data-toggle="collapse" data-target="#childProfile" onclick="switcheroo1()">
                         Manage Children Profile
                     </button>
                 </div>    
                 <div id="userProfile">
                     
-                    
+                    <h1>HARLO</h1>
                 </div>
     
                 <div id="childProfile" class="collapse">
-                    
+                    <h1>SUCKERR</h1>
                 </div>
             </br>
           </br>
       </br>
         </div>
-        <scrip??? src="//code.jquery.com/jquery.min.js"></scrip???>
+        <script> src="//code.jquery.com/jquery.min.js"></script>
         <script>
         $.get("navbarUser.html", function(data){
             $("#navbar").replaceWith(data);
         });
         </script>
 
-        <script> var user = ""; console.log(user);</script>
-        need edit scrips
+<script> 
+function switcheroo1(){
+    document.getElementById("userProfile").style.display = "none"
+    document.getElementById("childProfile").style.display = "block"
+}
+function switcheroo2(){
+    document.getElementById("childProfile").style.display = "none"
+    document.getElementById("userProfile").style.display = "block"
+}
+</script>
+        
         <!-- <script src="./js/homeui.js"></script> -->
 
         <script>
