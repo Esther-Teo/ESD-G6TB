@@ -193,41 +193,26 @@ def create_assignment():
 def update_assignment(assignmentId):
     try:
         assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
-        if assignment:
-            data = request.get_json()
-            if data['subject']:
-                assignment.subject = data['subject']
-            if data['expectedPrice']:
-                assignment.expectedPrice = data['expectedPrice'] 
-            if data['preferredDay']:
-                assignment.preferredDay = data['preferredDay'] 
-            db.session.commit()
-            return jsonify(
-                {
-                    "code": 200,
-                    "data": assignment.json()
-                }
-            ), 200
-        return jsonify(
-            {
-                "code": 404,
-                "data": {
-                    "assignmentId": assignmentId
-                },
-                "message": "Assignment not found."
-            }
-        ), 404
+        # if assignment:
+        data = request.get_json()
+        print("DATAAAAAAA:", data)
+        if data['subject']:
+            assignment.subject = data['subject']
+        if data['expectedPrice']:
+            assignment.expectedPrice = data['expectedPrice'] 
+        if data['preferredDay']:
+            assignment.preferredDay = data['preferredDay'] 
+        if data['tutorID']:
+            assignment.tutorID = data['tutorID'] 
+        print("UGHGHH tutorID:", assignment.tutorID)
+        print("DATAAAAAAAAAAAA:", data)
+        db.session.commit()
+        return jsonify({"code": 200,"data": assignment.json()}), 200
+    return jsonify({"code": 404,"data": {"assignmentId": assignmentId},"message": "Assignment not found."}), 404
 
     except Exception as e:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "assignmentId": assignmentId
-                },
-                "message": "An error occurred while updating the assignment. " + str(e)
-            }
-        ), 500
+        return jsonify({"code": 500,"data": {"assignmentId": assignmentId},
+        "message": "An error occurred while updating the assignment. " + str(e)}), 500
 
 # DELETE an assignment by its ID
 #@JOEL PLS MAKE THIS FUNCTION TO GO THROUGH EACH OFFER WITH THIS ID AND DELETE IT

@@ -220,17 +220,18 @@ def accept_offers(offer):
         return {"code": 500,"data": {"offer_result": offer_result},"message": "Offer failure sent for error handling."}  
 
     # for each offer, reject using reject_offers (changes status and sends to returnedoffer in inbox.sql)
-    print('-------------------------REJECTING OFFERS-------------------------')    
-    all_offers = invoke_http(get_offer_by_assignment_URL + assignmentId, method='GET', json=offer['offer'])
-    temp = {}
-    for rej_offer in all_offers['offers']: 
-        if rej_offer != offer_result['data']:
-            temp['offer'] = rej_offer
-            print(reject_offers(temp))
+    # print('-------------------------REJECTING OFFERS-------------------------')    
+    # all_offers = invoke_http(get_offer_by_assignment_URL + assignmentId, method='GET', json=offer['offer'])
+    # temp = {}
+    # for rej_offer in all_offers['offers']: 
+    #     if rej_offer != offer_result['data']:
+    #         temp['offer'] = rej_offer
+    #         print(reject_offers(temp))
 
     # change the tutorID in assignment table to match the accepted offer 
-    
-
+    print('-----Updating TutorID in Assignment-----')
+    update = invoke_http(update_assignment_URL + assignmentId, method='PUT', json=offer['offer'])
+    print("WORK PLS:", update)
     # # for each offer, delete offers using delete_assignment 
     # print('-----Deleting offers-----')
     # temp2 = {}
