@@ -86,7 +86,7 @@
         </script>
         <script>
 
-    
+            var userID = localStorage.getItem("userID");
 
             var get_all_URL = "http://localhost:5001/test";
             // var place_order_URL = "http://localhost:5100/place_order";
@@ -99,7 +99,7 @@
                     }
                 },
                 data: {
-                    userID: 1,
+                    userID: userID,
                     "assignments": [],
                     message: "There is a problem retrieving the assignment data, please try again later.",
                     childId: "",
