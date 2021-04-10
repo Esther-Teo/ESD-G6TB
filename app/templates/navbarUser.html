@@ -8,8 +8,15 @@
         $user = $_SESSION["userName"];
     }
 ?> -->
+<script> 
+username = localStorage.getItem("userName");
+document.getElementById("welcome").innerHTML = `<a class="navbar-brand" href="dashboardUser.html">Welcome ${username}</a>`
+</script>
 <nav class="navbar navbar-expand-lg navbar-dark bg-light" id="test1">
-        <a class="navbar-brand" href="index.html">Welcome User</a>
+  <div id="welcome">
+    
+  </div>
+        
         <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon" style="color: white;"></span>
         </button> -->

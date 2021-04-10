@@ -77,19 +77,21 @@
 </script>
     
 <script>
-        var delete_child_URL = "http://localhost:5100/manageOffers/";
+        var delete_child_URL = "http://localhost:5100/manageOffers";
         var get_all_URL = "http://localhost:5001/test/";
         var offer_URL = "http://localhost:5001/offer/";
         var get_one_offer_URL = 'http://localhost:5001/theOffer'
-        var userID = 1;
+        var userID = localStorage.getItem("userID")
 
     // @CRYSTAL, pls help me test
     function deleteit(assignment_ID, tutorId) {
         // alert(tutorId);
+        
         gg =
-        fetch(get_one_offer_URL +`/${assignment_ID}/${tutorID}`)
-        .then(response => response.json())
+        fetch(get_one_offer_URL +`/${assignment_ID}/${tutorId}`)
+        .then(gg => gg.json())
         .then(data => {
+            console.log("whelp")
             json = {
                 "acceptOrReject": "reject",
                 "offer": {
@@ -99,38 +101,38 @@
                     "selectedTime": data.selectedTime, 
                     "status": "pending", 
                     "tutorEmail": data.tutorEmail,
-                    "tutorID": tutorID, 
+                    "tutorID": tutorId, 
                     "tutorName": data.tutorName,
                     "userID": userID
                 }
             }
+            response = 
+                fetch(delete_child_URL,
+                {method: "POST",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify(json)})
+                .then(response =>response.json())
+                .then(data => {
+                    // console.log("oof");
+                    // console.log(":ehhh");
+                    // console.log(data.code);
+                    if (data.code !== 201) {
+                        // no book in db
+                        message = data.message;
+                    } else {
+                        // message += data;
+                        location.reload(true);
+                    }
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    console.log(message + error);
+                });
         })
         
-        response = 
-        fetch(delete_child_URL,
-        {method: "POST",
-        headers: {
-            "Content-type": "application/json"
-        },
-        body: JSON.stringify(json)})
-        .then(response =>response.json())
-        .then(data => {
-            console.log("oof");
-            console.log(":ehhh");
-            console.log(data);
-            if (data.code !== 200) {
-                // no book in db
-                message = data.message;
-            } else {
-                message += data;
-                location.reload(true);
-            }
-        })
-        .catch(error => {
-            // Errors when calling the service; such as network error, 
-            // service offline, etc
-            console.log(message + error);
-        });
     }
 
     function acceptOffer(assignment_ID, tutorId) {
@@ -212,7 +214,9 @@
                     if (huh.code === 400) {
                         // no book in db
                         message = huh.message;
-                        
+                        document.getElementById(childName).innerHTML += `
+                        <h1>You have no offers!</h1>
+                        `;
                     } else {
                         for (each of huh.message) {
                             //console.log(each[0].childName);
@@ -292,7 +296,7 @@
     
             
             <script>
-    
+                var userID = localStorage.getItem("userID")
                 var get_all_URL = "http://localhost:5001/test";
                 // var place_order_URL = "http://localhost:5100/place_order";
                 var app = new Vue({
@@ -303,7 +307,7 @@
                         }
                     },
                     data: {
-                        userID: 1,
+                        userID: userID,
                         assignments: [],
                         message: "There is a problem retrieving the assignment data, please try again later.",
                         names: [],
@@ -322,12 +326,13 @@
                     },
                     methods: {
                         getChildrenDetails: function() {
+                            alert(this.userID)
                             document.getElementById("loadOffers").innerHTML = '';
                             const response = 
                             fetch("http://localhost:5004/child"+`/${this.userID}`)
                                     .then(response => response.json())
                                     .then(data => {
-                                        console.log(response);
+                                        console.log(data);
                                         console.log("meepy");
                                         // console.log(data)
                                         if (data.code === 404) {
@@ -351,6 +356,11 @@
                                         console.log(this.message + error);
         
                                     });
+                            if (!response){
+                                document.getElementById("loadOffers").innerHTML += `
+                                    <h3>You have no offers!</h3>
+                                `;
+                            }
                         },
                         
                         updateChildInfo: function() {
@@ -412,7 +422,7 @@
                         //prepares posting data
                         let jsonData = JSON.stringify({
                             "assignmentId": Math.floor((Math.random() * 696969) + 1),
-                            "userID": 1,
+                            "userID": this.userID,
                             "childName": this.childName,
                             "primary": this.primary,
                             "level": this.level,

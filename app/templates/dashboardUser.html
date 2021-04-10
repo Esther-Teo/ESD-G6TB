@@ -283,7 +283,7 @@
             </script>
             <script>
             function getAllOffers() {
-                var userID = 1
+                var userID = localStorage.getItem("userID")
                             const response = 
                             fetch("http://localhost:5002/created"+`/${userID}`)
                                     .then(response => response.json())
@@ -346,7 +346,8 @@
         <script>
         function getAllOffers1() {
         // on Vue instance created, load the book list
-        var userID = 1;
+
+        var userID = localStorage.getItem("userID")
         const response =
             fetch(`http://localhost:5001/test/` + `${userID}`)
                 .then(response => response.json())
