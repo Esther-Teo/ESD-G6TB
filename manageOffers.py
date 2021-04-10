@@ -4,12 +4,12 @@ from flask_cors import CORS
 import os, sys
 
 import requests
-sys.path.insert(0, 'C:\wamp64\www\ESD-G6TB')
+sys.path.insert(0, 'C:\GitHub\ESD-G6TB')
 
 # HI PLS NOTE!: To run this file without using your local path as seen above^:
     # Navigate into your own local path at GitHub\ESD-G6TB, then type:
     # set PYTHONPATH=.;.\manageOffersMS
-    # python manageOffersMS\manageOffers.py
+    # python manageOffersMS\manageOffer
 
 # ALSO: need docker to run amqp stuff (to test in cmd prompt)
 
