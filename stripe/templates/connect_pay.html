@@ -213,9 +213,10 @@
     // Just for the purpose of the sample, show the PaymentIntent response object
     stripe.retrievePaymentIntent(clientSecret).then(function(result) {
         var paymentIntent = result.paymentIntent;
+ 
         var paymentIntentJson = JSON.stringify(paymentIntent, null, 2);
         
- 
+        
      
         document.querySelector(".sr-payment-form").classList.add("hidden");
         // console.log(paymentIntentJson);
@@ -230,13 +231,29 @@
         }, 200);
 
         changeLoadingState(false);
+        
+        fetch("/send-payment-to-rabbit", {
+        method: "POST",
+        headers: {
+        "Content-Type": "application/json"
+        },
+        body: JSON.stringify(paymentIntentJson)
+    })
+        .then(function(result) {
+        return result.json();
+        })
+        // if(paymentIntent.status=="succeeded"){
+        //     setTimeout(function(){
+        //         // window.location="http://localhost:5000/app/templates/payment.html";
+        //         // SH path
+        //         window.location="http://localhost/ESD/ESD-G6TB/app/templates/payment.html";
+        //      }, 3000);
 
-        if(paymentIntent.status=="succeeded"){
-            setTimeout(function(){
-                window.location="http://localhost:5000/app/templates/payment.html";
-             }, 3000);
+
+
+
             
-        }
+        // }
     });
     };
 

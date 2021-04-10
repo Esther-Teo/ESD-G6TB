@@ -9,10 +9,14 @@ import logging # Use this maybe. Think about it. for not it us unused.
 #dotenv is for env file. Keys are hardcoded first. configure later. 
 from flask import Flask, jsonify, request, render_template, url_for , redirect , session , send_from_directory, Response
 from flask_cors import CORS
-from flask_rabmq import RabbitMQ # trying this instead of PIKA. 
-# import pika  
+# from flask_rabmq import RabbitMQ 
+import pika  
+import amqp_setup2
+
 # r = requests.get('https://httpbin.org/get')
 # print(r.status_code)
+# pike setup 
+
 
 
 app = Flask(__name__)
@@ -26,21 +30,21 @@ CORS(app)
 app.config['STRIPE_PUBLIC_KEY'] = "pk_test_51Ib4VfBvhmRsAY8LWdqkxz5jziPQ1YmxCjuFHuQCaJyMNjoJSipniNaC1lh9ZocTLnpaxVWwgKkFSeX76ACHNqZP007ogKEoHo",
 app.config['STRIPE_SECRET_KEY'] = 'sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xMQlTycj80UGIpPWkw7BxO23cTlKRCJlUc3ll00ntxbvemn',
 app.config['STRIPE_WEBHOOK_SECRET'] = "whsec_UixySdHiQLuh62bwkQiVxWBupQ2j9skd"
-# AMQP Config 
+# AMQP Config for 
 # app.config.setdefault('RABMQ_RABBITMQ_URL', 'amqp://username:password@ip:port/dev_vhost')
-app.config.setdefault('RABMQ_RABBITMQ_URL', 'amqp://guest:guest@localhost:15672')
-app.config.setdefault('RABMQ_SEND_EXCHANGE_NAME', 'payment_exchange')
-app.config.setdefault('RABMQ_SEND_EXCHANGE_TYPE', 'topic')
-app.config.setdefault('RABMQ_SEND_POOL_SIZE', 2)
-app.config.setdefault('RABMQ_SEND_POOL_ACQUIRE_TIMEOUT', 5)
+# app.config.setdefault('RABMQ_RABBITMQ_URL', 'amqp://guest:guest@localhost:15672')
+# app.config.setdefault('RABMQ_SEND_EXCHANGE_NAME', 'payment_exchange')
+# app.config.setdefault('RABMQ_SEND_EXCHANGE_TYPE', 'topic')
+# app.config.setdefault('RABMQ_SEND_POOL_SIZE', 2)
+# app.config.setdefault('RABMQ_SEND_POOL_ACQUIRE_TIMEOUT', 5)
 
 # config is an object for flask
 # The config is actually a subclass of a dictionary and can be modified just like any dictionary
 
 
 # AMQP 
-ramq = RabbitMQ()
-ramq.init_app(app=app)
+# ramq = RabbitMQ()
+# ramq.init_app(app=app)
 
 
 
@@ -99,9 +103,14 @@ def success():
 # END OF BUY SHIT 
 
 #ONBOARDING 
-
+#An email address associated with the account. You can treat this as metadata: it is not used for authentication or messaging account holders.
+# fix email to stripe account.
 @app.route('/onboard-user', methods=['GET','POST'])
 def onboard_user():
+    # HAHAHHAHHAHAHAHHAHAHAHHAHAHHAH PROBLEM SOLVED!!!!! WORK SMART NOT HARD!!!
+    data = json.loads(request.data)
+    # user_email=data['userEmail']
+    print(f"Data passed is: {data}")
     account = stripe.Account.create(type='standard')
     # Store the account ID.
     print(account.id)
@@ -115,12 +124,11 @@ def onboard_user():
         return jsonify(error=str(e)), 403
 
 # route here after clicking the connect button 
-# SESSIONS WHEN USERS REFRESH LIKE A FKER USERS ARE 
+# Sessions for users when they redirect 
 @app.route('/onboard-user/refresh', methods=['GET'])
 def onboard_user_refresh():
     if 'account_id' not in session:
         return redirect('/')
-    # wdym session not define fk u
     account_id = session['account_id']
 
     origin = ('https://' if request.is_secure else 'http://') + request.headers['host']
@@ -181,7 +189,7 @@ def calculate_application_fee_amount(amount):
 @app.route('/create-payment-intent', methods=['POST'])
 def create_payment():
     data = json.loads(request.data)
-    # returns the hardcoded amount in 2 functions above 
+    # returns the server calculated amount in 2 functions above 
     amount = calculate_order_amount(data['items'])
 
     # Create a PaymentIntent with the order amount, currency, and transfer destination
@@ -195,6 +203,7 @@ def create_payment():
 
     try:
         # Send publishable key and PaymentIntent details to client
+        # handle_successful_payment_intent(intent)
         return jsonify({'publishableKey': PUBLIC, 'clientSecret': intent.client_secret})
     except Exception as e:
         return jsonify(error=str(e)), 403
@@ -215,7 +224,7 @@ def get_express_dashboard_link():
     return jsonify({'url': link.url})
 
 
-# track user with web hook. 
+# track user with web hook. leave the web hook alone first 
 @app.route("/webhook", methods=["POST"])
 def webhook_received():
   payload = request.get_data()
@@ -240,25 +249,34 @@ def webhook_received():
 
   if event["type"] == "payment_intent.succeeded":
     payment_intent = event["data"]["object"]
-    handle_successful_payment_intent(payment_intent)
+    # handle_successful_payment_intent(payment_intent)
+    print('runs under webhook?')
+    #Send to broker here 
+
 
   return json.dumps({"success": True}), 200
 
-@ramq.queue(exchange_name='payment_exchange', routing_key='flask_rabmq.pay_successful')
-def handle_successful_payment_intent(payment_intent):
-  # dump the response. 
-  # configure to some sucess page 
-
-      # send message
-    ramq.send({'message_id': 23123,'tester':7}, routing_key='flask_rabmq.test', exchange_name='flask_rabmq')
-    # delay send message, expiration second(support float).
-    # ramq.delay_send({'message_id': 333333, 'a': 7}, routing_key='flask_rabmq.test', exchange_name='flask_rabmq',
-    #                 delay=10)
-    print('PaymentIntent: ' + str(payment_intent))
-    return "sent!!"
 
 
-  
+
+
+
+# not working
+# @ramq.queue(exchange_name='payment_exchange', routing_key='flask_rabmq.pay_successful')
+@app.route("/send-payment-to-rabbit", methods=["POST"])
+def handle_successful_payment_intent():
+    # ramq.send({'message_id': 23123,'tester':7}, routing_key='flask_rabmq.test', exchange_name='flask_rabmq')
+    print("runs after payment")
+    data = json.loads(request.data)
+    message=json.dumps(data)
+    print(message)
+    amqp_setup2.channel.basic_publish(exchange=amqp_setup2.exchangename, routing_key="payment_successful", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+
+    # print('PaymentIntent: ' + str(payment_intent))
+    return json.dumps({"success": True}), 200
+
+
 # @ramq.queue(exchange_name='payment_exchange', routing_key='flask_rabmq.fail')
 # def broker_successful_payment_intent(payment_intent):
 #     if amqp_setup.channel.basic_public(exchange=amqp_setup.exchangename, routing_key="pay_successful")
@@ -267,6 +285,64 @@ def handle_successful_payment_intent(payment_intent):
 
 
 if __name__ == '__main__':
-    ramq.run_consumer()
+    # ramq.run_consumer()
 
     app.run(debug=True, port=5007)
+
+
+
+
+
+## Payment intent object 
+# {
+#   "id": "pi_1IcTHFBvhmRsAY8L4bBlSj27",
+#   "object": "payment_intent",
+#   "amount": 1400,
+#   "amount_capturable": 0,
+#   "amount_received": 0,
+#   "application": null,
+#   "application_fee_amount": 140,
+#   "canceled_at": null,
+#   "cancellation_reason": null,
+#   "capture_method": "automatic",
+#   "charges": {
+#     "object": "list",
+#     "data": [],
+#     "has_more": false,
+#     "url": "/v1/charges?payment_intent=pi_1IcTHFBvhmRsAY8L4bBlSj27"
+#   },
+#   "client_secret": "pi_1IcTHFBvhmRsAY8L4bBlSj27_secret_gWq5uADpap6kVhAW8ZqcTFCQz",
+#   "confirmation_method": "automatic",
+#   "created": 1617532437,
+#   "currency": "usd",
+#   "customer": null,
+#   "description": null,
+#   "invoice": null,
+#   "last_payment_error": null,
+#   "livemode": false,
+#   "metadata": {},
+#   "next_action": null,
+#   "on_behalf_of": null,
+#   "payment_method": null,
+#   "payment_method_options": {
+#     "card": {
+#       "installments": null,
+#       "network": null,
+#       "request_three_d_secure": "automatic"
+#     }
+#   },
+#   "payment_method_types": [
+#     "card"
+#   ],
+#   "receipt_email": null,
+#   "review": null,
+#   "setup_future_usage": null,
+#   "shipping": null,
+#   "statement_descriptor": null,
+#   "statement_descriptor_suffix": null,
+#   "status": "requires_payment_method",
+#   "transfer_data": {
+#     "destination": "acct_1Ic8ngAiyPfscIUT"
+#   },
+#   "transfer_group": null
+# }

@@ -50,15 +50,28 @@
 
                 <div class="row d-flex justify-content-center" id="offer_notification"> 
                 </div>
-
-
-
-                
-                
-            </div>       
             </div>
-            </div>
-            <script>
+        </div>
+        <script>
+            console.log("user localStorage check")
+            console.log(localStorage.getItem("userID"));
+            console.log(localStorage.getItem("userName"));
+            console.log(localStorage.getItem("userEmail"));
+        </script>
+
+        
+
+        
+        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script>
+        $.get("navbarUser.html", function(data){
+            $("#navbar").replaceWith(data);
+        });
+        </script>
+
+        <script> var user = "<?=$user ?>"; console.log(user);</script>
+
+        <script>
             var array_of_child = [];
             var array_of_tutor = [];
             var childName1 = "";

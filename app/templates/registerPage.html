@@ -144,14 +144,44 @@
         document.getElementById("formallyYours").style.display="block";
         document.getElementById("buttonUp").style.display="none";
     }
+    
 
+    // globalize the variables 
+    var tutorID; 
+    var tutorName; 
+    var tutorEmail;
+    var passw;
+    var tutorPhone; 
+    var loc;
+
+    function storeData(){
+    tutorID = Math.floor((Math.random() * 696969) + 1);
+    tutorName = document.getElementById("username").value;
+    tutorEmail = document.getElementById("email").value;
+    console.log("inside function:" + tutorEmail);
+
+    passw = document.getElementById("password").value;
+    tutorPhone = document.getElementById("phoneNumber").value;
+    loc = document.getElementById("location").value;
+    var connect_account=
+    document.cookie = `tutorID=${tutorID}; path=registerTutorFallback.html`;
+    document.cookie = `tutorName=${tutorName}; path=registerTutorFallback.html`
+    document.cookie = `tutorEmail=${tutorEmail}; path=registerTutorFallback.html` 
+    document.cookie = `passw=${passw}; path=registerTutorFallback.html`
+    document.cookie = `tutorPhone=${tutorPhone}; path=registerTutorFallback.html`
+    document.cookie = `loc=${loc}; path=registerTutorFallback.html`
+    "document.cookie = "+document.cookie
+    }
 
     // hardcoded URL 
+    console.log("outside function:" + tutorEmail);
     var user_URL = "http://localhost:5004/createUser";
     // var tutor_URL = `http://localhost:5004/seeChild`; 
     // var stripe_url = "http://localhost:5000/onboard-user";
     var stripe_url="http://127.0.0.1:5007/onboard-user"
-
+    var send_to_stripe = JSON.stringify({
+            "userEmail": tutorEmail});
+    console.log("Check here:"+ send_to_stripe);
     let elmButton = document.getElementById('connect');
     console.log(elmButton);
     if (elmButton) {
@@ -181,23 +211,10 @@
         false
     );
     }
-    function storeData(){
+ 
 
-        var tutorID = Math.floor((Math.random() * 696969) + 1);
-        var tutorName = document.getElementById("username").value;
-        var tutorEmail = document.getElementById("email").value;
-        var passw = document.getElementById("password").value;
-        var tutorPhone = document.getElementById("phoneNumber").value;
-        var loc = document.getElementById("location").value;
-        document.cookie = `tutorID=${tutorID}; path=registerTutorFallback.html`;
-        document.cookie = `tutorName=${tutorName}; path=registerTutorFallback.html`
-        document.cookie = `tutorEmail=${tutorEmail}; path=registerTutorFallback.html` 
-        document.cookie = `passw=${passw}; path=registerTutorFallback.html`
-        document.cookie = `tutorPhone=${tutorPhone}; path=registerTutorFallback.html`
-        document.cookie = `loc=${loc}; path=registerTutorFallback.html`
-        "document.cookie = "+document.cookie
-    }
 
+    
     //NOT DONE SETTING UP POST INFO!!!!!! @ALL             
     function createUser(){
         

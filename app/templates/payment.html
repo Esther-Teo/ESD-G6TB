@@ -17,7 +17,6 @@
 
         <!-- development version, includes helpful console warnings -->
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -35,9 +34,29 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
         <title>All Listings</title>
+
+        <script>
+            console.log(localStorage.getItem("userID"));
+            console.log(localStorage.getItem("userName"));
+            console.log(localStorage.getItem("email"));
+
+            var userID = localStorage.getItem("userID");
+            var userName = localStorage.getItem("userName").split(" ");
+            userName = userName[1];
+            console.log("userID: ",userID);
+            console.log("userName: ", userName);
+
+            // page must check if log in
+            // if userID is null, redirect log in page
+            //sessionStorage.clear() --> logout
+        </script>
+
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-   
+
+    
+    
+
     <body class="body1" >
         <div id="navbar"></div>
                     
@@ -51,14 +70,14 @@
           </br>
       </br>
         </div>
-        <script src="//code.jquery.com/jquery.min.js"></script>
+        <scrip??? src="//code.jquery.com/jquery.min.js"></scrip???>
         <script>
         $.get("navbarUser.html", function(data){
             $("#navbar").replaceWith(data);
         });
         </script>
 
-        <script> var user = "<?=$user ?>"; console.log(user);</script>
+        <script> var user = ""; console.log(user);</script>
         need edit scrips
         <!-- <script src="./js/homeui.js"></script> -->
         <script>
@@ -169,53 +188,37 @@
                                 });
 
                     },
-                    addBook: function () {
-                        // reset data
-                        this.bookAdded = false;
-                        this.addBookError = "";
+                    getChildrenDetails: function () {
+                        const response =
+                            fetch(get_child_URL+`/${this.userID}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(response);
+                                    console.log("meep");
+                                    // console.log(data)
+                                    if (data.code === 404) {
+                                        // no book in db
+                                        this.message = data.message;
+                                    } else {
+                                        // this.subject = data.data.subjects;
+                                        for (each of data.data) {
+                                            console.log(each.childName)
+                                        }
+                                        
+                                    }
+                                })
+                                .catch(error => {
+                                    // Errors when calling the service; such as network error, 
+                                    // service offline, etc
+                                    console.log(this.message + error);
     
-                        let jsonData = JSON.stringify({
-                            title: this.newTitle,
-                            price: this.newPrice,
-                            availability: this.newAvailability
-                        });
-    
-                        fetch(`${get_all_URL}/${this.newISBN13}`,
-                            {
-                                method: "POST",
-                                headers: {
-                                    "Content-type": "application/json"
-                                },
-                                body: jsonData
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log(data);
-                                result = data.data;
-                                console.log(result);
-                                // 3 cases
-                                switch (data.code) {
-                                    case 201:
-                                        this.bookAdded = true;
-    
-                                        // refresh book list
-                                        this.getAllBooks();
-    
-                                        // an alternate way is to add this one element into this.books
-                                        break;
-                                    case 400:
-                                    case 500:
-                                        this.addBookError = data.message;
-                                        break;
-                                    default:
-                                        throw `${data.code}: ${data.message}`;
-                                }
-                            })
+                                });
                     }
-                  },
+                },
                 created: function () {
                     // on Vue instance created, load the book list
                     this.getAllAssignments();
+                    this.getChildrenDetails();
                 }
             });
             // can be used on localhost 5000
