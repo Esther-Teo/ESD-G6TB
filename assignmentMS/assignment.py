@@ -122,7 +122,31 @@ def tryout(userId):
             # return jsonify({"assignments": [assignment.json() for assignment in test[0]]})
     except Exception as e:
         return jsonify({"message": "Assignment had a problem fetching" + str(e)}), 500
-        
+
+# offer and assignment by tutor ID
+@app.route("/bothByTutor/<int:tutorId>", methods=["GET"])
+def both_by_tutor(tutorId):
+    try:
+        print(tutorId)
+        test = db.session.query(Assignment, Offer).outerjoin(Offer, Assignment.assignmentId == Offer.assignmentId).filter(Offer.tutorID==tutorId)
+
+        if test:
+            data = []
+            real = []
+            for each in test:
+                for d in each:
+                    data.append(d.json())
+                    print(d.json())
+                # data['assignments']= each.json()
+                real.append(data)
+                data=[]
+            print(data)
+            # return jsonify({"assignments": data})
+            return jsonify({"message": real}),200
+            # return jsonify({"assignments": [assignment.json() for assignment in test[0]]})
+    except Exception as e:
+        return jsonify({"message": "Assignment had a problem fetching" + str(e)}), 500
+
 # GET for viewing one assignment only
 @app.route("/assignmentById/<int:assignmentId>")
 def find_by_assignmentId(assignmentId):
@@ -311,7 +335,7 @@ def findO_by_tutor(tutorID):
     except Exception as e:
         return jsonify({"message": "Offer not found." + str(e)}), 404
 
-# GET offer by tutorID (tested okay)
+# GET offer by userID (tested okay)
 @app.route("/offerByUser/<int:userID>")
 def findO_by_user(userID):
     try: 

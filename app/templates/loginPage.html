@@ -80,8 +80,8 @@
             pass = document.getElementById('password').value
             // data to be sent to the POST request
             var login = {
-              tutorEmail: email,
-              password: pass
+              "tutorEmail": email,
+              "password": pass
             }
             fetch('http://localhost:5006/tutorcheck', {
               method: "POST",
@@ -128,10 +128,11 @@
             pass = document.getElementById('password').value
             // data to be sent to the POST request
             var login = {
-              userEmail: email,
-              password: pass
+              "userEmail": email,
+              "password": pass
             }
 
+            response = 
             fetch('http://localhost:5004/usercheck', {
               method: "POST",
               body: JSON.stringify(login),
@@ -173,7 +174,6 @@
             checkTutor()
             });
 
-            x
           })
 
           var googleUser = gapi.auth2.getAuthInstance().currentUser.get();

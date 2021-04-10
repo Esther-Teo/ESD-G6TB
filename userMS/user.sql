@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS child (
 
 
 INSERT INTO child (userID, childName, school, pri, lvl) VALUES
-('7893', 'meep', 'Raffles Primary School', True, '4'),
+('1', 'meep', 'Raffles Primary School', True, '4'),
 ('1', 'zaikia', 'Nanyang Girls High School', False, '2'),
 ('2', 'oof','Dunman High School ', False, '3'),
 ('2', 'lostcause','Rosyth School', True, '3'),
