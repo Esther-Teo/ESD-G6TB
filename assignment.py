@@ -259,6 +259,8 @@ def delete_assignment(assignmentId):
                 db.session.delete(offer)
                 db.session.commit()
                 # print(data)
+            db.session.delete(assignment)
+            db.session.commit()
             # return jsonify({"assignments": data})
             return jsonify({"code": 200,"deleted": real}),200
                     
@@ -266,7 +268,6 @@ def delete_assignment(assignmentId):
             # db.session.commit()
             return jsonify(
                 {
-                    
                     "data": {
                         "assignmentDeleted": assignment.json(),
                         "offersDeleted": [offer.json() for offer in offers]
