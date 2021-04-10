@@ -45,65 +45,12 @@ class Tutor(db.Model):
             "priceRange": self.priceRange
             }
 
-class TutorSubjects(db.Model):
-    __tablename__ = 'tutorSubjects'
-    tutorID = db.Column(db.Integer, db.ForeignKey('tutor.tutorID', ondelete="CASCADE"), primary_key=True)
-    subjectId = db.Column(db.Integer, nullable=False, primary_key=True)
-    pri = db.Column(db.Boolean, nullable=False)
-    lvl = db.Column(db.Integer, nullable=False)
-    subjects = db.Column(db.String(100), nullable=False)
-    user = relationship('Tutor', backref='tutorSubjects')
-
-    def __init__(self, tutorID, subjectId, pri, lvl, subjects):
-        self.tutorID = tutorID
-        self.subjectId = subjectId
-        self.pri = pri
-        self.lvl = lvl
-        self.subjects = subjects
-
-    def json(self):
-        return { 
-            "tutorID": self.tutorID, 
-            "subjectId": self.subjectId, 
-            "pri": self.pri, 
-            "lvl": self.lvl, 
-            "subjects": self.subjects
-        }
 
 # gets all tutors
-
-
 @app.route("/tutor")
 def get_all():
 	return jsonify({"tutors": [tutor.json() for tutor in Tutor.query.all()]})
 
-# gets one tutor + his subjects by his id
-@app.route("/tutor/<int:tutorID>",methods=['GET'])
-def find_by_tutorId(tutorID):
-    try:
-        tutorList = Tutor.query.filter_by(tutorID = tutorID).first()
-        print(tutorList)
-        subject = TutorSubjects.query.filter_by(tutorID = tutorID).all()
-        print(subject)
-        
-        if tutorList:
-            return jsonify(
-                {
-                    "code": 200,
-                    "tutorData": tutorList.json(),
-                    "tutorSubject": [subj.json() for subj in subject]
-                }
-            )
-    except Exception as e:
-        return jsonify(
-            {
-                "code": 404,
-                "data": {
-                    "tutorID": tutorID
-                },
-                "message": "Couldn't find tutor." + str(e)
-            }
-        ), 404
 
 # creates a tutor
 @app.route("/createTutor", methods=['POST'])
@@ -229,137 +176,6 @@ def check_tutor():
                 "message": "There was an error" + str(e)
             }), 404
 
-# gets the list of subjects by tutor
-@app.route("/subjectByTutor/<int:tutorID>")
-def get_tutorSubject(tutorID):
-    subjectList = TutorSubjects.query.filter_by(tutorID=tutorID)
-    if subjectList:
-        return jsonify(
-            {
-                "code": 200,
-                "data": {
-                    "tutors": [subject.json() for subject in subjectList]
-                }
-            }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are no subjects under this tutor."
-        }
-    ), 404
-
-# creates a subject from the tutor
-@app.route("/addSubject/<string:tutorID>", methods=['POST'])
-def add_tutorSubject(tutorID):
-
-    data = request.get_json()
-    subjectId = data['subjectId']
-    if (TutorSubjects.query.filter_by(tutorID=tutorID, subjectId=subjectId).first()):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "tutorID": tutorID
-                },
-                "message": "Subject already exists."
-            }
-        ), 400
-    subject = TutorSubjects(tutorID, subjectId, data['pri'], data['lvl'], data['subjects'])
-    try:
-        db.session.add(subject)
-        db.session.commit()
-    except:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "tutorID": tutorID
-                },
-                "message": "An error occurred creating the tutor subject."
-            }
-        ), 500
-
-    return jsonify(
-        {
-            "code": 201,
-            "data": subject.json()
-        }
-    ), 201
-
-# deletes a subject by the tutorid and subject id
-@app.route("/deleteSubject/<int:tutorID>/<int:subjectId>", methods=['DELETE'])
-def delete_subject(tutorID, subjectId):
-    try:
-        subject = TutorSubjects.query.filter_by(tutorID=tutorID, subjectId=subjectId).first()
-        if subject:
-            db.session.delete(subject)
-            db.session.commit()
-            return jsonify(
-                {
-                    "code": 200,
-                    "data": {
-                        "subjectId": subjectId
-                    }
-                }
-            )
-    except Exception as e:
-        return jsonify(
-            {
-                "code": 404,
-                "data": {
-                    "subjectId": subjectId
-                },
-                "message": "There was an error deleting the subject." + str(e)
-            }
-        ), 404
-
-# edits a subject by tutorid and fetched data
-@app.route("/updateSubject/<int:tutorID>/<int:subjectId>",methods=['PUT'])
-def update_subject_details(tutorID, subjectId):
-    try:
-
-        subject = TutorSubjects.query.filter_by(tutorID=tutorID, subjectId=subjectId).first()
-        
-        data = request.get_json()
-
-        # update info
-        if data['pri']:
-            subject.pri = data['pri']
-        if data['lvl']:
-            subject.lvl = data['lvl']
-        if data['subjects']:
-            subject.subjects = data['subjects']
-        try:
-            db.session.commit()
-            return jsonify(
-                {
-                    "code": 200,
-                    "data": subject.json()
-                }
-            ), 200
-        
-        except Exception as e:
-            return jsonify(
-                {
-                    "code": 500,
-                    "data": {
-                        "tutorID": tutorID
-                    },
-                    "message": "An error occurred while updating the tutor details. " + str(e)
-                }
-            ), 500
-
-    except Exception as e:
-        return jsonify(
-            {
-                "code": 404,
-                "data": {
-                    "tutorID": tutorID
-                },
-                "message": "Couldn't find tutor." + str(e)
-            }
-        ), 404
 
 # check tutor google log in 
 # port 5006 
@@ -399,3 +215,189 @@ def check_google_tutor():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5006, debug=True)
+# class TutorSubjects(db.Model):
+#     __tablename__ = 'tutorSubjects'
+#     tutorID = db.Column(db.Integer, db.ForeignKey('tutor.tutorID', ondelete="CASCADE"), primary_key=True)
+#     subjectId = db.Column(db.Integer, nullable=False, primary_key=True)
+#     pri = db.Column(db.Boolean, nullable=False)
+#     lvl = db.Column(db.Integer, nullable=False)
+#     subjects = db.Column(db.String(100), nullable=False)
+#     user = relationship('Tutor', backref='tutorSubjects')
+
+#     def __init__(self, tutorID, subjectId, pri, lvl, subjects):
+#         self.tutorID = tutorID
+#         self.subjectId = subjectId
+#         self.pri = pri
+#         self.lvl = lvl
+#         self.subjects = subjects
+
+#     def json(self):
+#         return { 
+#             "tutorID": self.tutorID, 
+#             "subjectId": self.subjectId, 
+#             "pri": self.pri, 
+#             "lvl": self.lvl, 
+#             "subjects": self.subjects
+#         }
+
+
+# # gets the list of subjects by tutor
+# @app.route("/subjectByTutor/<int:tutorID>")
+# def get_tutorSubject(tutorID):
+#     subjectList = TutorSubjects.query.filter_by(tutorID=tutorID)
+#     if subjectList:
+#         return jsonify(
+#             {
+#                 "code": 200,
+#                 "data": {
+#                     "tutors": [subject.json() for subject in subjectList]
+#                 }
+#             }
+#         )
+#     return jsonify(
+#         {
+#             "code": 404,
+#             "message": "There are no subjects under this tutor."
+#         }
+#     ), 404
+
+# # creates a subject from the tutor
+# @app.route("/addSubject/<string:tutorID>", methods=['POST'])
+# def add_tutorSubject(tutorID):
+
+#     data = request.get_json()
+#     subjectId = data['subjectId']
+#     if (TutorSubjects.query.filter_by(tutorID=tutorID, subjectId=subjectId).first()):
+#         return jsonify(
+#             {
+#                 "code": 400,
+#                 "data": {
+#                     "tutorID": tutorID
+#                 },
+#                 "message": "Subject already exists."
+#             }
+#         ), 400
+#     subject = TutorSubjects(tutorID, subjectId, data['pri'], data['lvl'], data['subjects'])
+#     try:
+#         db.session.add(subject)
+#         db.session.commit()
+#     except:
+#         return jsonify(
+#             {
+#                 "code": 500,
+#                 "data": {
+#                     "tutorID": tutorID
+#                 },
+#                 "message": "An error occurred creating the tutor subject."
+#             }
+#         ), 500
+
+#     return jsonify(
+#         {
+#             "code": 201,
+#             "data": subject.json()
+#         }
+#     ), 201
+
+# # deletes a subject by the tutorid and subject id
+# @app.route("/deleteSubject/<int:tutorID>/<int:subjectId>", methods=['DELETE'])
+# def delete_subject(tutorID, subjectId):
+#     try:
+#         subject = TutorSubjects.query.filter_by(tutorID=tutorID, subjectId=subjectId).first()
+#         if subject:
+#             db.session.delete(subject)
+#             db.session.commit()
+#             return jsonify(
+#                 {
+#                     "code": 200,
+#                     "data": {
+#                         "subjectId": subjectId
+#                     }
+#                 }
+#             )
+#     except Exception as e:
+#         return jsonify(
+#             {
+#                 "code": 404,
+#                 "data": {
+#                     "subjectId": subjectId
+#                 },
+#                 "message": "There was an error deleting the subject." + str(e)
+#             }
+#         ), 404
+
+# # edits a subject by tutorid and fetched data
+# @app.route("/updateSubject/<int:tutorID>/<int:subjectId>",methods=['PUT'])
+# def update_subject_details(tutorID, subjectId):
+#     try:
+
+#         subject = TutorSubjects.query.filter_by(tutorID=tutorID, subjectId=subjectId).first()
+        
+#         data = request.get_json()
+
+#         # update info
+#         if data['pri']:
+#             subject.pri = data['pri']
+#         if data['lvl']:
+#             subject.lvl = data['lvl']
+#         if data['subjects']:
+#             subject.subjects = data['subjects']
+#         try:
+#             db.session.commit()
+#             return jsonify(
+#                 {
+#                     "code": 200,
+#                     "data": subject.json()
+#                 }
+#             ), 200
+        
+#         except Exception as e:
+#             return jsonify(
+#                 {
+#                     "code": 500,
+#                     "data": {
+#                         "tutorID": tutorID
+#                     },
+#                     "message": "An error occurred while updating the tutor details. " + str(e)
+#                 }
+#             ), 500
+
+#     except Exception as e:
+#         return jsonify(
+#             {
+#                 "code": 404,
+#                 "data": {
+#                     "tutorID": tutorID
+#                 },
+#                 "message": "Couldn't find tutor." + str(e)
+#             }
+#         ), 404
+
+
+# # gets one tutor + his subjects by his id
+# @app.route("/tutor/<int:tutorID>",methods=['GET'])
+# def find_by_tutorId(tutorID):
+#     try:
+#         tutorList = Tutor.query.filter_by(tutorID = tutorID).first()
+#         print(tutorList)
+#         subject = TutorSubjects.query.filter_by(tutorID = tutorID).all()
+#         print(subject)
+        
+#         if tutorList:
+#             return jsonify(
+#                 {
+#                     "code": 200,
+#                     "tutorData": tutorList.json(),
+#                     "tutorSubject": [subj.json() for subj in subject]
+#                 }
+#             )
+#     except Exception as e:
+#         return jsonify(
+#             {
+#                 "code": 404,
+#                 "data": {
+#                     "tutorID": tutorID
+#                 },
+#                 "message": "Couldn't find tutor." + str(e)
+#             }
+#         ), 404
