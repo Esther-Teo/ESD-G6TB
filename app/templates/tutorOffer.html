@@ -54,13 +54,14 @@
 </script>
 
 <script>
+    
     console.log(localStorage.getItem("tutorEmail"));
     console.log(localStorage.getItem("tutorName"));
 </script>
 
 <script>
         function getAllOffers() {
-            var tutorID = 1 //FIX PLS EDENA 
+            var tutorID = localStorage.getItem("tutorID") 
             const response = 
 
             fetch("http://localhost:5001/bothByTutor"+`/${tutorID}`)
