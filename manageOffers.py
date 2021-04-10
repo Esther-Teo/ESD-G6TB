@@ -200,7 +200,7 @@ def reject_offers(offer):
     # Return offer if no errors
     return {"code": 201, "data": { "offer_result": offer_result}}
 #-----------------------------------------------------------------------------------------------------
-# Task 2: User accepts offer (pending)
+# Task 2: User accepts offer (COMPLETED, TEST SUCCESSFUL)
 def accept_offers(offer):
     # change offer status to 'accepted'
     print('\n-----Invoking assignmentMS-----')
@@ -220,38 +220,20 @@ def accept_offers(offer):
         return {"code": 500,"data": {"offer_result": offer_result},"message": "Offer failure sent for error handling."}  
 
     # for each offer, reject using reject_offers (changes status and sends to returnedoffer in inbox.sql)
-    # print('-------------------------REJECTING OFFERS-------------------------')    
-    # all_offers = invoke_http(get_offer_by_assignment_URL + assignmentId, method='GET', json=offer['offer'])
-    # temp = {}
-    # for rej_offer in all_offers['offers']: 
-    #     if rej_offer != offer_result['data']:
-    #         temp['offer'] = rej_offer
-    #         print(reject_offers(temp))
+    print('-------------------------REJECTING OFFERS-------------------------')    
+    all_offers = invoke_http(get_offer_by_assignment_URL + assignmentId, method='GET', json=offer['offer'])
+    temp = {}
+    for rej_offer in all_offers['offers']: 
+        if rej_offer != offer_result['data']:
+            temp['offer'] = rej_offer
+            print(reject_offers(temp))
 
     # change the tutorID in assignment table to match the accepted offer 
     print('-----Updating TutorID in Assignment-----')
     update = invoke_http(update_assignment_URL + assignmentId, method='PUT', json=offer['offer'])
-    print("WORK PLS:", update)
-    # # for each offer, delete offers using delete_assignment 
-    # print('-----Deleting offers-----')
-    # temp2 = {}
-    # for del_offer in offer_result['offers']: 
-    #     temp2['assignment'] = del_offer
-    #     print(delete_assignment(temp2))
-    
-    # # update assignment 
-    # print('-----Updating offers-----')
-    # assignment_result = invoke_http(update_assignment_URL + assignmentId, method='PUT', json=offer['offer'])
-    # code = assignment_result["code"] 
-    # message = json.dumps(assignment_result)
-    # print('Updated assignment_result', assignment_result)
+    print("Update Assignment Results:", update)
 
-    return {
-        "code": 201,
-        "data": {
-            "offer_result": offer_result,
-        }
-    }
+    return {"code": 201,"data": {"offer_result": offer_result}}
 
 #-----------------------------------------------------------------------------------------------------
 # Task 3: Tutor creates an offer (COMPLETED, TEST SUCCESSFUL)
