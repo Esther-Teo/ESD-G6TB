@@ -38,7 +38,7 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 
 
-# START OF BUY SHIT 
+# NOT IN USE
 # method with sessions
 @app.route('/payment.html')
 def payment():
