@@ -4,12 +4,12 @@ from flask_cors import CORS
 import os, sys
 
 import requests
-sys.path.insert(0, 'C:\wamp64\www\ESD-G6TB')
+sys.path.insert(0, 'C:\GitHub\ESD-G6TB')
 
 # HI PLS NOTE!: To run this file without using your local path as seen above^:
     # Navigate into your own local path at GitHub\ESD-G6TB, then type:
     # set PYTHONPATH=.;.\manageOffersMS
-    # python manageOffersMS\manageOffers.py
+    # python manageOffersMS\manageOffer
 
 # ALSO: need docker to run amqp stuff (to test in cmd prompt)
 
@@ -26,7 +26,8 @@ CORS(app)
 get_offer_URL = "http://localhost:5001/offerByUser/" # GETS offer (specify userID <int:userID>)
 get_offer_by_assignment_URL = "http://localhost:5001/offerByAssignment/" # GET offer (specify assignmentId <int:assignmentId>)
 create_offer_URL = "http://localhost:5001/createOffer" # POST new offer 
-delete_offer_URL = "http://localhost:5001/deleteOffer/" # DELETE offer (assignmentId and tutorID <int:assignmentId>/<int:tutorID>)
+reject_offer_URL = "http://localhost:5001/rejectOffer/" # DELETE offer (assignmentId and tutorID <int:assignmentId>/<int:tutorID>)
+accept_offer_URL = "http://localhost:5001/acceptOffer/" # PUT assignment (assignmentId and tutorID <int:assignmentId>/<int:tutorID>)
 
 update_assignment_URL = "http://localhost:5001/assignment/" # PUT assignment (specify assignmentId <int:assignmentId>)
 create_assignment_URL = "http://localhost:5001/makeAssignment" # POST new assignment 
@@ -140,7 +141,7 @@ def delete_assignment(offer):
 
     code = deleted_result["code"] 
     message = json.dumps(deleted_result)
-    print('deleted_result', deleted_result)
+    print('deleted_result:', deleted_result)
 
     # Error handling
     if code not in range(200, 300):
@@ -166,10 +167,10 @@ def reject_offers(offer):
     print('\n-----Invoking assignmentMS-----')
     assignmentId = str(offer['offer']['assignmentId'])
     tutorID = '/' + str(offer['offer']['tutorID'])
-    offer_result = invoke_http(delete_offer_URL + assignmentId + tutorID, method='PUT', json=offer['offer'])
+    offer_result = invoke_http(reject_offer_URL + assignmentId + tutorID, method='PUT', json=offer['offer'])
     code = offer_result["code"] 
     message = json.dumps(offer_result)
-    print('offer_result', offer_result)
+    print('offer_result:', offer_result)
 
     # Error handling
     if code not in range(200, 300):
@@ -182,10 +183,11 @@ def reject_offers(offer):
     # If rejection successful, send rejected offer to inboxMS
     print('-----Offer has been rejected-----')
     print('\n-----Sending to inboxMS-----')
-    inbox_result = invoke_http(inbox_reject_offer_URL, method='POST', json=offer)
+    new = {"offer": offer_result['data']}
+    inbox_result = invoke_http(inbox_reject_offer_URL, method='POST', json=new)
     inbox_code = inbox_result["code"] 
     inbox_message = json.dumps(inbox_result)
-    print("inbox_result", inbox_result)
+    print("inbox_result:", inbox_result)
 
     # Error handling
     if inbox_code not in range(200, 300):
@@ -198,47 +200,50 @@ def reject_offers(offer):
     # Return offer if no errors
     return {"code": 201, "data": { "offer_result": offer_result}}
 #-----------------------------------------------------------------------------------------------------
-# Task 2: User accepts offer (Kinda tested, super long)
-# not a lot of error handling here...otherwise will be q messy
+# Task 2: User accepts offer (pending)
 def accept_offers(offer):
-    # get all offers with the same assignmentId
+    # change offer status to 'accepted'
     print('\n-----Invoking assignmentMS-----')
     assignmentId = str(offer['offer']['assignmentId'])
-    offer_result = invoke_http(get_offer_by_assignment_URL + assignmentId, method='GET', json=offer['offer'])
-
-    # for each offer, reject using reject_offers (changes status and sends to returnedoffer in inbox.sql)
-    print('-----Rejecting Offers-----')
-    temp = {}
-    for rej_offer in offer_result['offers']: 
-        temp['offer'] = rej_offer
-        print(reject_offers(temp))
-
-    # for each offer, delete offers using delete_assignment 
-    print('-----Deleting offers-----')
-    temp2 = {}
-    for del_offer in offer_result['offers']: 
-        temp2['assignment'] = del_offer
-        print(delete_assignment(temp2))
-    
-    # update assignment 
-    print('-----Updating offers-----')
-    assignment_result = invoke_http(update_assignment_URL + assignmentId, method='PUT', json=offer['offer'])
-    code = assignment_result["code"] 
-    message = json.dumps(assignment_result)
-    print('Updated assignment_result', assignment_result)
+    tutorID = '/' + str(offer['offer']['tutorID'])
+    offer_result = invoke_http(accept_offer_URL + assignmentId + tutorID, method='PUT', json=offer['offer'])
+    code = offer_result["code"] 
+    message = json.dumps(offer_result)
+    print('offer_result:', offer_result)
 
     # Error handling
     if code not in range(200, 300):
         print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
         amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
-        print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), assignment_result)
+        print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), offer_result)
+        return {"code": 500,"data": {"offer_result": offer_result},"message": "Offer failure sent for error handling."}  
 
-        return {
-            "code": 500,
-            "data": {"assignment_result": assignment_result},
-            "message": "Inbox failure sent for error handling."
-        }  
+    # for each offer, reject using reject_offers (changes status and sends to returnedoffer in inbox.sql)
+    print('-------------------------REJECTING OFFERS-------------------------')    
+    all_offers = invoke_http(get_offer_by_assignment_URL + assignmentId, method='GET', json=offer['offer'])
+    temp = {}
+    for rej_offer in all_offers['offers']: 
+        if rej_offer != offer_result['data']:
+            temp['offer'] = rej_offer
+            print(reject_offers(temp))
+
+    # change the tutorID in assignment table to match the accepted offer 
+    
+
+    # # for each offer, delete offers using delete_assignment 
+    # print('-----Deleting offers-----')
+    # temp2 = {}
+    # for del_offer in offer_result['offers']: 
+    #     temp2['assignment'] = del_offer
+    #     print(delete_assignment(temp2))
+    
+    # # update assignment 
+    # print('-----Updating offers-----')
+    # assignment_result = invoke_http(update_assignment_URL + assignmentId, method='PUT', json=offer['offer'])
+    # code = assignment_result["code"] 
+    # message = json.dumps(assignment_result)
+    # print('Updated assignment_result', assignment_result)
 
     return {
         "code": 201,
@@ -267,7 +272,7 @@ def create_offer(offer):
 
     # If successful, send offer to inboxMS
     print('\n-----Sending to inboxMS-----')
-    userID = str(offer['userID'])
+    # userID = str(offer['userID'])
     inbox_result = invoke_http(inbox_create_offer_URL, method='POST', json=offer)
     inbox_code = inbox_result["code"] 
     inbox_message = json.dumps(inbox_result)
