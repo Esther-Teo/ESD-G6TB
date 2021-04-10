@@ -17,186 +17,232 @@
         <link rel="stylesheet" href="../static/styles/homeresponsive.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
-        <title>All Listings</title>
+        <title>Tutor DashBoard</title>
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-   
-    <body class="body1" >
-        
-        <div id="navbarTutor"></div>
-                    
-    
-        <div class="overlay" id="app">
-            <h1 class='mt-3 header text-center display-4'>Tutor DashBoard</h1>
-            <p class="text-center">
-                <div class="container black">
-                    <h4 class='mb-3 display-4' style="text-align:left;">
-                        Notifications
-                    </h4>
-    
-                    <div class="row">
-                        <div class="col-sm-7" id="offer_notification">
-                            <h2 class="mb-3">Offers</h2>
-                            <h3 id="offer_header"></h3>
-                            <div class="card text-center border-light mb-3" style="max-width: 40rem;">
-                                <div class="card-header">Payment Notification</div>
-                                <div class="card-body">
-                                <h5 class="card-title">Payment for {tutorName}</h5>
-                                <p class="card-text">Please pay <b>{amount}</b> for {childID}'s tuition with <b>{tutorName}</b></p>
-                                </div>
-                            
-    
-                                <div class="mx-3" style="text-align:center;">
-                                    <a href="payment.html" type="button" class="btn btn-outline-primary mb-3" >Make Payment!</a>
-                                </div>
-                            </div>        
-                        </div>
-    
-                        <div class="col-sm-5">
-                            <h2 class="mb-3">Payment</h2>
-                            <h3>Payments have been made to your stripe account!</h3>
-    
-                            <div class="card text-center border-light mb-3" style="max-width: 40rem;">
-                                <div class="card-header">Payment Notification</div>
-                                <div class="card-body">
-                                <h5 class="card-title">Payment for {tutorName}</h5>
-                                <p class="card-text">Please pay <b>{amount}</b> for {childID}'s tuition with <b>{tutorName}</b></p>
-                                </div>
-                            
-    
-                                <div class="mx-3" style="text-align:center;">
-                                    <a href="payment.html" type="button" class="btn btn-outline-primary mb-3" >Make Payment!</a>
-                                </div>
-                            </div>
-    
-                            
-                        </div> 
-                    </div>
-      
+    <style>
+        .black{
+            text-align: left;
+            color: black;
+        }
+
+        .right{
+            margin-right: 10px;
+        }
+    </style>
+
+</head>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+
+<!-- certified freak, 7 days a week -->
+<body class="body1" onload=javascript:getAllOffers1()>
+    <div id="navbar"></div>
                 
+
+    <div class="overlay" id="app">
+        <h1 class='mt-3 header text-center display-4'>
+            Main Dashboard
+
+        </h1>
+        <!-- Payment -->
+        <h1 class='mt-3 header text-center display-5'>
+            Payment </br>
+            {Insert some text here about payment i dunno}
+        </h1>
+        <!-- Notifications  -->
+
+        <div class="container black">
+            <h2 class='mt-3 header text-center display-5' id="offer_header">Offers</h2>
+
+            <div class="row d-flex justify-content-center" id="offer_notification"> 
+            </div>
         </div>
-        <script src="//code.jquery.com/jquery.min.js"></script>
+    </div>
+    <script>
+        console.log("user localStorage check")
+        console.log(localStorage.getItem("userID"));
+        console.log(localStorage.getItem("userName"));
+        console.log(localStorage.getItem("userEmail"));
+    </script>
 
-<script>
-    $.get("navbarTutor.html", function (data) {
-        $("#navbarTutor").replaceWith(data);
-    });
-</script>
-
-<script>    
-    console.log("tutor localStorage check")
-    console.log(localStorage.getItem("tutorEmail"));
-    console.log(localStorage.getItem("tutorName"));
-
-</script>
-
-
-        <script>
-
-            var username  = '<?php echo $user;?>';
-            console.log(user)
-
-            var get_all_URL = "http://localhost:5001/assignmentByUser";
-            // var place_order_URL = "http://localhost:5100/place_order";
     
-            var app = new Vue({
-                el: "#app",
-                computed: {
-                    hasAssignments: function () {
-                        return this.assignments.length > 0;
-                    }
-                },
-                data: {
-                    userID: 1,
-                    "assignments": [],
-                    message: "There is a problem retrieving the assignment data, please try again later.",
-                    childId: "",
-                    subject: "",
-                    location: "",
-                    expectedPrice: "",
-                    preferredDay: "",
-                    assignmentAdded: false,
-                    addAssignmentError: "",
-                    createdAssignment: "",
-                    assignmentCreated: false,
-                    creationSuccessful: false,
-                },
-                methods: {
-                    getAllAssignments: function () {
-                        // on Vue instance created, load the book list
-                        const response =
-                            fetch(get_all_URL+`/${this.userID}`)
+
+    
+    <script src="//code.jquery.com/jquery.min.js"></script>
+    <script>
+    $.get("navbarTutor.html", function(data){
+        $("#navbar").replaceWith(data);
+    });
+    </script>
+    <script>
+        var array_of_child = [];
+        var array_of_tutor = [];
+        var childName1 = "";
+        var offer_subject = "";
+        var offer_level = "";
+        var offer_tutor = "";
+        var get_all_URL = "http://localhost:5001/assignmentByUser";
+        // var place_order_URL = "http://localhost:5100/place_order";
+    function getAllOffers1() {
+    // on Vue instance created, load the book list
+    var userID = 1;
+    const response =
+        fetch(`http://localhost:5001/test/` + `${userID}`)
+            .then(response => response.json())
+            .then(huh => {
+                //console.log(huh);
+                if (huh.code === 400) {
+                    message = huh.message;
+                } else {
+                        //console.log(huh.message)
+                        for (temp1 of huh.message){
+                            array_of_tutor.push(temp1[1].tutorID);
+                            array_of_tutor.push(temp1[1].tutorName);
+                         }
+                        //console.log(array_of_tutor);
+                        getAllOffers();
+                            }
+                        }
+                     )  
+            .catch(error => {
+                console.log( error);
+            });
+
+}
+    </script>        
+    <script src="//code.jquery.com/jquery.min.js"></script>
+    <script>
+    $.get("navbarUser.html", function(data){
+        $("#navbar").replaceWith(data);
+    });
+    </script>
+    <script>
+        var app = new Vue({
+            el: "#app",
+            computed: {
+                hasAssignments: function () {
+                    return this.assignments.length > 0;
+                }
+            },
+            data: {
+                userID: 1,
+                "assignments": [],
+                message: "There is a problem retrieving the assignment data, please try again later.",
+                childId: "",
+                subject: "",
+                location: "",
+                expectedPrice: "",
+                preferredDay: "",
+                assignmentAdded: false,
+                addAssignmentError: "",
+                createdAssignment: "",
+                assignmentCreated: false,
+                creationSuccessful: false,
+            },
+            methods: {
+                getAllAssignments: function () {
+                    const response =
+                        fetch(get_all_URL+`/${this.userID}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                //console.log(data.assignments)
+                                for (assignment of data.assignments){
+                                    array_of_child.push(assignment.assignmentId);
+                                    array_of_child.push(assignment.childName);
+                                    if (assignment.primary){
+                                        offer_level = "Primary ";
+                                    }
+                                    else {
+                                        offer_level = "Secondary "
+                                    }
+                                    offer_level += assignment.level;
+                                    array_of_child.push(offer_level);
+                                    array_of_child.push(assignment.subject);
+                                }
+
+                                if (data.code === 404) {
+                                    // no book in db
+                                    this.message = data.message;
+                                } else {
+                                    this.subject = data.data.subjects;
+                                }
+                            })
+                            .catch(error => {
+                                console.log(this.message + error);
+                            });
+
+                }
+        
+            },
+            created: function () {
+                this.getAllAssignments();
+            }
+        });
+        </script>
+        <script>
+        function getAllOffers() {
+            var tutorID = 1 //FIX PLS EDENA TIO YI NING YOU FCKING BASTARD MAKING ME WORK 365DAYS A YEAR 
+                        const response = 
+                        fetch("http://localhost:5002/returned"+`/${tutorID}`)
                                 .then(response => response.json())
                                 .then(data => {
-                                    console.log(response);
-                                    console.log("meep");
-                                    console.log(data.assignments)
                                     if (data.code === 404) {
-                                        // no book in db
                                         this.message = data.message;
                                     } else {
-                                        this.subject = data.data.subjects;
-                                        
+                                       var no_of_offers = (data.offers).length
+                                       if (no_of_offers == 0){
+                                           document.getElementById("offer_header").innerHTML = "You have no new notifications!"
+                                       }
+                                       else {
+                                        document.getElementById("offer_header").innerHTML = `You have ${no_of_offers} new Notifications!`
+                                       }
+                                        //console.log(data.offers);
+                                       for (offer of data.offers){
+                                            for (i=0;i<array_of_child.length;i+=4){
+                                                childName1 = array_of_child[i+1]
+                                                offer_subject = array_of_child[i+3]
+                                                offer_level = array_of_child[i+2]
+                                                var temp69 = offer.tutorID 
+                                                for (m=0; m < array_of_tutor.length;m++){
+                                                    if (temp69 == array_of_tutor[m]){
+                                                        offer_tutor = array_of_tutor[m+1]
+                                                    }
+                                                }
+                                        }
+                                        if (offer.status == "accepted"){
+                                        document.getElementById("offer_notification").innerHTML += `
+                                                <div class="card text-center border-light mb-3" style="max-width: 30rem; margin:10px">
+                                                <div class="card-header">Offer Notification</div>
+                                                <div class="card-body">
+                                                <h5 class="card-title">Tuition for ${childName1}</h5>
+                                                <p class="card-text">Your offer to teach <b>${childName1}</b> for ${offer_level} ${offer_subject}</p>
+                                                <p class="card-text">on <b>${offer.preferredDay} @ ${offer.selectedTime} for $${offer.expectedPrice}/Hr</b></p> 
+                                                <p class="card-text" id="accept_reject">has been <a style="color:green">Accepted</a></p>                           
+                                                </div>
+                                                </div>
+                                                `
+                                            }
+                                        else {
+                                            document.getElementById("offer_notification").innerHTML += `
+                                                <div class="card text-center border-light mb-3" style="max-width: 30rem; margin:10px">
+                                                <div class="card-header">Offer Notification</div>
+                                                <div class="card-body">
+                                                <h5 class="card-title">Tuition for ${childName1}</h5>
+                                                <p class="card-text">Your offer to teach <b>${childName1}</b> for ${offer_level} ${offer_subject}</p>
+                                                <p class="card-text">on <b>${offer.preferredDay} @ ${offer.selectedTime} for $${offer.expectedPrice}/Hr</b></p> 
+                                                <p class="card-text" id="accept_reject">has been <a style="color:red">Rejected</a></p>                           
+                                                </div>
+                                                </div>
+                                                `
+                                        }
+                                        }
+                                      
                                     }
                                 })
                                 .catch(error => {
-                                    // Errors when calling the service; such as network error, 
-                                    // service offline, etc
-                                    console.log(this.message + error);
     
                                 });
-    
-                    },
-                    addBook: function () {
-                        // reset data
-                        this.bookAdded = false;
-                        this.addBookError = "";
-    
-                        let jsonData = JSON.stringify({
-                            title: this.newTitle,
-                            price: this.newPrice,
-                            availability: this.newAvailability
-                        });
-    
-                        fetch(`${get_all_URL}/${this.newISBN13}`,
-                            {
-                                method: "POST",
-                                headers: {
-                                    "Content-type": "application/json"
-                                },
-                                body: jsonData
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log(data);
-                                result = data.data;
-                                console.log(result);
-                                // 3 cases
-                                switch (data.code) {
-                                    case 201:
-                                        this.bookAdded = true;
-    
-                                        // refresh book list
-                                        this.getAllBooks();
-    
-                                        // an alternate way is to add this one element into this.books
-                                        break;
-                                    case 400:
-                                    case 500:
-                                        this.addBookError = data.message;
-                                        break;
-                                    default:
-                                        throw `${data.code}: ${data.message}`;
-                                }
-                            })
-                    }
-                  },
-                created: function () {
-                    // on Vue instance created, load the book list
-                    this.getAllAssignments();
-                }
-            });
-        </script>
-    
-    </body>
+        }
+    </script>
+</body>
 </html>
