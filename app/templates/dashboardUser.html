@@ -183,7 +183,7 @@
             </script>
             <script>
             function getAllOffers() {
-                var userID = 1
+                var userID = localStorage.getItem("userID")
                             const response = 
                             fetch("http://localhost:5002/created"+`/${userID}`)
                                     .then(response => response.json())
@@ -239,5 +239,39 @@
                                     });
             }
         </script>
+        <script>
+        function getAllOffers1() {
+        // on Vue instance created, load the book list
+
+        var userID = localStorage.getItem("userID")
+        const response =
+            fetch(`http://localhost:5001/test/` + `${userID}`)
+                .then(response => response.json())
+                .then(huh => {
+                    //console.log(huh);
+                    if (huh.code === 400) {
+                        message = huh.message;
+                    } else {
+                            console.log(huh.message)
+                            for (temp1 of huh.message){
+                                console.log(temp1[1]);
+                                // console.log(temp1[1].tutorID);
+                                // console.log(temp1[1].tutorName);
+                                array_of_tutor.push(temp1[1].tutorID);
+                                array_of_tutor.push(temp1[1].tutorName);
+                             }
+                            alert(array_of_tutor);
+                                }
+                            }
+                         )  
+                .catch(error => {
+                    console.log( error);
+                });
+                getAllOffers()
+    }
+        //console.log(array_of_tutor);
+        </script>
+        
+    
     </body>
 </html>

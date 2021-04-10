@@ -247,7 +247,7 @@
                         //alert(assignmentID);
                         document.getElementById("fancypokeball").innerHTML = `
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Nerpppp</button>
-                        <button type="button" class="btn btn-primary"  onclick="return createOffer(${assignmentId}, ${userID})">Send Offer</button>
+                        <button type="button" class="btn btn-primary"  onclick="return createOffer(${assignmentId}, ${userID})" data-dismiss="modal">Send Offer</button>
                         `;
                         document.getElementById("expandedInfo").innerHTML = `
                         <div class="black" style="text-align:left;">
@@ -287,8 +287,14 @@
             }
     </script>
     <script>
-        // @crystal, pls help me test
+
     function createOffer(assignmentId, userID){
+        tutorID = localStorage.getItem("tutorID")
+        tutorName = localStorage.getItem("tutorName")
+        tutorEmail = localStorage.getItem("tutorEmail")
+        console.log(tutorID)
+
+
         var time = document.getElementById("time").value;
         console.log(time)
         var expectedPrice = document.getElementById("expected_price").value;
@@ -302,9 +308,9 @@
             "preferredDay": preferredDay,
             "selectedTime": time, 
             "status": "pending", 
-            "tutorEmail": "bob@gmail.com",
-            "tutorID": 1, 
-            "tutorName": "Bob",
+            "tutorEmail": tutorEmail,
+            "tutorID": tutorID, 
+            "tutorName": tutorName,
             "userID": userID
         }
         console.log(assignmentId)
@@ -326,7 +332,7 @@
                         // no book in db
                         this.message = data.message;
                     } else {
-                        data
+                        alert("it went through???")
                         //NOT DONE YET
                         
                         
@@ -424,7 +430,7 @@
                                         <div class="card border-dark mb-3" style="max-width: 18rem;">
                                             <div class="card-header black" style="text-align:center;">Assignment Details </div>
                                             <div class="card-body black" style="text-align:center;"><b>${primary} ${level} ${subject}</b> Tuition
-                                                <p>Amount Offered: $${price}0/hour</p>
+                                                <p>Amount Offered: $${price}/hour</p>
                                                 <p>Preferred Day(s): ${preferredDay}</p>
                                                 
                                             

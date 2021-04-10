@@ -51,7 +51,7 @@
 
 
                             <div class="text-left mb-3">
-                                <button type="button" class="btn" id="login" onclick="checkUser();checkTutor();">Login</button>
+                                <button type="button" class="btn" id="login">Login</button>
                             </div>
                             <div class="text-left mb-3 g-signin2" id="googlesignin" onclick="onSignIn();tutorGoogle();" data-onsuccess="onSignIn">
                               <!-- for google log in button  -->
@@ -74,6 +74,7 @@
         <script>
           var tutorCheck = "";
           var UserCheck = "";
+          
           function checkTutor() {
             email = document.getElementById('email').value
             pass = document.getElementById('password').value
@@ -96,8 +97,10 @@
               var check = "user";
               switch (json.code) {
                     case 200:
-                        alert("yayyyyy")
-
+                        alert("yayyyyy Hi Tutor")
+                        localStorage.setItem("tutorName",json.data.tutorName);
+                        localStorage.setItem("tutorEmail",json.data.tutorEmail);
+                        localStorage.setItem("tutorID",json.data.tutorID);
                         // refresh assignment list
                         // alert("meeeeep")
                         document.getElementById("formallyYours").innerHTML=`<h4>Your login was successful!</h4><p>You will be redirected in a moment</p>`;
@@ -143,10 +146,13 @@
               var check = "user";
               switch (json.code) {
                     case 200:
-                        alert("yayyyyy")
+                        alert("yayyyyy Hi user")
 
                         // refresh assignment list
                         // alert("meeeeep")
+                        localStorage.setItem("userName",json.data.userName);
+                        localStorage.setItem("userEmail",json.data.userEmail);
+                        localStorage.setItem("userID",json.data.userID);
                         document.getElementById("formallyYours").innerHTML=`<h4>Your login was successful!</h4><p>You will be redirected in a moment</p>`;
                         window.setTimeout(function(){
                             // Move to a new location or you can do something else

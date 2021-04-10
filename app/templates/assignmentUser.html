@@ -178,9 +178,7 @@ function deleteit(assignment_ID) {
 </script>
         <script>
             
-            var username  = 'meep';
-            console.log(username)
-            
+            var userID = localStorage.getItem("userID")
             var get_all_URL = "http://localhost:5001/assignmentByUser";
             var get_childURL = `http://localhost:5004/seeChild`
 
@@ -194,7 +192,7 @@ function deleteit(assignment_ID) {
                     }
                 },
                 data: {
-                    userID: 1,
+                    userID: userID,
                     assignments: [],
                     message: "There is a problem retrieving the assignment data, please try again later.",
                     names: [],
@@ -238,6 +236,7 @@ function deleteit(assignment_ID) {
                     //   });
                     // },
                     updateChildInfo: function() {
+                      
                       const response =
                         fetch(get_childURL+ `/${this.userID}/${this.childName}`)
                             .then(response => response.json())
@@ -330,7 +329,7 @@ function deleteit(assignment_ID) {
                       //prepares posting data
                       let jsonData = JSON.stringify({
                           "assignmentId": Math.floor((Math.random() * 696969) + 1),
-                          "userID": 1,
+                          "userID": this.userID,
                           "childName": this.childName,
                           "primary": this.primary,
                           "level": this.level,
