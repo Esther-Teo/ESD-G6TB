@@ -93,13 +93,13 @@
         .then(data => {
             console.log("whelp")
             json = {
-                "acceptOrReject": "accept",
+                "acceptOrReject": "reject",
                 "offer": {
                     "assignmentId": assignment_ID,
                     "expectedPrice": data.expectedPrice, 
                     "preferredDay": data.preferredDay,
                     "selectedTime": data.selectedTime, 
-                    "status": "accepted", 
+                    "status": "rejected", 
                     "tutorEmail": data.tutorEmail,
                     "tutorID": tutorId, 
                     "tutorName": data.tutorName,
@@ -144,13 +144,13 @@
         .then(data => {
             console.log("whelp")
             json = {
-                "acceptOrReject": "reject",
+                "acceptOrReject": "accept",
                 "offer": {
                     "assignmentId": assignment_ID,
                     "expectedPrice": data.expectedPrice, 
                     "preferredDay": data.preferredDay,
                     "selectedTime": data.selectedTime, 
-                    "status": "rejected", 
+                    "status": "accepted", 
                     "tutorEmail": data.tutorEmail,
                     "tutorID": tutorId, 
                     "tutorName": data.tutorName,
