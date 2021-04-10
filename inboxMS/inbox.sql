@@ -87,10 +87,10 @@ COMMIT;
 INSERT INTO `createdOffer` (`assignmentId`, `userID`, `tutorID`, `status`, `selectedTime`,`expectedPrice`, `preferredDay`, `read`) VALUES
 (1,2, 1, "pending",1200, 2.5, "Fri", FALSE),
 (7,2, 1, "pending", 1300, 66, "Sun", FALSE),
-(2,1, 1, "pending",1230, 4, "Sat", FALSE),
+(6,1, 5, "pending",1230, 4, "Sat", FALSE),
 (3,6, 1, "pending", 1400, 3, "Sun", FALSE),
-(4,1, 4, "pending", 1500, 6, "Mon", FALSE),
-(5,1, 5, "pending", 0900, 3.7, "Thu", FALSE),
+(1,1, 4, "pending", 1500, 6, "Mon", FALSE),
+(7,1, 21, "pending", 0900, 3.7, "Thu", FALSE),
 (6,1, 1, "pending", 2100, 2, "Wed", FALSE);
 COMMIT;
 
