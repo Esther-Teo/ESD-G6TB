@@ -46,99 +46,12 @@
             <!-- Notifications  -->
 
             <div class="container black">
-                <h4 class='mb-3 display-4' style="text-align:left;">
-                    Notifications
-                </h4>
+                <h2 class='mt-3 header text-center display-5' id="offer_header">Offers</h2>
 
-                <div class="row">
-                    <div class="col-sm-7" id="offer_notification">
-                        <h2 class="mb-3">Offers</h2>
-                        <h3 id="offer_header"></h3>        
-                    </div>
-
-                    <div class="col-sm-5">
-                        <h2 class="mb-3">Payment</h2>
-                        <h3>You have 1 Payment Notification! </h3>
-
-                        <div class="card text-center border-light mb-3" style="max-width: 40rem;">
-                            <div class="card-header">Payment Notification</div>
-                            <div class="card-body">
-                            <h5 class="card-title">Payment for {tutorName}</h5>
-                            <p class="card-text">Please pay <b>{amount}</b> for {childID}'s tuition with <b>{tutorName}</b></p>
-                            </div>
-                        
-
-                            <div class="mx-3" style="text-align:center;">
-                                <a href="payment.html" type="button" class="btn btn-outline-primary mb-3" >Make Payment!</a>
-                            </div>
-                        </div>
-
-                        
-                    </div> 
+                <div class="row d-flex justify-content-center" id="offer_notification"> 
                 </div>
-
-
-
-                
-                
-            </div>
-
-            <div class="container mt-3 black">
-                <div class="row">
-                    <div class="col-sm-12 mb-3">
-                        <h4 class='mx-3  display-4' style="text-align:left;">Tuition Schedule</h4>
-                        
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th scope="col">S/N</th>
-                                    <th scope="col">childID</th>
-                                    <th scope="col">Primary/Secondary</th>
-                                    <th scope="col">Level</th>
-                                    <th scope="col">Subject</th>
-                                    <th scope="col">tutorName</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>0001</td>
-                                    <td>Primary</td>
-                                    <td>4</td>
-                                    <td>Mathematics</td>
-                                    <td>Bob</td>
-                                    <td>22/07/2021</td>
-                                    <td>1600</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>0002</td>
-                                    <td>Secondary</td>
-                                    <td>4</td>
-                                    <td>Physics</td>
-                                    <td>Greg</td>
-                                    <td>20/07/2021</td>
-                                    <td>1200</td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-
-                        
-                    </div>
-                </div>
-
-                
-                    
-                    
-            </div>
-
-                
             </div>
         </div>
-        
         <script>
             console.log("user localStorage check")
             console.log(localStorage.getItem("userID"));
@@ -167,7 +80,40 @@
             var offer_tutor = "";
             var get_all_URL = "http://localhost:5001/assignmentByUser";
             // var place_order_URL = "http://localhost:5100/place_order";
-    
+        function getAllOffers1() {
+        // on Vue instance created, load the book list
+        var userID = 1;
+        const response =
+            fetch(`http://localhost:5001/test/` + `${userID}`)
+                .then(response => response.json())
+                .then(huh => {
+                    console.log(huh);
+                    if (huh.code === 400) {
+                        message = huh.message;
+                    } else {
+                            //console.log(huh.message)
+                            for (temp1 of huh.message){
+                                array_of_tutor.push(temp1[1].tutorID);
+                                array_of_tutor.push(temp1[1].tutorName);
+                             }
+                            console.log(array_of_tutor);
+                            getAllOffers();
+                                }
+                            }
+                         )  
+                .catch(error => {
+                    console.log( error);
+                });
+
+    }
+        </script>        
+        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script>
+        $.get("navbarUser.html", function(data){
+            $("#navbar").replaceWith(data);
+        });
+        </script>
+        <script>
             var app = new Vue({
                 el: "#app",
                 computed: {
@@ -197,8 +143,6 @@
                             fetch(get_all_URL+`/${this.userID}`)
                                 .then(response => response.json())
                                 .then(data => {
-                                     console.log(response);
-                                    // console.log("meep");
                                     console.log(data.assignments)
                                     for (assignment of data.assignments){
                                         // console.log(assignment.assignmentId);
@@ -214,7 +158,6 @@
                                         offer_level += assignment.level;
                                         array_of_child.push(offer_level);
                                         array_of_child.push(assignment.subject);
-                                        array_of_child.push(assignment.tutorID);
                                     }
 
                                     if (data.code === 404) {
@@ -230,51 +173,9 @@
                                     console.log(this.message + error);
                                 });
     
-                    },
-                    addBook: function () {
-                        // reset data
-                        this.bookAdded = false;
-                        this.addBookError = "";
-    
-                        let jsonData = JSON.stringify({
-                            title: this.newTitle,
-                            price: this.newPrice,
-                            availability: this.newAvailability
-                        });
-    
-                        fetch(`${get_all_URL}/${this.newISBN13}`,
-                            {
-                                method: "POST",
-                                headers: {
-                                    "Content-type": "application/json"
-                                },
-                                body: jsonData
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log(data);
-                                result = data.data;
-                                console.log(result);
-                                // 3 cases
-                                switch (data.code) {
-                                    case 201:
-                                        this.bookAdded = true;
-    
-                                        // refresh book list
-                                        this.getAllBooks();
-    
-                                        // an alternate way is to add this one element into this.books
-                                        break;
-                                    case 400:
-                                    case 500:
-                                        this.addBookError = data.message;
-                                        break;
-                                    default:
-                                        throw `${data.code}: ${data.message}`;
-                                }
-                            })
                     }
-                  },
+            
+                },
                 created: function () {
                     // on Vue instance created, load the book list
                     this.getAllAssignments();
@@ -288,36 +189,35 @@
                             fetch("http://localhost:5002/created"+`/${userID}`)
                                     .then(response => response.json())
                                     .then(data => {
-                                        // console.log(data)
                                         if (data.code === 404) {
                                             //alert("You got no offers dude")
                                             this.message = data.message;
                                         } else {
                                            //console.log(data.offers);
                                            var no_of_offers = (data.offers).length
-                                           //alert(no_of_offers)
                                            if (no_of_offers == 0){
                                                document.getElementById("offer_header").innerHTML = "You got no new offers!"
                                            }
                                            else {
                                             document.getElementById("offer_header").innerHTML = `You have ${no_of_offers} Offer Notifications!`
                                            }
+                                            console.log(data.offers);
                                            for (offer of data.offers){
-                                                for (i=0;i<array_of_child.length;i+=5){
-                                                //alert(array_of_child[i]);
+                                               //console.log(array_of_child);
+                                                for (i=0;i<array_of_child.length;i+=4){
                                                 if (array_of_child[i]==offer.assignmentId){
                                                     childName1 = array_of_child[i+1]
                                                     offer_subject = array_of_child[i+3]
                                                     offer_level = array_of_child[i+2]
-                                                    offer_tutor = array_of_child[i+4]
-                                                    alert(array_of_child);
+                                                    var temp69 = offer.tutorID 
                                                     for (m=0; m < array_of_tutor.length;m++){
-                                                        if (array_of_tutor[m] == offer_tutor){
+                                                        if (temp69 == array_of_tutor[m]){
                                                             offer_tutor = array_of_tutor[m+1]
                                                         }
+                                                    //alert(offer_tutor)
                                                     }
                                                     document.getElementById("offer_notification").innerHTML += `
-                                                    <div class="card text-center border-light mb-3" style="max-width: 30rem;">
+                                                    <div class="card text-center border-light mb-3" style="max-width: 30rem; margin:10px">
                                                     <div class="card-header">Offer Notification</div>
                                                     <div class="card-body">
                                                     <h5 class="card-title">Tuition for ${childName1}</h5>
@@ -336,9 +236,6 @@
                                         }
                                     })
                                     .catch(error => {
-                                        // Errors when calling the service; such as network error, 
-                                        // service offline, etc
-                                        //console.log(this.message + error);
         
                                     });
             }
