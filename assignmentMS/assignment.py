@@ -128,7 +128,7 @@ def tryout(userId):
 def both_by_tutor(tutorId):
     try:
         print(tutorId)
-        test = db.session.query(Assignment, Offer).outerjoin(Offer, Assignment.assignmentId == Offer.assignmentId).filter(Offer.tutorID==tutorId)
+        test = db.session.query(Assignment, Offer).outerjoin(Offer, Assignment.assignmentId == Offer.assignmentId).filter(Offer.tutorID==tutorId, Offer.status!="rejected")
 
         if test:
             data = []
@@ -142,7 +142,7 @@ def both_by_tutor(tutorId):
                 data=[]
             print(data)
             # return jsonify({"assignments": data})
-            return jsonify({"message": real}),200
+            return jsonify({"code":200,"message": real}),200
             # return jsonify({"assignments": [assignment.json() for assignment in test[0]]})
     except Exception as e:
         return jsonify({"message": "Assignment had a problem fetching" + str(e)}), 500
