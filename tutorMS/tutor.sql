@@ -45,18 +45,6 @@ CREATE TABLE IF NOT EXISTS tutor (
     PRIMARY KEY (tutorID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS tutorSubjects;
-CREATE TABLE IF NOT EXISTS tutorSubjects (
-  tutorID BIGINT NOT NULL,
-  subjectID BIGINT NOT NULL,
-  pri BOOLEAN NOT NULL,
-  lvl int NOT NULL,
-  subjects VARCHAR(100) NOT NULL,
-  PRIMARY KEY (tutorID, subjectID),
-  CONSTRAINT FK_tutorID FOREIGN KEY (tutorID)
-    REFERENCES tutor(tutorID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 --
 -- Dumping data for table tutor
 --
@@ -69,12 +57,6 @@ INSERT INTO tutor (tutorId, tutorName, tutorEmail, passw, tutorPhone, loc, portf
 (5, 'Jane','Janice@gmail.com','123', 12311,'River Valley','Mentored before', 130);
 COMMIT;
 
-INSERT INTO tutorSubjects (tutorId, subjectId, pri, lvl, subjects) VALUES
-(1, 1,  0, 4, "Math"),
-(2, 1, 0, 4, "Math"),
-(2, 2, 1, 6, "English"),
-(5, 1, 1, 6, "Math");
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

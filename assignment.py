@@ -100,6 +100,7 @@ class Offer(db.Model):
 def get_all():
     return jsonify({"assignments": [assignment.json() for assignment in Assignment.query.all()]})
 
+# GET assignments and offers per offer by user
 @app.route("/test/<int:userId>", methods=["GET"])
 def tryout(userId):
     try:
@@ -124,7 +125,7 @@ def tryout(userId):
     except Exception as e:
         return jsonify({"message": "Assignment had a problem fetching" + str(e)}), 500
 
-# offer and assignment by tutor ID
+# offer and assignment per offer by tutor ID
 @app.route("/bothByTutor/<int:tutorId>", methods=["GET"])
 def both_by_tutor(tutorId):
     try:
