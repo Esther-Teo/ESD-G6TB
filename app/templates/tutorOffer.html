@@ -89,6 +89,7 @@
                                 } else {
                                     primary = "Secondary"
                                 }
+                                if (offer[1].status == "accepted"){
                                 document.getElementById("insertData").innerHTML += `
                                 <tr>
                                     <th scope="row">${count}</th>
@@ -96,9 +97,22 @@
                                     <td>${primary} ${offer[0].level} ${offer[0].subject}</td>
                                     <td>${offer[1].preferredDay}</td>
                                     <td>$${offer[1].expectedPrice}/hr</td>
-                                    <td>${offer[1].status}</td>
+                                    <td style="color:limegreen">${offer[1].status}</td>
                                 </tr>
-                                `;
+                                `}
+                                else{
+                                    document.getElementById("insertData").innerHTML += `
+                                    <tr>
+                                    <th scope="row">${count}</th>
+                                    <td>${offer[0].childName}</td>
+                                    <td>${primary} ${offer[0].level} ${offer[0].subject}</td>
+                                    <td>${offer[1].preferredDay}</td>
+                                    <td>$${offer[1].expectedPrice}/hr</td>
+                                    <td style="color:yellow">${offer[1].status}</td>
+                                </tr>
+                                `
+                                }
+                                ;
                                 
                                 count++
                                 
