@@ -94,6 +94,7 @@
         }
 
     var appended_value_obj=parse_query_string(current_appended_url);
+    console.log(appended_value_obj);
     var stripe_id=appended_value_obj["?accountid"]
     console.log(stripe_id);
 
@@ -186,6 +187,7 @@
                     // Errors when calling the service; such as network error, 
                     // service offline, etc
                     alert("Please complete the form before sending!");
+                    // come back to this 
                     window.location.href = "loginPage.html";
                 });
     }

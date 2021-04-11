@@ -22,8 +22,9 @@ class Tutor(db.Model):
     loc = db.Column(db.Text(1000), nullable=False)
     portfolio = db.Column(db.Text(1000))
     priceRange = db.Column(db.INTEGER, nullable=False)
+    stripeID = db.Column(db.String(100), nullable=False)
 
-    def __init__(self, tutorID, tutorName, tutorEmail, passw, tutorPhone, loc, portfolio, priceRange):
+    def __init__(self, tutorID, tutorName, tutorEmail, passw, tutorPhone, loc, portfolio, priceRange,stripeID):
         self.tutorID = tutorID
         self.tutorName = tutorName
         self.tutorEmail = tutorEmail
@@ -32,6 +33,7 @@ class Tutor(db.Model):
         self.loc = loc
         self.portfolio = portfolio
         self.priceRange = priceRange
+        self.stripeID = stripeID
 
     def json(self):
         return { 
@@ -42,7 +44,8 @@ class Tutor(db.Model):
             "tutorPhone": self.tutorPhone, 
             "loc": self.loc,
             "portfolio": self.portfolio,
-            "priceRange": self.priceRange
+            "priceRange": self.priceRange,
+            "stripeID": self.stripeID
             }
 
 
@@ -69,7 +72,7 @@ def add_tutor():
                 }
             ), 400
         
-        tutor = Tutor(tutorID, data['tutorName'], data['tutorEmail'], data['passw'], data['tutorPhone'], data['loc'], data['portfolio'], data['priceRange'])
+        tutor = Tutor(tutorID, data['tutorName'], data['tutorEmail'], data['passw'], data['tutorPhone'], data['loc'], data['portfolio'], data['priceRange'],data['stripeID'])
         # subject = TutorSubjects(tutorID, data['subjectId'], data['pri'], data['lvl'], data['subjects'])
         db.session.add(tutor)
         # db.session.add(subject)

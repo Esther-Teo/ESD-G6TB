@@ -170,7 +170,7 @@ def onboard_user_refresh():
 
 
 def _generate_account_link(account_id, origin):
-    print(origin)
+    print(f'account id in generatelink is {account_id}')
     account_link = stripe.AccountLink.create(
 
         type='account_onboarding',
@@ -183,10 +183,11 @@ def _generate_account_link(account_id, origin):
         refresh_url=f'http://127.0.0.1:5000/onboard-user/refresh',
         # return_url=f'{origin}/ESD/ESD-G6TB/app/templates/registerPage.html',
         # this is my localhost. 
-        return_url=f'{origin}/ESD/ESD-G6TB/app/templates/registerTutorFallback.html' + '?accountid={account}',
+        return_url=f'{origin}/ESD/ESD-G6TB/app/templates/registerTutorFallback.html' + '?accountid='+account_id,
 
     )
-    print(origin)
+    # print(origin)
+    print(account_link.url)
     return account_link.url
 
 
