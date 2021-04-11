@@ -233,10 +233,27 @@
             default_url="http://127.0.0.1:5000/connect_pay.html"
             function stripe_redirect(assignmentID, tutorId, card_price,tutor_email){
                 console.log(assignmentID,tutorId,card_price,tutor_email);
+                var message = {
+                "tutorID": tutorId
+                }
+                console.log(message);
                 // pass price to stripe 
-
+                fetch('http://localhost:5006/retrieve_stripe_id', {
+                method: "POST",
+                body: JSON.stringify(message),
+                headers: {"Content-type": "application/json; charset=UTF-8"}
+                })
+                .then(response => response.json()) 
+                .then(json => {
+                console.log("output: "+ json); 
+    
+                console.log(json.data.stripeID);
+                var stripe_ID=json.data.stripeID;
+                window.location=test_url + "?"+"price="+ card_price+'&'+'email='+tutor_email +'&'+'stripeID='+stripe_ID;
+                }) 
+                .catch(err => console.log(err));
                 
-                window.location=test_url + "?"+"price="+ card_price+'&'+'email='+tutor_email;
+              
 
                 
 

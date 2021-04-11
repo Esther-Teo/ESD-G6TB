@@ -55,6 +55,45 @@ def get_all():
 	return jsonify({"tutors": [tutor.json() for tutor in Tutor.query.all()]})
 
 
+#retrieve stripe ID based on Tutor ID 
+
+@app.route("/retrieve_stripe_id", methods=['POST', 'GET'])
+def retrieve_stripe_id():
+    data = request.get_json()
+    print(data)
+    tutorID = data['tutorID']
+
+    print(f"tutorID: {tutorID}")
+    try:
+        # tutor = Tutor.query.filter_by(tutorID=tutorID).first()
+        # Tutor.query.filter_by(tutorID=tutorID).first()
+        res = Tutor.query.filter_by(tutorID=tutorID).first()
+        print(res)
+        if (res):
+            print("runs?")
+            print(res)
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "message":"returns",
+                        "tutorID": res.tutorID,
+                        "tutorName": res.tutorName,
+                        "tutorEmail": res.tutorEmail,
+                        "stripeID": res.stripeID
+                    },
+                    "message": "Stripe Id Returned"
+                }
+            ), 200
+    except Exception as e:
+        print("why error??")    
+        return jsonify(
+            {
+                "code": 404,
+                "message": "There was an error" + str(e)
+            }), 404
+
+
 # creates a tutor
 @app.route("/createTutor", methods=['POST'])
 def add_tutor():
@@ -192,7 +231,7 @@ def check_google_tutor():
     try:
         res = Tutor.query.filter_by(tutorEmail=email).first()
         if (res):
-            print(res)
+            # print(res)
             return jsonify(
                 {
                     "code": 200,

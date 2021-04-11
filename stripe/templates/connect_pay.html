@@ -101,10 +101,13 @@
 
     var price_per_hour= price_obj["?price"];
     price_per_hour= (price_per_hour) * 100
-    var input_email=price_obj['email'];
+
+    window.input_email=price_obj['email'];
+    window.input_stripe_id=price_obj['stripeID'];
+
     console.log(price_per_hour);
     console.log(input_email); 
-
+    console.log(input_stripe_id); 
     // var stripe = Stripe('pk_test_51Ib4VfBvhmRsAY8LWdqkxz5jziPQ1YmxCjuFHuQCaJyMNjoJSipniNaC1lh9ZocTLnpaxVWwgKkFSeX76ACHNqZP007ogKEoHo');
     var paymentForm = document.getElementById("payment-form");
     var paymentIntentData = {
@@ -320,6 +323,10 @@
 
         var wrapper = document.querySelector("#disabled-accounts-section");
         var input = document.querySelector("#disabled-accounts-select");
+        console.log(acct)
+        
+    
+        
         expressAccounts.forEach((acct) => {
             var element = document.createElement("option");
             element.setAttribute("value", acct.id);
@@ -345,6 +352,19 @@
         // If at least one account is enabled, show the account selector and payment form.
         var wrapper = document.querySelector("#enabled-accounts-section");
         var input = document.querySelector("#enabled-accounts-select");
+        // add getter account here? 
+        // window.input_email=price_obj['email'];
+        // window.input_stripe_id=price_obj['stripeID'];
+        if(input_stripe_id && input_email != null){
+            console.log("not empty");
+            
+            var element = document.createElement("option");
+            element.setAttribute("value", input_stripe_id );
+            element.innerHTML = input_email || input_stripe_id;
+            input.appendChild(element);
+        }
+
+
         enabledAccounts.forEach((acct) => {
         var element = document.createElement("option");
         console.log(acct.id)
