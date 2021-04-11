@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS tutor (
     loc varchar(1000) NOT NULL,
     portfolio varchar(1000) NOT NULL,
     priceRange INT NOT NULL,
+    stripeID varchar(100) NULL,
     PRIMARY KEY (tutorID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -54,7 +55,8 @@ INSERT INTO tutor (tutorId, tutorName, tutorEmail, passw, tutorPhone, loc, portf
 (2, 'Tom','tom@hotmail.com','123', 999,'Dover','Taught Pri 1 students for 1 month', 160),
 (3, 'Sue','suesue@gmail.com', '123',112,'Marymount','Taught Sec 4 students for 1 month', 105),
 (4, 'Mary','MaryTan@gmail.com','123', 123,'Pasir Ris','', 125),
-(5, 'Jane','Janice@gmail.com','123', 12311,'River Valley','Mentored before', 130);
+(5, 'Jane','Janice@gmail.com','123', 12311,'River Valley','Mentored before', 130),
+(6, 'Hao','soonhao.er@smu.edu.sg','123', 12311,'Bukit Panjang','Best Mentor ', 130);
 COMMIT;
 
 

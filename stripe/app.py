@@ -64,23 +64,20 @@ stripe.api_key = 'sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xM
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 
-#not used
-# START OF BUY SHIT 
+#not used :(
+# START OF BUY Things
 # method with sessions
 @app.route('/')
 def index():
-
     return render_template('checkout.html')
 
 
 
-# this is for one time checkout basically for buy books from the platform
+# this is for one time checkout basically for buy books from the platform but that would be too simple. Hence we are implementing stripe connect to facilitate P2P payments
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
-
     # Creating a session upon load
     session = stripe.checkout.Session.create(
-
         payment_method_types=["card"],
         line_items=[
             {
@@ -184,7 +181,9 @@ def _generate_account_link(account_id, origin):
         # return_url=f'{origin}/success.html',
         # refresh_url=f'{origin}/onboard-user/refresh',
         refresh_url=f'http://127.0.0.1:5000/onboard-user/refresh',
-        return_url=f'{origin}/ESD/ESD-G6TB/app/templates/registerPage.html',
+        # return_url=f'{origin}/ESD/ESD-G6TB/app/templates/registerPage.html',
+        # this is my localhost. 
+        return_url=f'{origin}/ESD/ESD-G6TB/app/templates/registerTutorFallback.html' + '?accountid={account}',
 
     )
     print(origin)
@@ -227,7 +226,7 @@ def create_payment():
     data = json.loads(request.data)
     # returns the server calculated amount in 2 functions above 
     amount = calculate_order_amount(data['items'])
-
+    print(data['account'])
     # Create a PaymentIntent with the order amount, currency, and transfer destination
     intent = stripe.PaymentIntent.create(
         amount=amount,
