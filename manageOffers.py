@@ -184,11 +184,11 @@ def reject_offers(offer):
     # If rejection successful, send rejected offer to inboxMS
     print('-----Offer has been rejected-----')
     print('\n-----Sending to inboxMS-----')
-    new = {"offer": offer_result['data']}
+    new = {"offer": offer['data']}
     inbox_result = invoke_http(inbox_reject_offer_URL, method='POST', json=new)
     inbox_code = inbox_result["code"] 
     inbox_message = json.dumps(inbox_result)
-    print("inbox_result:", inbox_result)
+    print('inbox_result:', inbox_result)
 
     # Error handling
     if inbox_code not in range(200, 300):
