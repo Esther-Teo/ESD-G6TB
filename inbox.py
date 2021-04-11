@@ -140,11 +140,11 @@ def push_created(userID):
     try:
         offer = CreatedOffer.query.filter_by(userID=userID, read="!=").all()
         if offer:
+            for each in offer:
+                print("input")
+                each.read = 1
+                db.session.commit()
             return jsonify({"code": 200,"offers": [o.json() for o in offer]}), 200
-                # for each in offer:
-                # print("input")
-                # each.read = 1
-                # db.session.commit()
             
         return jsonify({"code": 404, "data": {"userID": userID},"message": "Offer not found."}), 404
 
@@ -162,6 +162,7 @@ def update_status(assignmentId, tutorID):
             "message": "Offer not found."}), 404
 
         offer.status = "accepted"
+        offer.read = False
         db.session.commit()
         return jsonify({"code": 201, "data": {"assignmentId": assignmentId, "tutorID": tutorID}})
 
@@ -177,10 +178,10 @@ def push_returned(tutorID):
         offer = ReturnedOffer.query.filter_by(tutorID=tutorID, read="!=").all()
         if offer:
             # print("in")
-            # for each in offer:
-                # each.read = 1
-                # print(each.read)
-                # db.session.commit()
+            for each in offer:
+                each.read = 1
+                print(each.read)
+                db.session.commit()
             return jsonify({"code": 200,"offers": [o.json() for o in offer]}), 200
         return jsonify({"code": 404,"data": {"tutorID": tutorID},"message": "Offer not found."}), 404
 
