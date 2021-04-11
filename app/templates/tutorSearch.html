@@ -67,10 +67,7 @@
                         <div class="position-relative m-5 " >
                             <div>
                             </div>
-                            <div id="expandedInfo"> 
-                                
-                        
-                                
+                            <div id="expandedInfo">   
                             </div>
                         </div>
                     </div>
@@ -93,7 +90,6 @@
                 </div>
                 <div class="modal-body" id="modal-body">
                         <form>
-                            
                             <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <label for="inputEmail4">Selected Time</label>
@@ -177,14 +173,6 @@
     function toBeExpanded(assignmentId, userID){
         var element = document.getElementById("expandedInfo");
         element.classList.remove("pic");
-        // console.log(typeof subj)
-        // if (String(subj)){
-        //     meep = String(subj)
-        //     subject = meep.substring(7, meep.length-1)
-        // } else {
-        //     subject = subj
-        // }
-        // console.log(subject)
         const first = 
         fetch("http://localhost:5001/assignmentById/" + `${assignmentId}`)
         .then(first => first.json())
@@ -209,27 +197,20 @@
                     } else {
                         for (each of data.message){
                         //NOT DONE YET
-                        
-            
                         var parentName = each[0].userName;
                         var parentPhone = each[0].userPhone;
                         var parentEmail = each[0].userEmail;
                         var location = each[0].loc;
-
-                        
                         var childName = each[1].childName;
                         var school = each[1].school;
                         var level = each[1].lvl;
                         var Primary = each[1].pri;
-
-
                         if(Primary){
                             Primary = "Primary";
                         }
                         else{
                             Primary = "Secondary"
                         }
-
                         document.getElementById("fancypokeball").innerHTML = `
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Nerpppp</button>
                         <button type="button" class="btn btn-primary"  onclick="return createOffer(${assignmentId}, ${userID})" >Send Offer</button>
@@ -361,8 +342,6 @@ function refresh(){
         <!--VUE scripts-->
         <script>
             var username  = "meep";
-            // console.log(username)
-
             var get_all_URL = "http://localhost:5001/assignment";
             var get_user_URL = "http://localhost:5004/UserChild";
             // var place_order_URL = "http://localhost:5100/place_order";
@@ -395,10 +374,6 @@ function refresh(){
                         fetch(get_all_URL)
                             .then(response => response.json())
                             .then(data => {
-                                // console.log("bro");
-                                // console.log(response);
-                                // console.log("sis");
-                                // console.log(data.assignments)
                                 if (data.code === 404) {
                                     // no book in db
                                     this.message = data.message;
