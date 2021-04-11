@@ -147,22 +147,23 @@
     
 
     // globalize the variables 
-    var tutorID; 
-    var tutorName; 
-    var tutorEmail;
-    var passw;
-    var tutorPhone; 
-    var loc;
+    // var tutorID 
+    // var tutorName; 
+    // var tutorEmail;
+    // var passw;
+    // var tutorPhone; 
+    // var loc;
 
+    // this should globalized the variables 
     function storeData(){
-    tutorID = Math.floor((Math.random() * 696969) + 1);
-    tutorName = document.getElementById("username").value;
-    tutorEmail = document.getElementById("email").value;
+    window.tutorID = Math.floor((Math.random() * 696969) + 1);
+    window.tutorName = document.getElementById("username").value;
+    window.tutorEmail = document.getElementById("email").value;
     console.log("inside function:" + tutorEmail);
 
-    passw = document.getElementById("password").value;
-    tutorPhone = document.getElementById("phoneNumber").value;
-    loc = document.getElementById("location").value;
+    window.passw = document.getElementById("password").value;
+    window.tutorPhone = document.getElementById("phoneNumber").value;
+    window.loc = document.getElementById("location").value;
     var connect_account=
     document.cookie = `tutorID=${tutorID}; path=registerTutorFallback.html`;
     document.cookie = `tutorName=${tutorName}; path=registerTutorFallback.html`
@@ -172,16 +173,16 @@
     document.cookie = `loc=${loc}; path=registerTutorFallback.html`
     "document.cookie = "+document.cookie
     }
-
+    
     // hardcoded URL 
-    console.log("outside function:" + tutorEmail);
+   
     var user_URL = "http://localhost:5004/createUser";
     // var tutor_URL = `http://localhost:5004/seeChild`; 
     // var stripe_url = "http://localhost:5000/onboard-user";
     var stripe_url="http://127.0.0.1:5007/onboard-user"
-    var send_to_stripe = JSON.stringify({
-            "userEmail": tutorEmail});
-    console.log("Check here:"+ send_to_stripe);
+    
+
+
     let elmButton = document.getElementById('connect');
     console.log(elmButton);
     if (elmButton) {
@@ -190,17 +191,25 @@
         e => {
         elmButton.setAttribute("disabled", "disabled");
         elmButton.textContent = "Opening...";
-
+        // so it is to use windows.variable
+        
+        console.log("outside function");
+        console.log(tutorEmail);
+    
+        // console.log(send_to_stripe); 
         fetch(stripe_url, {
             method: "POST",
             headers: {
             "Content-Type": "application/json"
-            }
+            },
+            body: JSON.stringify({
+        "userEmail": tutorEmail})
         })
             .then(response => response.json())
             .then(data => {
             if (data.url) {
                 window.location = data.url;
+               
             } else {
                 elmButton.removeAttribute("disabled");
                 elmButton.textContent = "<Something went wrong>";
