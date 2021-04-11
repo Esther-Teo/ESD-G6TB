@@ -238,28 +238,19 @@
 
         changeLoadingState(false);
         
-        fetch("/send-payment-to-rabbit", {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/json"
-        },
-        body: JSON.stringify(paymentIntentJson)
-    })
-        .then(function(result) {
-        return result.json();
-        })
-        // if(paymentIntent.status=="succeeded"){
-        //     setTimeout(function(){
-        //         // window.location="http://localhost:5000/app/templates/payment.html";
-        //         // SH path
-        //         window.location="http://localhost/ESD/ESD-G6TB/app/templates/payment.html";
-        //      }, 3000);
+
+        if(paymentIntent.status=="succeeded"){
+            setTimeout(function(){
+                window.location="http://localhost:5000/app/templates/offerUser.htm";
+                // SH path
+                // window.location="http://localhost/ESD/ESD-G6TB/app/templates/payment.html";
+             }, 3000);
 
 
 
 
             
-        // }
+        }
     });
     };
 

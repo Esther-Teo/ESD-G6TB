@@ -3,14 +3,25 @@ import json
 import stripe
 import random
 import string
-import logging  
+import logging # Use this maybe. Think about it. for not it us unused.  
+# i don't think i need send for directory?? Use it later when deploying live. 
 # from dotenv import load_dotenv, find_dotenv
-
+#dotenv is for env file. Keys are hardcoded first. configure later. 
 from flask import Flask, jsonify, request, render_template, url_for , redirect , session , send_from_directory, Response
 from flask_cors import CORS
+# from flask_rabmq import RabbitMQ 
+# import pika  
+# import amqp_setup2
+
+# r = requests.get('https://httpbin.org/get')
+# print(r.status_code)
+# pike setup 
+
 
 
 app = Flask(__name__)
+# test='sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xMQlTycj80UGIpPWkw7BxO23cTlKRCJlUc3ll00ntxbvemn'
+# tess='sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xMQlTycj80UGIpPWkw7BxO23cTlKRCJlUc3ll00ntxbvemn'
 # using testing environment
 CORS(app)
 
@@ -19,24 +30,48 @@ CORS(app)
 app.config['STRIPE_PUBLIC_KEY'] = "pk_test_51Ib4VfBvhmRsAY8LWdqkxz5jziPQ1YmxCjuFHuQCaJyMNjoJSipniNaC1lh9ZocTLnpaxVWwgKkFSeX76ACHNqZP007ogKEoHo",
 app.config['STRIPE_SECRET_KEY'] = 'sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xMQlTycj80UGIpPWkw7BxO23cTlKRCJlUc3ll00ntxbvemn',
 app.config['STRIPE_WEBHOOK_SECRET'] = "whsec_UixySdHiQLuh62bwkQiVxWBupQ2j9skd"
+# AMQP Config for 
+# app.config.setdefault('RABMQ_RABBITMQ_URL', 'amqp://username:password@ip:port/dev_vhost')
+# app.config.setdefault('RABMQ_RABBITMQ_URL', 'amqp://guest:guest@localhost:15672')
+# app.config.setdefault('RABMQ_SEND_EXCHANGE_NAME', 'payment_exchange')
+# app.config.setdefault('RABMQ_SEND_EXCHANGE_TYPE', 'topic')
+# app.config.setdefault('RABMQ_SEND_POOL_SIZE', 2)
+# app.config.setdefault('RABMQ_SEND_POOL_ACQUIRE_TIMEOUT', 5)
+
+# config is an object for flask
+# The config is actually a subclass of a dictionary and can be modified just like any dictionary
+
+
+# AMQP 
+# ramq = RabbitMQ()
+# ramq.init_app(app=app)
+
+
 
 # use secret key in the app
 
 PUBLIC='pk_test_51Ib4VfBvhmRsAY8LWdqkxz5jziPQ1YmxCjuFHuQCaJyMNjoJSipniNaC1lh9ZocTLnpaxVWwgKkFSeX76ACHNqZP007ogKEoHo'
 SECRET='sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xMQlTycj80UGIpPWkw7BxO23cTlKRCJlUc3ll00ntxbvemn'
 WEBHOOK='whsec_UixySdHiQLuh62bwkQiVxWBupQ2j9skd'
+# wtf app.config dont work for stripe?? 
+# stripe.api_key = app.config['STRIPE_SECRET_KEY']
 stripe.api_key = 'sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xMQlTycj80UGIpPWkw7BxO23cTlKRCJlUc3ll00ntxbvemn'
+
+
+
 
 # This enables Flask sessions. it's random u can put some random stuff for flask session. 
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 
-#not used
-# START OF BUY
+#not used :(
+# START OF BUY Things
 # method with sessions
 @app.route('/')
 def index():
     return render_template('checkout.html')
+
+
 
 # this is for one time checkout basically for buy books from the platform but that would be too simple. Hence we are implementing stripe connect to facilitate P2P payments
 @app.route('/create-checkout-session', methods=['POST'])
@@ -73,6 +108,10 @@ def onboard_user():
     print(data)
     user_email=data['userEmail']
     print(f"Data passed is: {user_email}")
+    #emailed is passed but
+    # account = stripe.Account.create(type='standard', email=user_email)
+    # acss_debit_payments, afterpay_clearpay_payments, au_becs_debit_payments, bacs_debit_payments, bancontact_payments, card_issuing, card_payments, cartes_bancaires_payments, eps_payments, fpx_payments, giropay_payments, grabpay_payments, ideal_payments, jcb_payments, legacy_payments, oxxo_payments, p24_payments, sepa_debit_payments, sofort_payments, tax_reporting_us_1099_k, tax_reporting_us_1099_misc, or transfers
+    # required : ['card_payments', 'transfers',' bancontact_payments','eps_payments','giropay_payments',' ideal_payments','p24_payments','sepa_debit_payments', 'sofort_payments']
     account = stripe.Account.create(country='SG',type='custom', email=user_email,
      capabilities={
     'card_payments': {
@@ -104,7 +143,7 @@ def onboard_user():
     }
   })
     # Store the account ID.
-
+    # print(account.id)
     print(account)
     session['account_id'] = account.id
 
@@ -131,18 +170,20 @@ def onboard_user_refresh():
 
 
 def _generate_account_link(account_id, origin):
-    #edene here! edit the return URL to yours. orgin refers to localhost or wat u set docker to be e.g 127.0.0.1 or anything
     print(f'account id in generatelink is {account_id}')
     account_link = stripe.AccountLink.create(
 
         type='account_onboarding',
+        # type='account_onboarding',    
         account=account_id,
         collect='eventually_due',
+        # refresh_url=f'{origin}/onboard-user/refresh',
+        # return_url=f'{origin}/success.html',
+        # refresh_url=f'{origin}/onboard-user/refresh',
         refresh_url=f'http://127.0.0.1:5000/onboard-user/refresh',
         # return_url=f'{origin}/ESD/ESD-G6TB/app/templates/registerPage.html',
         # this is my localhost. 
         return_url=f'{origin}/ESD/ESD-G6TB/app/templates/registerTutorFallback.html' + '?accountid='+account_id,
-        # return_url=f'{origin}:5000/app/templates/registerTutorFallback.html' + '?accountid='+account_id,
 
     )
     # print(origin)
@@ -166,6 +207,8 @@ def calculate_order_amount(items):
     # Calculate the order total on the server to prevent
     # people from directly manipulating the amount on the client
     # print(items)
+
+    #from json file but hardcoded first to $65
     # [{'id': 'private_tuition', 'amount': 700}]
     charge_per_hour=items[0]["amount"]
     # multiply by 3 hours 
@@ -202,12 +245,13 @@ def create_payment():
         return jsonify(error=str(e)), 403
 
 # this calls my all connected account to my stripe connect currently theres one
+# Fix this shit later
 @app.route("/recent-accounts", methods=["GET"])
 def get_accounts():
     accounts = stripe.Account.list(limit=100)
     return jsonify({'accounts': accounts})
 
-# fix this 
+
 @app.route("/express-dashboard-link", methods=["GET"])
 def get_express_dashboard_link():
     account_id = request.args.get('account_id')
