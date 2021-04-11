@@ -7,7 +7,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/inbox'# environ.get('dbURL')
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') #'mysql+mysqlconnector://is213@localhost:3306/inbox'
 app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 
 db = SQLAlchemy(app)
@@ -21,7 +21,7 @@ class CreatedOffer(db.Model):
     userID = db.Column(db.Integer, nullable=False)
     tutorID = db.Column(db.Integer, primary_key=True, nullable=False)
     status = db.Column(db.String(6), nullable=False)
-    selectedTime = db.Column(db.Integer, nullable=False)
+    selectedTime = db.Column(db.String(20), nullable=False)
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
     preferredDay = db.Column(db.String(10), nullable=False)
     read = db.Column(db.Boolean, nullable=False)
@@ -56,7 +56,7 @@ class ReturnedOffer(db.Model):
     userID = db.Column(db.Integer, nullable=False)
     tutorID = db.Column(db.Integer, primary_key=True, nullable=False)
     status = db.Column(db.String(6), nullable=False)
-    selectedTime = db.Column(db.Integer, nullable=False)
+    selectedTime = db.Column(db.String(20), nullable=False)
     expectedPrice = db.Column(db.Float(precision=2), nullable=False)
     preferredDay = db.Column(db.String(10), nullable=False)
     read = db.Column(db.Boolean, nullable=False)
