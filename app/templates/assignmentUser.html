@@ -44,10 +44,10 @@
         <div class="overlay" id="app">
             <h1 class='mt-3 header text-center display-4'>Assignment Management</h1>
             <p class="text-center">
-              <a class="btn btn-primary" style="margin-right: 50px" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+              <a class="btn btn-primary" style="margin-right: 50px" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" onclick="switcheroo2()">
                 Create an Assignment!
               </a>
-              <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#all_assignment">
+              <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#all_assignment" onclick="switcheroo1()">
                 View your assignments!
               </button>
             </p>
@@ -146,7 +146,18 @@
         });
         </script>
 
+<script> 
+    function switcheroo1(){
+      document.getElementById("all_assignment").style.display = "block"
+      document.getElementById("collapseExample").style.display = "none"
+    }
+    function switcheroo2(){
+        document.getElementById("all_assignment").style.display = "none"
+        document.getElementById("collapseExample").style.display = "block"
+    }
 
+</script>
+            
 
         <!-- <script src="./js/homeui.js"></script> -->
 <script>

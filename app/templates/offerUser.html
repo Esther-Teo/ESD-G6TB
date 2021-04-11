@@ -34,10 +34,10 @@
             <div class="overlay" id="app">
                 <h1 class='mt-3 header text-center display-4'>Your Offers</h1>
                 <div class='text-center m-2'>
-                    <button class="btn btn-primary m-2" type="button" data-toggle="collapse" data-target="#pending">
+                    <button class="btn btn-primary m-2" type="button" data-toggle="collapse" data-target="#pending" onclick="switcheroo1()">
                         View Pending Offers!
                     </button>
-                    <button class="btn btn-primary m-2 collapsed" type="button" data-toggle="collapse" data-target="#previous">
+                    <button class="btn btn-primary m-2 collapsed" type="button" data-toggle="collapse" data-target="#previous" onclick="switcheroo2()">
                         View Accepted Offers!
                     </button>
                 </div>    
@@ -67,7 +67,17 @@
             // };
             </script>
     
-            <script> var user = "idk"; console.log(user);</script>
+    <script> 
+        function switcheroo1(){
+            document.getElementById("pending").style.display = "block"
+            document.getElementById("previous").style.display = "none"
+        }
+        function switcheroo2(){
+            document.getElementById("pending").style.display = "none"
+            document.getElementById("previous").style.display = "block"
+        }
+    
+    </script>
     
 <script>
     console.log("user localStorage check")

@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy.orm import relationship
 from flask_cors import CORS
+from os import environ
 import json
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/user'
@@ -41,7 +42,7 @@ class User(db.Model):
 class Child(db.Model):
     __tablename__ = 'child'
 
-    userID = db.Column(db.Integer, db.ForeignKey('users.userID', ondelete="CASCADE"), primary_key=True)
+    userID = db.Column(db.Integer, db.ForeignKey('users.userID', ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
     childName = db.Column(db.String(20), primary_key=True)
     school = db.Column(db.String(100), nullable=False)
     pri = db.Column(db.Boolean, nullable = False)
@@ -215,6 +216,7 @@ def check_google_user():
 def update_user_details(userID):
     try:
         userList = User.query.filter_by(userID=userID).first()
+        print("check")
         if not userList:
             return jsonify(
                 {
@@ -232,13 +234,13 @@ def update_user_details(userID):
         if data['userName']:
             userList.UserName = data['userName']
         if data['userPhone']:
-            userList.UserPhone = data['userPhone']
+            userList.userPhone = data['userPhone']
         if data['passw']:
             userList.passw = data['passw']
         if data['loc']:
             userList.loc = data['loc']
         db.session.commit()
-            
+        print(data)    
         return jsonify(
             {
                 "code": 200,
@@ -323,18 +325,18 @@ def create_Child(userID):
                 "message": "Child already exists."
             }
         ), 400
-    child = Child(userID, data['childName'], data['school'], data['pri'], data['lvl'])
+    child = Child(userID, data['childName'], data['school'], int(data['pri']), data['lvl'])
     try:
         db.session.add(child)
         db.session.commit()
-    except:
+    except Exception as e:
         return jsonify(
             {
                 "code": 500,
                 "data": {
                     "userID": userID
                 },
-                "message": "An error occurred creating the User."
+                "message": "An error occurred creating the User." + str(e)
             }
         ), 500
  
@@ -350,45 +352,32 @@ def create_Child(userID):
 def edit_by_ChildID(userID,childName):
     try:
         childList = Child.query.filter_by(userID = userID, childName = childName).first()
-
+        print("check")
         data = request.get_json()
-        if data['childName']:
-            childList.childName = data['childName']
         if data['school']:
             childList.school = data['school']
         if data['pri']:
-            childList.school = data['pri']
+            childList.pri = int(data['pri'])
         if data['lvl']:
             childList.lvl = data['lvl']
-        try:
-            db.session.commit()
-            return jsonify(
-                {
-                    "code": 200,
-                    "data": childList.json()
-                }
-            ), 200
-
-        except Exception as e:
-            return jsonify(
-                {
-                    "code": 500,
-                    "data": {
-                        "UserID": userID
-                    },
-                    "message": "An error occurred while updating the user. " + str(e)
-                }
-            ), 500
+        print(childList.lvl)
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": childList.json()
+            }
+        ), 200
     except Exception as e:
         return jsonify(
             {
-                "code": 404,
+                "code": 500,
                 "data": {
                     "UserID": userID
                 },
-                "message": "Couldn't find children." + str(e)
+                "message": "An error occurred while updating the user. " + str(e)
             }
-        ), 404
+        ), 500
 
 # delete child entity
 @app.route("/child/<int:userID>/<string:childName>", methods=['DELETE'])
