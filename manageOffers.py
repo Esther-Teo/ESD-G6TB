@@ -4,7 +4,7 @@ from flask_cors import CORS
 import os, sys
 
 import requests
-sys.path.insert(0, 'C:\GitHub\ESD-G6TB')
+# sys.path.insert(0, 'C:\GitHub\ESD-G6TB')
 
 # HI PLS NOTE!: To run this file without using your local path as seen above^:
     # Navigate into your own local path at GitHub\ESD-G6TB, then type:
