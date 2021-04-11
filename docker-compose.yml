@@ -92,6 +92,10 @@ services:
       dockerfile: manageoffers.Dockerfile
     image: esdg6tb/manageoffers:esd
     restart: always
+    depends_on: 
+      - inbox
+      - rabbitmq
+      - assignment
     environment:
       rabbit_host: rabbitmq
       rabbit_port: 5672
@@ -99,10 +103,7 @@ services:
     ports: 
       - "5100:5100"
 
-################################################### NOT WORKING BELOW
-
   
- 
   ###################################
   # Error: The Error microservice
   ###################################

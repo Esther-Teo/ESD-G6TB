@@ -1,7 +1,8 @@
 import pika 
+from os import environ
 
-hostname = "localhost" 
-port = 5672 
+hostname = environ.get('rabbit_host') 
+port = environ.get('rabbit_port')
 
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(
@@ -12,32 +13,32 @@ connection = pika.BlockingConnection(
 channel = connection.channel()
  
 # Set up exchange 
-exchange_name = 'offer_topic'
-exchange_type = 'topic'
-channel.exchange_declare(exchange=exchange_name, exchange_type=exchange_type, durable=True)
+exchangename = 'offerTopic'
+exchangetype = 'topic'
+channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype, durable=True)
 
 # ---------- Error queue ----------
 queue_name = 'Error'
 channel.queue_declare(queue=queue_name, durable=True) 
-channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='*.error') 
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='*.error') 
 
 # ----------  Inbox Queue  ----------
 queue_name = 'Inbox'
 channel.queue_declare(queue=queue_name, durable=True) 
-channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='#') 
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#') 
 
 """
 This function in this module sets up a connection and a channel to a local AMQP broker,
 and declares a 'topic' exchange to be used by the microservices in the solution.
 """
 def check_setup():
-    global connection, channel, hostname, port, exchange_name, exchange_type
+    global connection, channel, hostname, port, exchangename, exchangetype
 
     if not is_connection_open(connection):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, port=port))
     if channel.is_closed:
         channel = connection.channel()
-        channel.exchange_declare(exchange=exchange_name, exchange_type=exchange_type)
+        channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype)
 
 def is_connection_open(connection):
     try:

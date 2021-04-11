@@ -13,7 +13,7 @@ import json
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/assignment'#environ.get('dbURL') #'mysql+mysqlconnector://is213@localhost:7777/book' #environ.get('dbURL')
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') #'mysql+mysqlconnector://is213@localhost:7777/book' #environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
  
 db = SQLAlchemy(app)
@@ -301,7 +301,6 @@ def add_offer():
                 "message": "An error occurred creating the User." + str(e)
             }
         ), 500
- 
     return jsonify(
         {
             "code": 201,
