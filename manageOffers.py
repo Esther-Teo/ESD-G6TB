@@ -4,7 +4,7 @@ from flask_cors import CORS
 import os, sys
 
 import requests
-sys.path.insert(0, 'C:\GitHub\ESD-G6TB')
+# sys.path.insert(0, 'C:\GitHub\ESD-G6TB')
 
 # HI PLS NOTE!: To run this file without using your local path as seen above^:
     # Navigate into your own local path at GitHub\ESD-G6TB, then type:
@@ -14,7 +14,7 @@ sys.path.insert(0, 'C:\GitHub\ESD-G6TB')
 # ALSO: need docker to run amqp stuff (to test in cmd prompt)
 
 from invokes import invoke_http
-import amqpSetup
+import amqp_setup
 
 import pika
 import json
@@ -147,7 +147,7 @@ def delete_assignment(offer):
     # Error handling
     if code not in range(200, 300):
         print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="assignment.error", 
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchange_name, routing_key="assignment.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), deleted_result)
         return {"code": 500, "data": {"deleted_result": deleted_result}, "message": "Offer creation failure sent for error handling."}
@@ -176,7 +176,7 @@ def reject_offers(offer):
     # Error handling
     if code not in range(200, 300):
         print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchange_name, routing_key="offer.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), offer_result)
         return {"code": 500, "data": {"offer_result": offer_result}, "message": "Offer creation failure sent for error handling."}
@@ -193,7 +193,7 @@ def reject_offers(offer):
     # Error handling
     if inbox_code not in range(200, 300):
         print('\n\n-----Publishing the (inbox error) message with routing_key=inbox.error-----')
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="inbox.error", 
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchange_name, routing_key="inbox.error", 
             body=inbox_message, properties=pika.BasicProperties(delivery_mode = 2)) 
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(inbox_code), inbox_result)
         return {"code": 500, "data": {"inbox_result": inbox_result}, "message": "Inbox failure sent for error handling."}  
@@ -215,7 +215,7 @@ def accept_offers(offer):
     # Error handling for changing offer status 
     if code not in range(200, 300):
         print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchange_name, routing_key="offer.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), offer_result)
         return {"code": 500,"data": {"offer_result": offer_result},"message": "Offer failure sent for error handling."}  
@@ -239,7 +239,7 @@ def accept_offers(offer):
     # Error handling
     if update_code not in range(200, 300):
         print('\n\n-----Publishing the (offer error) message with routing_key=inbox.error-----')
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="inbox.error", 
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchange_name, routing_key="inbox.error", 
             body=update_message, properties=pika.BasicProperties(delivery_mode = 2)) 
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(update_code), update)
         return {"code": 500,"data": {"updated assignment": update},"message": "Inbox failure sent for error handling."}
@@ -255,7 +255,7 @@ def accept_offers(offer):
     # Error handling for added offer to createdOffers
     if inbox_code not in range(200, 300):
         print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchange_name, routing_key="offer.error", 
             body=inbox_message, properties=pika.BasicProperties(delivery_mode = 2)) 
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(inbox_code), inbox_result)
         return {"code": 500,"data": {"inbox_result": inbox_result},"message": "Inbox failure sent for error handling."}
@@ -275,7 +275,7 @@ def create_offer(offer):
     # Error handling
     if code not in range(200, 300):
         print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchange_name, routing_key="offer.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), offer_result)
         return {"code": 500, "data": {"offer_result": offer_result}, "message": "Offer creation failure sent for error handling."}
@@ -291,7 +291,7 @@ def create_offer(offer):
     # Error handling
     if inbox_code not in range(200, 300):
         print('\n\n-----Publishing the (inbox error) message with routing_key=inbox.error-----')
-        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="inbox.error", 
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchange_name, routing_key="inbox.error", 
             body=inbox_message, properties=pika.BasicProperties(delivery_mode = 2)) 
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(inbox_code), inbox_result)
         return {"code": 500, "data": {"inbox_result": inbox_result}, "message": "Inbox failure sent for error handling."}  
