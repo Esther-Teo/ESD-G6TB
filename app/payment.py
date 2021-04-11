@@ -98,7 +98,7 @@ def onboard_user():
 def onboard_user_refresh():
     if 'account_id' not in session:
         return redirect('/')
-    # wdym session not define fk u
+    # wdym session not define 
     account_id = session['account_id']
 
     origin = ('https://' if request.is_secure else 'http://') + request.headers['host']
