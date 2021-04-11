@@ -93,7 +93,7 @@ def onboard_user():
         return jsonify(error=str(e)), 403
 
 # route here after clicking the connect button 
-# SESSIONS WHEN USERS REFRESH LIKE A FKER USERS ARE 
+# SESSIONS WHEN USERS REFRESH LIKE USERS ARE 
 @app.route('/onboard-user/refresh', methods=['GET'])
 def onboard_user_refresh():
     if 'account_id' not in session:
