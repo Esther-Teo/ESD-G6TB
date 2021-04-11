@@ -44,10 +44,10 @@
         <div class="overlay" id="app">
             <h1 class='mt-3 header text-center display-4'>Assignment Management</h1>
             <p class="text-center">
-              <a class="btn btn-primary" style="margin-right: 50px" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+              <a class="btn btn-primary" style="margin-right: 50px" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" onclick="switcheroo2()">
                 Create an Assignment!
               </a>
-              <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#all_assignment">
+              <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#all_assignment" onclick="switcheroo1()">
                 View your assignments!
               </button>
             </p>
@@ -146,31 +146,55 @@
         });
         </script>
 
-        <script> var user = "meep"; console.log(user);</script>
-        need edit scrips
+<script> 
+    function switcheroo1(){
+      document.getElementById("all_assignment").style.display = "block"
+      document.getElementById("collapseExample").style.display = "none"
+    }
+    function switcheroo2(){
+        document.getElementById("all_assignment").style.display = "none"
+        document.getElementById("collapseExample").style.display = "block"
+    }
+
+</script>
+            
+
         <!-- <script src="./js/homeui.js"></script> -->
 <script>
 
 function deleteit(assignment_ID) {
+
+  let jsonData = JSON.stringify({
+    "delete": 1,
+    "assignment": {
+      "assignmentId": assignment_ID
+    }
+  })
     response =
-    fetch('http://localhost:5001/deleteAssignment/' + assignment_ID,
-    {method: "DELETE"})
+    fetch('http://localhost:5100/deleteAssignment',
+    {
+      method: "POST",
+      headers: {
+          "Content-type": "application/json"
+      },
+      body: jsonData
+    })
     .then(response =>response.json())
     .then(data => {
-      console.log("oof");
-      console.log(":ehhh");
-      console.log(data.data);
-      if (data.code !== 200) {
+      // console.log("oof");
+      // console.log(":ehhh");
+      // console.log(data.data);
+      if (data.code !== 201) {
           // no book in db
-          this.message = data.message;
+          message = data.message;
       } else {
-        this.message += data.status;
+        // alert("goodjobbb")
       }
     })
     .catch(error => {
         // Errors when calling the service; such as network error, 
         // service offline, etc
-        console.log(this.message + error);
+        console.log(message + error);
     });
   }
 
@@ -209,40 +233,15 @@ function deleteit(assignment_ID) {
                     creationSuccessful: false,
                 },
                 methods: {
-                    
-                    // deleteit: function(assignment_ID) {
-                    //   response =
-                    //   fetch('http://localhost:5001/deleteAssignment/' + assignment_ID,
-                    //   {
-                    //     method: "DELETE",
-                    //     mode:
-                    //   })
-                    //   .then(response =>response.json())
-                    //   .then(data => {
-                    //     console.log("oof");
-                    //     console.log(":ehhh");
-                    //     console.log(data.data);
-                    //     if (data.code !== 200) {
-                    //         // no book in db
-                    //         this.message = data.message;
-                    //     } else {
-                    //       this.message += data.status;
-                    //     }
-                    //   })
-                    //   .catch(error => {
-                    //       // Errors when calling the service; such as network error, 
-                    //       // service offline, etc
-                    //       console.log(this.message + error);
-                    //   });
-                    // },
+                  
                     updateChildInfo: function() {
                       
                       const response =
                         fetch(get_childURL+ `/${this.userID}/${this.childName}`)
                             .then(response => response.json())
                             .then(data => {
-                                console.log(data);
-                                console.log(":ooooofff");
+                                // console.log(data);
+                                // console.log(":ooooofff");
                                 // console.log(data.data)
                                 if (data.code !== 200) {
                                     // no book in db
@@ -349,9 +348,9 @@ function deleteit(assignment_ID) {
                             })
                             .then(response => response.json())
                             .then(data => {
-                                console.log(data);
+                                // console.log(data);
                                 result = data.data;
-                                console.log(result);
+                                // console.log(result);
                                 this.getAllAssignments();
                                 // 3 cases
                                 switch (data.code) {
@@ -396,9 +395,9 @@ function deleteit(assignment_ID) {
                             fetch(get_all_URL+`/${this.userID}`)
                                 .then(response => response.json())
                                 .then(data => {
-                                    console.log(response);
-                                    console.log("meep");
-                                    console.log(data.assignments)
+                                    // console.log(response);
+                                    // console.log("meep");
+                                    // console.log(data.assignments)
                                     if (data.code === 404) {
                                         // no book in db
                                         this.message = data.message;
@@ -406,7 +405,7 @@ function deleteit(assignment_ID) {
                                       for (each of data.assignments){
                                         //NOT DONE YET
                                         // this.assignments += each.;
-                                        console.log(each)
+                                        // console.log(each)
                                         // alert("For each assignemnt it willl loop")
                                         var childName1 = each.childName;
                                         var E_price = each.expectedPrice;
@@ -452,9 +451,9 @@ function deleteit(assignment_ID) {
                             fetch(`http://localhost:5004/child/${this.userID}`)
                                 .then(response => response.json())
                                 .then(data => {
-                                    console.log(response);
-                                    console.log(":ooooofff");
-                                    console.log(data.data)
+                                    // console.log(response);
+                                    // console.log(":ooooofff");
+                                    // console.log(data.data)
                                     if (data.code !== 200) {
                                         // no book in db
                                         this.message = data.message;

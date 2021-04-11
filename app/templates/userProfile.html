@@ -16,7 +16,21 @@
         <link rel="stylesheet" href="../static/styles/homeresponsive.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
-        <title>All Listings</title>
+        <style>
+            img {
+                border-radius: 50%;
+                width: 20%;
+            }
+    
+            /* .form-group{
+                justify-content: center;
+            } */
+            .container {
+                width: fit-content;
+    
+            }
+        </style>
+        <title>User Profile</title>
 
         <script>
             console.log(localStorage.getItem("userID"));
@@ -24,10 +38,7 @@
             console.log(localStorage.getItem("email"));
 
             var userID = localStorage.getItem("userID");
-            var userName = localStorage.getItem("userName").split(" ");
-            userName = userName[1];
-            console.log("userID: ",userID);
-            console.log("userName: ", userName);
+
 
             // page must check if log in
             // if userID is null, redirect log in page
@@ -53,128 +64,462 @@
         <div class="overlay" id="app">
             <h1 class='mt-3 header text-center display-4'>User Profile</h1>
             <div class='text-center m-2'>
-                    <button class="btn btn-primary m-2" type="button" data-toggle="collapse" data-target="#userProfile">
+                    <button class="btn btn-primary m-2" type="button" data-toggle="collapse" data-target="#userProfile" onclick="switcheroo2()">
                         Manage Your Profile
                     </button>
-                    <button class="btn btn-primary m-2 collapsed" type="button" data-toggle="collapse" data-target="#childProfile">
+                    <button class="btn btn-primary m-2 collapsed" type="button" data-toggle="collapse" data-target="#childProfile" onclick="switcheroo1()">
                         Manage Children Profile
                     </button>
-                </div>    
-                <div id="userProfile">
-                    
+                    <button class="btn btn-primary m-2 collapsed" type="button" data-toggle="collapse" data-target="#childCreation" onclick="switcheroo3()">
+                        Create New Child
+                    </button>
+                </div>   
+                <!--USER PROFILE DROPDOWN--> 
+                <div class="container" id = "userProfile" class="collapse">
+                    <div class="media">
+                        <img class="mr-3" src="../images/teacher.png">
+                        <!-- Replace with whatever image you want -->
+                        <div class="media-body">
+                            <h2>{{userName}}</h2>
+                            <h2>{{userEmail}}</h2>
+                        </div>
+                    </div>
+                    <form id="form-section" class="form-group mx-4" @submit.prevent="processUserForm">
+                        <!-- <form id="form-section" class="form-group mx-4" @submit.prevent="processForm"> -->
+                        <div class="form-group row  ">
+                            <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+                            <div class="col-sm-10">
+                                <input type="password" id="inputPassword" class="form-control " v-model="userPwd" required>
+                                <small id="passwordHelp" class="form-text text-muted">Your password must be between 8 to 24
+                                    characters</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="phoneNum" class="col-sm-2 col-form-label">Phone Number</label>
+                            <div class="col-sm-10">
+                                <input type="number" name="" id="phoneNum" class="form-control " v-model="userPhone" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="location" class="col-sm-2 col-form-label">Location</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="location" class="form-control " v-model="location" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Add submit button -->
+                        <input type="submit" >
+        
+                    </form>
                 </div>
-    
+
+                <!--CHILD PROFILE DROPDOWN-->
                 <div id="childProfile" class="collapse">
-                    
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>School</th>
+                                <th>Primary</th>
+                                <th>Level</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="childInsert">
+
+                        </tbody>
+
+                    </table>
+                </div>
+
+                <!--CHILD CREATION-->
+                <div id="childCreation" class="collapse flex-container p-5">
+                    <h1>Create a Child</h1>
+                    <br>
+                    <form id="form-section" class="form-group mx-4">
+                        <!-- <form id="form-section" class="form-group mx-4" @submit.prevent="processForm"> -->
+                        <div class="form-group row  ">
+                            <label for="name" class="col-sm-2 col-form-label">Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="name" class="form-control " maxlength="20" required placeholder="Please enter your child's name">
+                            </div>
+                        </div>
+                        <div class="form-group row  ">
+                            <label for="school" class="col-sm-2 col-form-label">School</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="school" class="form-control " maxlength="100" required placeholder="Please enter your child's school">
+                            </div>
+                        </div>
+                        <div class="input-group mb-3 form-group row">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="primary">Options</label>
+                            </div>
+                            <select class="custom-select" id="primary">
+                                <option disabled selected>Choose your child's level...</option>
+                                <option value="1">Primary</option>
+                                <option value="0">Secondary</option>
+                            </select>
+                        </div>
+                        <div class="form-group row">
+                            <label for="level" class="col-sm-2 col-form-label">Level</label>
+                            <div class="col-sm-10">
+                                <input type="number" id="level" class="form-control" required min="1" max="6" placeholder="Choose your childs's (secondary or primary school) level">
+                            </div>
+                        </div>
+                        
+                        <!-- Add submit button -->
+                        <input type="button" class="btn btn-success" onclick="createChild()" value="Update">
+        
+                    </form>
                 </div>
             </br>
           </br>
       </br>
         </div>
-        <scrip??? src="//code.jquery.com/jquery.min.js"></scrip???>
         <script>
         $.get("navbarUser.html", function(data){
             $("#navbar").replaceWith(data);
         });
         </script>
 
-        <script> var user = ""; console.log(user);</script>
-        need edit scrips
+<script> 
+function switcheroo1(){
+    document.getElementById("userProfile").style.display = "none"
+    document.getElementById("childProfile").style.display = "block"
+    document.getElementById("childCreation").style.display = "none"
+}
+function switcheroo2(){
+    document.getElementById("childProfile").style.display = "none"
+    document.getElementById("userProfile").style.display = "block"
+    document.getElementById("childCreation").style.display = "none"
+}
+function switcheroo3(){
+    document.getElementById("childProfile").style.display = "none"
+    document.getElementById("userProfile").style.display = "none"
+    document.getElementById("childCreation").style.display = "block"
+}
+</script>
+        
         <!-- <script src="./js/homeui.js"></script> -->
 
+
+<script>
+    function createChild(){
+        var userID = localStorage.getItem(`userID`)
+        childName = document.getElementById(`name`).value
+        school = document.getElementById(`school`).value
+        alert(school)
+        primary = document.getElementById(`primary`).value
+        alert(userID)
+
+        level = document.getElementById(`level`).value
+        var posting_url = "http://localhost:5004/createChild/";
+            //prepares posting data
+            console.log("hello");
+            let jsonData = JSON.stringify({
+                "userID": userID,
+                "childName": childName,
+                "school": school,
+                "pri": primary,
+                "lvl": level
+            });
+            //posts creates a new assignment
+            response =
+            fetch(posting_url + `${userID}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: jsonData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    result = data.data;
+                    console.log(result);
+                    // this.getAllAssignments();
+                    // this.getAllChildren();
+                    // 3 cases
+                    switch (data.code) {
+                        case 201:
+                            // this.assignmentAdded = true;
+
+                            // refresh assignment list
+                            alert("meeeeep")
+                            location.reload()
+
+                            //                 // an alternate way is to add this one element into this.books
+                            break;
+                        case 400:
+                            alert("oops")
+                            break;
+                        case 500:
+                            this.addAssignmentError = data.message;
+                            break;
+                        default:
+                            throw `${data.code}: ${data.message}`;
+                    }
+                })
+                .catch(error=>{
+                    console.log(error);
+                    alert("pause")
+                })
+    }
+</script>
+<script>
+    function processChildForm(childName){
+        alert(childName)
+        console.log(String(childName))
+        var userID = localStorage.getItem(`userID`)
+        school = document.getElementById(`${childName}school`).value
+        alert(school)
+        primary = document.getElementById(`${childName}primary`).value
+        alert(userID)
+
+        level = document.getElementById(`${childName}level`).value
+        var posting_URL = "http://localhost:5004/editChild/";
+            //prepares posting data
+            console.log("hello");
+            let jsonData = JSON.stringify({
+                "userID": userID,
+                "childName": childName,
+                "school": school,
+                "pri": primary,
+                "lvl": level
+            });
+            //posts creates a new assignment
+            response =
+            fetch(posting_URL + `${userID}/${childName}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: jsonData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    result = data.data;
+                    console.log(result);
+                    // this.getAllAssignments();
+                    // this.getAllChildren();
+                    // 3 cases
+                    switch (data.code) {
+                        case 200:
+                            // this.assignmentAdded = true;
+
+                            // refresh assignment list
+                            alert("meeeeep")
+                            location.reload()
+
+                            //                 // an alternate way is to add this one element into this.books
+                            break;
+                        case 400:
+                            alert("oops")
+                            break;
+                        case 500:
+                            this.addAssignmentError = data.message;
+                            break;
+                        default:
+                            throw `${data.code}: ${data.message}`;
+                    }
+                })
+                .catch(error=>{
+                    console.log(error);
+                    alert("pause")
+                })
+    }
+</script>
         <script>
 
-            var username  = '';
-            console.log(user)
+        var userID = localStorage.getItem("userID")
+        var get_all_URL = "http://localhost:5004/user";
+        var get_child_URL = "http://localhost:5004/child"
+        // var place_order_URL = "http://localhost:5100/place_order";
 
-            var get_all_URL = "http://localhost:5004/user";
-            var get_child_URL = "http://localhost:5004/child";
-            // var place_order_URL = "http://localhost:5100/place_order";
-    
-            var app = new Vue({
-                el: "#app",
-                computed: {
-                    hasAssignments: function () {
-                        return this.assignments.length > 0;
-                    }
-                },
-                data: {
-                    userID: 1,
-                    "assignments": [],
-                    message: "There is a problem retrieving the assignment data, please try again later.",
-                    childId: "",
-                    subject: "",
-                    location: "",
-                    expectedPrice: "",
-                    preferredDay: "",
-                    assignmentAdded: false,
-                    addAssignmentError: "",
-                    createdAssignment: "",
-                    assignmentCreated: false,
-                    creationSuccessful: false,
-                },
-                methods: {
-                    getUserDetails: function () {
-                        // on Vue instance created, load the book list
-                        const response =
-                            fetch(get_all_URL+`/${this.userID}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log(data);
-                                    console.log(response);
-                                    console.log("meep");
-                                    // console.log(data)
-                                    if (data.code === 404) {
-                                        // no book in db
-                                        this.message = data.message;
-                                    } else {
-                                        // this.subject = data.data.subjects;
-                                        console.log(data)
-                                        
-                                    }
-                                })
-                                .catch(error => {
-                                    // Errors when calling the service; such as network error, 
-                                    // service offline, etc
-                                    console.log(this.message + error);
-    
-                                });
-    
-                    },
-                    getChildrenDetails: function () {
-                        const response =
-                            fetch(get_child_URL+`/${this.userID}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log(response);
-                                    console.log("meep");
-                                    // console.log(data)
-                                    if (data.code === 404) {
-                                        // no book in db
-                                        this.message = data.message;
-                                    } else {
-                                        // this.subject = data.data.subjects;
-                                        for (each of data.data) {
-                                            console.log(each.childName)
-                                        }
-                                        
-                                    }
-                                })
-                                .catch(error => {
-                                    // Errors when calling the service; such as network error, 
-                                    // service offline, etc
-                                    console.log(this.message + error);
-    
-                                });
-                    }
-                },
-                created: function () {
+        var app = new Vue({
+            el: "#app",
+            data: {
+                userID: userID,
+                "assignments": [],
+                message: "There is a problem retrieving the assignment data, please try again later.",
+                userName: "",
+                userEmail: "",
+                userPwd: "",
+                userPhone: "",
+                location: "",
+                childName:"",
+                school: "",
+                primary: "",
+                level: "",
+            },
+            methods: {
+                getAllAssignments: function () {
                     // on Vue instance created, load the book list
-                    this.getChildrenDetails();
-                    this.getUserDetails();
-                    this.populateChild();
+                    alert("meep")
+                    const response =
+                        fetch(get_all_URL + `/${this.userID}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                            console.log("meep");
+                            if (data.code === 404) {
+                                // no book in db
+                                this.message = data.message;
+                            } else {
+                                console.log(data);
+                                this.userName = data.userName;
+                                this.userEmail = data.userEmail;
+                                this.userPwd = data.passw;
+                                this.userPhone = data.userPhone;
+                                this.location = data.loc;
+                            }
+                        })
+                        .catch(error => {
+                            // Errors when calling the service; such as network error, 
+                            // service offline, etc
+                            console.log(this.message + error);
+                        });
+
+                },
+                getAllChildren: function () {
+                    // on Vue instance created, load the book list
+                    alert("meep")
+                    const response =
+                        fetch(get_child_URL + `/${this.userID}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                            console.log("meep");
+                            if (data.code === 404) {
+                                // no book in db
+                                this.message = data.message;
+                            } else {
+                                for (child of data.data){
+                                    console.log(data);
+                                    this.childName = child.childName;
+                                    this.school = child.school;
+                                    this.primary = child.pri;
+                                    this.level = child.lvl;
+                                    childName = this.childName;
+                                    if (this.primary){
+                                        pri = "Primary"
+                                    } else {
+                                        pri = "Secondary"
+                                    }
+                                    document.getElementById("childInsert").innerHTML += `
+                                    <tr>
+                                        <td>${this.childName}</td>
+                                        <td>${this.school}</td>
+                                        <td>${pri}</td>
+                                        <td>${this.level}</td>
+                                        <td>
+                                            <button class="btn btn-outline-primary m-2 collapsed" type="button" data-toggle="collapse" data-target="#${this.childName}">
+                                                Edit
+                                            </button>
+                                    </tr>
+                                    <tr id="${this.childName}" class="collapse container" >
+                                        <td colspan="5">
+                                        <h3>${this.childName}</h3>
+                                        <form id="${childName}form-section" class="form-group mx-4">
+                                            <!-- <form id="form-section" class="form-group mx-4" @submit.prevent="processForm"> -->
+                                            <div class="form-group row  ">
+                                                <label for="${childName}school" class="col-sm-2 col-form-label">School</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" id="${childName}school" class="form-control " required>
+                                                </div>
+                                            </div>
+                                            <div class="input-group mb-3 form-group row">
+                                                <div class="input-group-prepend">
+                                                    <label class="input-group-text" for="${childName}primary">Options</label>
+                                                </div>
+                                                <select class="custom-select" id="${childName}primary">
+                                                    <option disabled selected>Choose...</option>
+                                                    <option value="1">Primary</option>
+                                                    <option value="0">Secondary</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="${childName}level" class="col-sm-2 col-form-label">Level</label>
+                                                <div class="col-sm-10">
+                                                    <input type="number" id="${childName}level" class="form-control" required min="1" max="6">
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Add submit button -->
+                                            <input type="button" class="btn btn-success" onclick="processChildForm('${childName}')" value="Update">
+                            
+                                        </form>
+                                        </td>
+                                    </tr>
+                                    `;
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            // Errors when calling the service; such as network error, 
+                            // service offline, etc
+                            console.log(this.message + error);
+                        });
+
+                },
+                // },
+                processUserForm: function () {
+                    // on Vue instance created, load the book list
+                    var postingUrl = "http://localhost:5004/editUser/";
+                    //prepares posting data
+                    console.log("hello");
+                    let jsonData = JSON.stringify({
+                        "userID": this.userID,
+                        "userName": this.userName,
+                        "userEmail": this.userEmail,
+                        "passw": this.userPwd,
+                        "userPhone": this.userPhone,
+                        "loc": this.location
+                    });
+                    //posts creates a new assignment
+                    fetch(postingUrl + `${this.userID}`, {
+                            method: "PUT",
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            body: jsonData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                            result = data.data;
+                            console.log(result);
+                            this.getAllAssignments();
+                            // 3 cases
+                            switch (data.code) {
+                                case 201:
+                                    // this.assignmentAdded = true;
+
+                                    // refresh assignment list
+                                    alert("meeeeep")
+
+
+                                    //                 // an alternate way is to add this one element into this.books
+                                    //                 break;
+                                    //             case 400:
+                                    //             case 500:
+                                    //                 this.addAssignmentError = data.message;
+                                    //                 break;
+                                    //             default:
+                                    //                 throw `${data.code}: ${data.message}`;
+                            }
+                        })
+                },
+            },
+            created: function () {
+                // on Vue instance created, load the book list
+                this.getAllAssignments();
+                this.getAllChildren();
                 }
-            });
+            ,
+            
+        });
         </script>
     
     </body>

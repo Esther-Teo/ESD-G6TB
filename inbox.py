@@ -93,15 +93,7 @@ def receiveCreatedOffer():
         tutorID = data['tutorID']
         assignmentId = data['assignmentId']
         if (CreatedOffer.query.filter_by(tutorID=tutorID, assignmentId=assignmentId).first()):
-            return jsonify(
-                {
-                    "code": 400,
-                    "data": {
-                        "tutorID": tutorID
-                    },
-                    "message": "Tutor already exists."
-                }
-            ), 400
+            return jsonify({"code": 400,"data": {"tutorID": tutorID},"message": "Tutor already exists."}), 400
         
         createdOffer = CreatedOffer(assignmentId, data['userID'], tutorID, data['status'], data['selectedTime'], data['expectedPrice'], data['preferredDay'], False)
         # subject = TutorSubjects(tutorID, data['subjectId'], data['pri'], data['lvl'], data['subjects'])
@@ -109,23 +101,12 @@ def receiveCreatedOffer():
         # db.session.add(subject)
         db.session.commit()
     except Exception as e:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "tutorID": tutorID
-                },
-                "message": "An error occurred creating the tutor account. " + str(e)
-            }
-        ), 500
+        return jsonify({"code": 500,"data": {"tutorID": tutorID},
+        "message": "An error occurred creating the tutor account. " + str(e)}), 500
 
-    return jsonify(
-        {
-            "code": 201,
-            "data": createdOffer.json(),
+    return jsonify({"code": 201,"data": createdOffer.json()}), 201
             # "subject": subject.json()
-        }
-    ), 201
+        
 
 # receives and stores rejected offers via POST
 @app.route("/returnOffer", methods=['POST'])
@@ -137,14 +118,7 @@ def receiveReturnedOffer():
         assignmentId = data['offer']['assignmentId']
         if (ReturnedOffer.query.filter_by(tutorID=tutorID, assignmentId=assignmentId).first()):
             return jsonify(
-                {
-                    "code": 400,
-                    "data": {
-                        "tutorID": tutorID
-                    },
-                    "message": "Tutor already exists."
-                }
-            ), 400
+                {"code": 400,"data": {"tutorID": tutorID},"message": "Tutor already exists."}), 400
         
         returnedOffer = ReturnedOffer(assignmentId, data['offer']['userID'], tutorID, data['offer']['status'], 
                         data['offer']['selectedTime'], data['offer']['expectedPrice'], data['offer']['preferredDay'], False)
@@ -153,23 +127,11 @@ def receiveReturnedOffer():
         # db.session.add(subject)
         db.session.commit()
     except Exception as e:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "tutorID": tutorID
-                },
-                "message": "An error occurred creating the tutor account. " + str(e)
-            }
-        ), 500
+        return jsonify({"code": 500,"data": {"tutorID": tutorID},
+        "message": "An error occurred creating the tutor account. " + str(e)}), 500
 
-    return jsonify(
-        {
-            "code": 201,
-            "data": returnedOffer.json(),
+    return jsonify({"code": 201,"data": returnedOffer.json()}), 201
             # "subject": subject.json()
-        }
-    ), 201
 
 
 # need to create one to get all created offers by userID, update read to true, and return them in a json of jsons or smtg. 
@@ -178,38 +140,35 @@ def push_created(userID):
     try:
         offer = CreatedOffer.query.filter_by(userID=userID, read="!=").all()
         if offer:
-            return jsonify(
-                {
-                    "code": 200,
-                    "offers": [o.json() for o in offer]
-                    
-                }
-            ), 200
+            return jsonify({"code": 200,"offers": [o.json() for o in offer]}), 200
                 # for each in offer:
                 # print("input")
                 # each.read = 1
                 # db.session.commit()
             
-        return jsonify(
-            {
-                "code": 404,
-                "data": {
-                    "userID": userID
-                },
-                "message": "Offer not found."
-            }
-        ), 404
+        return jsonify({"code": 404, "data": {"userID": userID},"message": "Offer not found."}), 404
 
     except Exception as e:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "userID": userID
-                },
-                "message": "An error occurred while updating the Offer. " + str(e)
-            }
-        ), 500
+        return jsonify({"code": 500,"data": {"userID": userID},
+        "message": "An error occurred while updating the Offer. " + str(e)}), 500
+
+
+@app.route("/updateStatus/<int:assignmentId>/<int:tutorID>", methods=['PUT'])
+def update_status(assignmentId, tutorID):
+    try:
+        offer = CreatedOffer.query.filter_by(tutorID=tutorID, assignmentId=assignmentId).first()
+        if not offer:
+            return jsonify({"code": 404,"data": {"assignmentId": assignmentId,"tutorID": tutorID},
+            "message": "Offer not found."}), 404
+
+        offer.status = "accepted"
+        db.session.commit()
+        return jsonify({"code": 201, "data": {"assignmentId": assignmentId, "tutorID": tutorID}})
+
+    except Exception as e:
+        return jsonify({"code": 500,"data": {"assignmentId": assignmentId, "tutorID": tutorID},
+        "message": "An error occurred while updating the Offer. " + str(e)}), 500
+
 
 # need to create one to get all accepted/rejected offers by tutorID, update read to true, and return them in a json of jsons or smtg. 
 @app.route("/returned/<int:tutorID>", methods=['PUT', 'GET'])
@@ -222,33 +181,12 @@ def push_returned(tutorID):
                 # each.read = 1
                 # print(each.read)
                 # db.session.commit()
-            return jsonify(
-                {
-                    "code": 200,
-                    "offers": [o.json() for o in offer]
-                    
-                }
-            ), 200
-        return jsonify(
-            {
-                "code": 404,
-                "data": {
-                    "tutorID": tutorID
-                },
-                "message": "Offer not found."
-            }
-        ), 404
+            return jsonify({"code": 200,"offers": [o.json() for o in offer]}), 200
+        return jsonify({"code": 404,"data": {"tutorID": tutorID},"message": "Offer not found."}), 404
 
     except Exception as e:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "tutorID": tutorID
-                },
-                "message": "An error occurred while updating the Offer. " + str(e)
-            }
-        ), 500
+        return jsonify({"code": 500,"data": {"tutorID": tutorID},
+        "message": "An error occurred while updating the Offer. " + str(e)}), 500
 
 # execute this program only if it is run as a script (not by 'import')
 if __name__ == "__main__":

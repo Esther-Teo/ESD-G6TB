@@ -100,11 +100,13 @@ class Offer(db.Model):
 def get_all():
     return jsonify({"assignments": [assignment.json() for assignment in Assignment.query.all()]})
 
+# GET assignments and offers per offer by user
 @app.route("/test/<int:userId>", methods=["GET"])
 def tryout(userId):
     try:
         print(userId)
         test = db.session.query(Assignment, Offer).outerjoin(Offer, Assignment.assignmentId == Offer.assignmentId).filter(Assignment.userID==userId, Offer.userID==userId)
+        
 
         if test:
             data = []
@@ -123,7 +125,7 @@ def tryout(userId):
     except Exception as e:
         return jsonify({"message": "Assignment had a problem fetching" + str(e)}), 500
 
-# offer and assignment by tutor ID
+# offer and assignment per offer by tutor ID
 @app.route("/bothByTutor/<int:tutorId>", methods=["GET"])
 def both_by_tutor(tutorId):
     try:
@@ -192,41 +194,22 @@ def create_assignment():
 def update_assignment(assignmentId):
     try:
         assignment = Assignment.query.filter_by(assignmentId=assignmentId).first()
-        if assignment:
+        if assignment != '':
             data = request.get_json()
-            if data['subject']:
-                assignment.subject = data['subject']
-            if data['expectedPrice']:
-                assignment.expectedPrice = data['expectedPrice'] 
-            if data['preferredDay']:
-                assignment.preferredDay = data['preferredDay'] 
+            # if data['subject'] != '':
+            #     assignment.subject = data['subject']
+            # if data['expectedPrice'] != '':
+            #     assignment.expectedPrice = data['expectedPrice'] 
+            # if data['preferredDay'] != '':
+            #     assignment.preferredDay = data['preferredDay'] 
+            assignment.tutorID = data['tutorID'] 
             db.session.commit()
-            return jsonify(
-                {
-                    "code": 200,
-                    "data": assignment.json()
-                }
-            ), 200
-        return jsonify(
-            {
-                "code": 404,
-                "data": {
-                    "assignmentId": assignmentId
-                },
-                "message": "Assignment not found."
-            }
-        ), 404
+            return jsonify({"code": 200,"data": assignment.json()}), 200
+        return jsonify({"code": 404,"data": {"assignmentId": assignmentId},"message": "Assignment not found."}), 404
 
     except Exception as e:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "assignmentId": assignmentId
-                },
-                "message": "An error occurred while updating the assignment. " + str(e)
-            }
-        ), 500
+        return jsonify({"code": 500,"data": {"assignmentId": assignmentId},
+        "message": "An error occurred while updating the assignment. " + str(e)}), 500
 
 # DELETE an assignment by its ID
 #@JOEL PLS MAKE THIS FUNCTION TO GO THROUGH EACH OFFER WITH THIS ID AND DELETE IT
@@ -257,6 +240,8 @@ def delete_assignment(assignmentId):
                 db.session.delete(offer)
                 db.session.commit()
                 # print(data)
+            db.session.delete(assignment)
+            db.session.commit()
             # return jsonify({"assignments": data})
             return jsonify({"code": 200,"deleted": real}),200
                     
@@ -264,7 +249,6 @@ def delete_assignment(assignmentId):
             # db.session.commit()
             return jsonify(
                 {
-                    
                     "data": {
                         "assignmentDeleted": assignment.json(),
                         "offersDeleted": [offer.json() for offer in offers]
@@ -365,98 +349,73 @@ def findO(assignmentId, tutorID):
     except Exception as e:
         return jsonify({"message": "Offer not found." + str(e)}), 404
 
-# DELETE an offer by its ID
-@app.route("/deleteOffer/<int:assignmentId>/<int:tutorID>", methods=['PUT'])
-def delete_offer(assignmentId, tutorID):
+# changes status from 'pending' to 'rejected'
+@app.route("/rejectOffer/<int:assignmentId>/<int:tutorID>", methods=['PUT'])
+def reject_offer(assignmentId, tutorID):
     try:
         offer = Offer.query.filter_by(assignmentId=assignmentId, tutorID=tutorID).first()
         if not offer:
-            return jsonify(
-                {
-                    "code": 404,
-                    "data": {
-                        "assignmentId": assignmentId,
-                        "tutorID": tutorID
-                    },
-                    "message": "Order not found."
-                }
-            ), 404
+            return jsonify({"code": 404,"data": {"assignmentId": assignmentId,"tutorID": tutorID},
+            "message": "Offer not found."}), 404
 
         # update status
         offer.status = "rejected"
         db.session.commit()
-        return jsonify(
-            {
-                "code": 200,
-                "data": offer.json()
-            }
-        ), 200
+        return jsonify({"code": 200,"data": offer.json()}), 200
+
     except Exception as e:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "assignmentId": assignmentId,
-                    "tutorID": tutorID
-                },
-                "message": "An error occurred while updating the order. " + str(e)
-            }
-        ), 500
+        return jsonify({"code": 500,"data": {"assignmentId": assignmentId,"tutorID": tutorID},
+        "message": "An error occurred while updating the order. " + str(e)}), 500
    
-# PUT to edit, but no use for it atm (NOT DONE!!!!!)
+# PUT to edit (done and tested)
+# changes status from 'pending' to 'accepted' 
 @app.route("/acceptOffer/<int:assignmentId>/<int:tutorID>", methods=['PUT'])
 def accept_offer(assignmentId, tutorID):
     try:
         offer = Offer.query.filter_by(assignmentId=assignmentId, tutorID=tutorID).first()
-        if offer:
-            data = {}
-            real = []
-            offers = Offer.query.filter_by(assignmentId=assignmentId).all()
-            for offer in offers:
-                data['assignmentId'] = offer.assignmentId
-                # print(data)
-                data['userID'] = offer.userID 
-                data['tutorID'] = offer.tutorID
-                data['status'] = "rejected"
-                data['selectedTime'] = offer.selectedTime
-                data['expectedPrice'] = offer.expectedPrice
-                data['preferredDay'] = offer.preferredDay
-                data['read'] = False    
-                # for d in each:
-                #     data.append(d.json())
-                #     print(d.json())
-                # # data['assignments']= each.json()
-                real.append(data)
-                data={}
-                db.session.delete(offer)
-                db.session.commit()
-                # print(data)
-            # return jsonify({"assignments": data})
-            return jsonify({"code": 200,"deleted": real}),200
-                    
-            # db.session.delete(assignment)
-            # db.session.commit()
+        if not offer:
             return jsonify(
-                {
-                    
-                    "data": {
-                        "offersDeleted": [offer.json() for offer in offers]
-                        ####OOOOH WE ARE HALFWAY THERE, OHHH OHHH. LIVING ON A PRAYER TAKE MY HAND. WE WILL MAKE IT I SWEAR. 
-                    }
-                }
-            )
+                {"code": 404,"data": {"assignmentId": assignmentId,"tutorID": tutorID},"message": "Offer not found."}), 404
 
-            
+        # update status
+        offer.status = "accepted"
+        db.session.commit()
+        return jsonify({"code": 200, "data": offer.json()}), 200
     except Exception as e:
         return jsonify(
-            {
-                "code": 404,
-                "data": {
-                    "assignmentId": assignmentId
-                },
-                "message": "Assignment not found." + str(e)
-            }
-        ), 404
+            {"code": 500, "data": {"assignmentId": assignmentId,"tutorID": tutorID},
+            "message": "An error occurred while updating the offer. " + str(e)}), 500
+
+    #     if offer:
+    #         data = {}; real = []
+    #         offers = Offer.query.filter_by(assignmentId=assignmentId).all()
+    #         for offer in offers:
+    #             data['assignmentId'] = offer.assignmentId
+    #             # print(data)
+    #             data['userID'] = offer.userID 
+    #             data['tutorID'] = offer.tutorID
+    #             data['status'] = "accepted"
+    #             data['selectedTime'] = offer.selectedTime
+    #             data['expectedPrice'] = offer.expectedPrice
+    #             data['preferredDay'] = offer.preferredDay
+    #             data['read'] = False    
+    #             # for d in each:
+    #             #     data.append(d.json())
+    #             #     print(d.json())
+    #             # # data['assignments']= each.json()
+    #             real.append(data)
+    #             data={}
+    #             db.session.delete(offer)
+    #             db.session.commit()
+    #             # print(data)
+    #         # return jsonify({"assignments": data})
+    #         return jsonify({"code": 200,"deleted": real}),200        
+    #         # db.session.delete(assignment)
+    #         # db.session.commit()
+    #         return jsonify({"data": {"offersDeleted": [offer.json() for offer in offers]}})
+
+    # except Exception as e:
+    #     return jsonify({"code": 404, "data": {"assignmentId": assignmentId},"message": "Assignment not found." + str(e)}), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)

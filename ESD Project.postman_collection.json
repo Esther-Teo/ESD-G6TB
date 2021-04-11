@@ -1,0 +1,325 @@
+{
+	"info": {
+		"_postman_id": "d00b5dd0-447d-45a2-87ac-14a429dffffc",
+		"name": "ESD Project",
+		"description": "Request for Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Assignment - Get All",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/assignment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"assignment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Assignment - Create Assignment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"assignmentId\": 7,\r\n    \"userID\": 1,\r\n    \"childName\": \"zaikia\",\r\n    \"primary\": 0,\r\n    \"level\": 2,\r\n    \"subject\": \"A_Math\",\r\n    \"expectedPrice\": 6.50,\r\n    \"preferredDay\": \"friday\",\r\n    \"tutorID\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/makeAssignment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"makeAssignment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Assignment - Create Offer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"assignmentId\": 8,\r\n    \"expectedPrice\": 7.0,\r\n    \"preferredDay\": \"Fri\",\r\n    \"selectedTime\": 1500,\r\n    \"status\": \"accepted\",\r\n    \"tutorEmail\": \"oh@gmail.com\",\r\n    \"tutorID\": 15,\r\n    \"tutorName\": \"Bob\",\r\n    \"userID\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/createOffer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"createOffer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Assignment - Delete Assignment",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"assignmentId\": 7, \r\n    \"userID\": 1,\r\n    \"childName\": \"zaikia\", \r\n    \"primary\": 0,\r\n    \"level\": 2,\r\n    \"subject\": \"A_Math\",\r\n    \"expectedPrice\": 6.50, \r\n    \"preferredDay\": \"friday\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/deleteAssignment/7",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"deleteAssignment",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Manage Offers - Delete Assignment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"delete\": 1,\r\n    \"assignment\": {\r\n        \"assignmentId\": 1\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5100/deleteAssignment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5100",
+					"path": [
+						"deleteAssignment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Manage Offers - Accept Offer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"acceptOrReject\": \"accept\",\r\n    \"offer\": {\r\n        \"assignmentId\": 1,\r\n        \"expectedPrice\": 7.0,\r\n        \"preferredDay\": \"Fri\",\r\n        \"selectedTime\": 1500,\r\n        \"status\": \"pending\",\r\n        \"tutorEmail\": \"oh@gmail.com\",\r\n        \"tutorID\": 15,\r\n        \"tutorName\": \"Bob\",\r\n        \"userID\": 1\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5100/manageOffers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5100",
+					"path": [
+						"manageOffers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Manage Offers - Rejects Offer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"acceptOrReject\": \"reject\",\r\n    \"offer\": {\r\n        \"assignmentId\": 1,\r\n        \"expectedPrice\": 7.0,\r\n        \"preferredDay\": \"Fri\",\r\n        \"selectedTime\": 1500,\r\n        \"status\": \"accepted\",\r\n        \"tutorEmail\": \"oh@gmail.com\",\r\n        \"tutorID\": 15,\r\n        \"tutorName\": \"Bob\",\r\n        \"userID\": 1\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5100/manageOffers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5100",
+					"path": [
+						"manageOffers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Manage Offers - Tutor Creates Offer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"assignmentId\": 1,\r\n    \"expectedPrice\": 7.0,\r\n    \"preferredDay\": \"Fri\",\r\n    \"selectedTime\": 1500,\r\n    \"status\": \"pending\",\r\n    \"tutorEmail\": \"oh@gmail.com\",\r\n    \"tutorID\": 15,\r\n    \"tutorName\": \"Bob\",\r\n    \"userID\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5100/tutorOffers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5100",
+					"path": [
+						"tutorOffers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Manage Offers - Get Offers By User",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userID\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5100/getUserOffers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5100",
+					"path": [
+						"getUserOffers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Manage Offers - Testing",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"customer_id\": \"Apple TAN\",\r\n   \"cart_item\": [{\r\n      \"book_id\": \"9781434474234\",\r\n      \"quantity\": 1\r\n   },\r\n   {\r\n      \"book_id\": \"9781449474212\",\r\n      \"quantity\": 1\r\n   }]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5100/manageOffersMS",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5100",
+					"path": [
+						"manageOffersMS"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Inbox - Rejected Offers",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"acceptOrReject\": \"reject\",\r\n    \"offer\": {\r\n        \"assignmentId\": 1,\r\n        \"expectedPrice\": 7.0,\r\n        \"preferredDay\": \"Fri\",\r\n        \"selectedTime\": 1500,\r\n        \"status\": \"accepted\",\r\n        \"tutorEmail\": \"oh@gmail.com\",\r\n        \"tutorID\": 15,\r\n        \"tutorName\": \"Bob\",\r\n        \"userID\": 1\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5002/returnOffer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5002",
+					"path": [
+						"returnOffer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Inbox - Update Created Offer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		}
+	]
+}
