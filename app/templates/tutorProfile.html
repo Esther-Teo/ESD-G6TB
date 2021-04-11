@@ -92,7 +92,7 @@
                     </div>
                 </div>
                 <!-- Add submit button -->
-                <input type="submit" >
+                <input type="submit" class="btn btn-primary">
 
             </form>
         </div>
@@ -138,7 +138,7 @@
             methods: {
                 getAllAssignments: function () {
                     // on Vue instance created, load the book list
-                    alert("meep")
+                    // alert("meep")
                     const response =
                         fetch(get_all_URL + `/${this.tutorID}`)
                         .then(response => response.json())
@@ -229,7 +229,7 @@
                                     // this.assignmentAdded = true;
 
                                     // refresh assignment list
-                                    alert("meeeeep")
+                                    // alert("meeeeep")
 
 
                                     //                 // an alternate way is to add this one element into this.books

@@ -193,6 +193,8 @@
                 message = data.message;
             } else {
                 // console.log(data)
+                childName = data.childName
+                alert(childName)
                 subject = data.subject;
                 // console.log(subject)
                 price = data.expectedPrice;
@@ -205,59 +207,58 @@
                 .then(data => {
                     if (data.code === 404) {
                         // no book in db
-                       message = data.message;
+                        message = data.message;
                     } else {
                         for (each of data.message){
-                        //NOT DONE YET
                         
-            
-                        var parentName = each[0].userName;
-                        var parentPhone = each[0].userPhone;
-                        var parentEmail = each[0].userEmail;
-                        var location = each[0].loc;
+                            // alert(Primary)
+                        if (childName == each[1].childName){
+                            alert("went through")
+                            var parentName = each[0].userName;
+                            var parentPhone = each[0].userPhone;
+                            var parentEmail = each[0].userEmail;
+                            var location = each[0].loc;
+                            
+                            var school = each[1].school;
+                            var level = each[1].lvl;
+                            var Primary = each[1].pri;
 
-                        
-                        var childName = each[1].childName;
-                        var school = each[1].school;
-                        var level = each[1].lvl;
-                        var Primary = each[1].pri;
 
+                            if(Primary){
+                                Primary = "Primary";
+                            }
+                            else{
+                                Primary = "Secondary"
+                            }
 
-                        if(Primary){
-                            Primary = "Primary";
+                            document.getElementById("fancypokeball").innerHTML = `
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Nerpppp</button>
+                            <button type="button" class="btn btn-primary"  onclick="return createOffer(${assignmentId}, ${userID})" >Send Offer</button>
+                            `;
+                            document.getElementById("expandedInfo").innerHTML = `
+                            <div class="black" style="text-align:left;">
+                                <h1>${Primary} ${level} ${subject} @ $${price}/hr</h1>
+                                The tutee details are: 
+                                <ul>
+                                    <li>Tutee Name: ${childName}</li>
+                                    <li>Tutee's School: ${school}</li>
+                                    <li>Tutee Level: ${Primary} ${level}</li>
+                                </ul>
+
+                                The parent details are: 
+                                <ul>
+                                    <li>Parent's name: ${parentName}</li>
+                                    <li>Parent's Phone Number: ${parentPhone}</li>
+                                    <li>Parent's Email: ${parentEmail}</li>
+                                    <li>Parent's location: ${location}</li>
+                                </ul>
+                                <p>
+                                Preferred Day(s): ${preferredDay}
+                                </p>
+                                <button type="button" class="btn btn-outline-success mb-3" data-toggle="modal" data-target="#testModal" >Apply Now!</button>
+                            </div>
+                            `;
                         }
-                        else{
-                            Primary = "Secondary"
-                        }
-
-                        document.getElementById("fancypokeball").innerHTML = `
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Nerpppp</button>
-                        <button type="button" class="btn btn-primary"  onclick="return createOffer(${assignmentId}, ${userID})" >Send Offer</button>
-                        `;
-                        document.getElementById("expandedInfo").innerHTML = `
-                        <div class="black" style="text-align:left;">
-                            <h1>${Primary} ${level} ${subject} @ $${price}/hr</h1>
-                            The tutee details are: 
-                            <ul>
-                                <li>Tutee Name: ${childName}</li>
-                                <li>Tutee's School: ${school}</li>
-                                <li>Tutee Level: ${Primary} ${level}</li>
-                            </ul>
-
-                            The parent details are: 
-                            <ul>
-                                <li>Parent's name: ${parentName}</li>
-                                <li>Parent's Phone Number: ${parentPhone}</li>
-                                <li>Parent's Email: ${parentEmail}</li>
-                                <li>Parent's location: ${location}</li>
-                            </ul>
-                            <p>
-                            Preferred Day(s): ${preferredDay}
-                            </p>
-                            <button type="button" class="btn btn-outline-success mb-3" data-toggle="modal" data-target="#testModal" >Apply Now!</button>
-                        </div>
-                        `;
-                        
                 }
                 }
                 })
@@ -358,9 +359,9 @@ function refresh(){
 </script>
 
 
-        <!--VUE scripts-->
-        <script>
-            var username  = "meep";
+<!--VUE scripts-->
+<script>
+            // var username  = "meep";
             // console.log(username)
 
             var get_all_URL = "http://localhost:5001/assignment";
@@ -412,6 +413,7 @@ function refresh(){
                                     var subject = each.subject;
                                     // console.log("SUbject is: ", subject);
                                     var primary = each.primary;
+                                    // alert(primary)
                                     var userID = each.userID;
                                     var assignmentId = each.assignmentId
                                     var preferredDay = each.preferredDay
