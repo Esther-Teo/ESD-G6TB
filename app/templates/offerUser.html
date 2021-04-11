@@ -93,7 +93,7 @@
         var get_one_offer_URL = 'http://localhost:5001/theOffer'
         var userID = localStorage.getItem("userID")
 
-    // @CRYSTAL, pls help me test
+
     function deleteit(assignment_ID, tutorId) {
         // alert(tutorId);
         
@@ -206,7 +206,7 @@
                     console.log(response);
                     console.log("meep");
                     console.log(huh)
-                    if (huh.code === 400) {
+                    if (huh.code === 404) {
                         // no book in db
                         message = huh.message;
                         document.getElementById(childName).innerHTML += `
@@ -284,6 +284,7 @@
                     // Errors when calling the service; such as network error, 
                     // service offline, etc
                     console.log( error);
+                    alert("got it")
                 });
     
     }

@@ -181,6 +181,8 @@
                 message = data.message;
             } else {
                 // console.log(data)
+                childName = data.childName
+                alert(childName)
                 subject = data.subject;
                 // console.log(subject)
                 price = data.expectedPrice;
@@ -193,7 +195,7 @@
                 .then(data => {
                     if (data.code === 404) {
                         // no book in db
-                       message = data.message;
+                        message = data.message;
                     } else {
                         for (each of data.message){
                         //NOT DONE YET
@@ -225,20 +227,20 @@
                                 <li>Tutee Level: ${Primary} ${level}</li>
                             </ul>
 
-                            The parent details are: 
-                            <ul>
-                                <li>Parent's name: ${parentName}</li>
-                                <li>Parent's Phone Number: ${parentPhone}</li>
-                                <li>Parent's Email: ${parentEmail}</li>
-                                <li>Parent's location: ${location}</li>
-                            </ul>
-                            <p>
-                            Preferred Day(s): ${preferredDay}
-                            </p>
-                            <button type="button" class="btn btn-outline-success mb-3" data-toggle="modal" data-target="#testModal" >Apply Now!</button>
-                        </div>
-                        `;
-                        
+                                The parent details are: 
+                                <ul>
+                                    <li>Parent's name: ${parentName}</li>
+                                    <li>Parent's Phone Number: ${parentPhone}</li>
+                                    <li>Parent's Email: ${parentEmail}</li>
+                                    <li>Parent's location: ${location}</li>
+                                </ul>
+                                <p>
+                                Preferred Day(s): ${preferredDay}
+                                </p>
+                                <button type="button" class="btn btn-outline-success mb-3" data-toggle="modal" data-target="#testModal" >Apply Now!</button>
+                            </div>
+                            `;
+                        }
                 }
                 }
                 })
@@ -339,9 +341,11 @@ function refresh(){
 </script>
 
 
-        <!--VUE scripts-->
-        <script>
-            var username  = "meep";
+<!--VUE scripts-->
+<script>
+            // var username  = "meep";
+            // console.log(username)
+
             var get_all_URL = "http://localhost:5001/assignment";
             var get_user_URL = "http://localhost:5004/UserChild";
             // var place_order_URL = "http://localhost:5100/place_order";
@@ -387,6 +391,7 @@ function refresh(){
                                     var subject = each.subject;
                                     // console.log("SUbject is: ", subject);
                                     var primary = each.primary;
+                                    // alert(primary)
                                     var userID = each.userID;
                                     var assignmentId = each.assignmentId
                                     var preferredDay = each.preferredDay
