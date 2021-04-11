@@ -10,8 +10,8 @@ import logging # Use this maybe. Think about it. for not it us unused.
 from flask import Flask, jsonify, request, render_template, url_for , redirect , session , send_from_directory, Response
 from flask_cors import CORS
 # from flask_rabmq import RabbitMQ 
-import pika  
-import amqp_setup2
+# import pika  
+# import amqp_setup2
 
 # r = requests.get('https://httpbin.org/get')
 # print(r.status_code)
@@ -294,17 +294,18 @@ def webhook_received():
 
 
 
-# rabbitMQ commented out first it works but my docker has some problems rn.  
-@app.route("/send-payment-to-rabbit", methods=["POST"])
-def handle_successful_payment_intent():
+# rabbitMQ commented out first it works but my docker has some problems rn.
+#   
+# @app.route("/send-payment-to-rabbit", methods=["POST"])
+# def handle_successful_payment_intent():
 
-    print("runs after payment")
-    data = json.loads(request.data)
-    message=json.dumps(data)
-    print(message)
-    amqp_setup2.channel.basic_publish(exchange=amqp_setup2.exchangename, routing_key="payment_successful", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2))
-    return json.dumps({"success": True}), 200
+#     print("runs after payment")
+#     data = json.loads(request.data)
+#     message=json.dumps(data)
+#     print(message)
+#     amqp_setup2.channel.basic_publish(exchange=amqp_setup2.exchangename, routing_key="payment_successful", 
+#             body=message, properties=pika.BasicProperties(delivery_mode = 2))
+#     return json.dumps({"success": True}), 200
 
 
 # @ramq.queue(exchange_name='payment_exchange', routing_key='flask_rabmq.fail')
