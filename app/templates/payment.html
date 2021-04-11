@@ -36,9 +36,13 @@
         <title>All Listings</title>
 
         <script>
+            console.log("start");
             console.log(localStorage.getItem("userID"));
             console.log(localStorage.getItem("userName"));
             console.log(localStorage.getItem("email"));
+            // hmmm... 
+            console.log(localStorage.getItem("tutorEmail"));
+
 
             var userID = localStorage.getItem("userID");
             var userName = localStorage.getItem("userName").split(" ");
@@ -151,6 +155,9 @@
                                                 var card_time = each[1].selectedTime;
                                                 var card_price = each[1].expectedPrice;
                                                 var assignmentID = each[1].assignmentId;
+                                                // add this to a hidden field? 
+                                                var tutor_email=each[1].tutorEmail; 
+                                                console.log("tutor email:" + tutor_email);
                                                 // offer = huh.offers[each]
                                                 //alert(offer.status)
                                                 //alert(offer.tutorName)
@@ -166,7 +173,7 @@
                                                  <p class="card-text">${card_primary} ${card_level} ${card_subject}</p>
                                                  </div>
                                                  <div class="card-footer">
-                                                 <button type="button" onclick="stripe_redirect(${assignmentID}, ${tutorId}, ${card_price})" class="btn btn-outline-info">Make Payment</button>
+                                                 <button type="button" onclick="stripe_redirect(${assignmentID}, ${tutorId}, ${card_price}, '${tutor_email}')" class="btn btn-outline-info">Make Payment</button>
                                                 </div>
                                                 </div>`;
                                             }
@@ -224,12 +231,12 @@
             // can be used on localhost 5000
             test_url="http://localhost:5007/connect_pay.html"
             default_url="http://127.0.0.1:5000/connect_pay.html"
-            function stripe_redirect(assignmentID, tutorId, card_price){
-                console.log(assignmentID,tutorId,card_price)
+            function stripe_redirect(assignmentID, tutorId, card_price,tutor_email){
+                console.log(assignmentID,tutorId,card_price,tutor_email);
                 // pass price to stripe 
 
                 
-                window.location=test_url + "?"+"price="+ card_price;
+                window.location=test_url + "?"+"price="+ card_price+'&'+'email='+tutor_email;
 
                 
 

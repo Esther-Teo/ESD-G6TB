@@ -98,9 +98,12 @@
         }
         
     var price_obj=parse_query_string(current_appended_url);
+
     var price_per_hour= price_obj["?price"];
     price_per_hour= (price_per_hour) * 100
+    var input_email=price_obj['email'];
     console.log(price_per_hour);
+    console.log(input_email); 
 
     // var stripe = Stripe('pk_test_51Ib4VfBvhmRsAY8LWdqkxz5jziPQ1YmxCjuFHuQCaJyMNjoJSipniNaC1lh9ZocTLnpaxVWwgKkFSeX76ACHNqZP007ogKEoHo');
     var paymentForm = document.getElementById("payment-form");
@@ -217,7 +220,7 @@
         var paymentIntentJson = JSON.stringify(paymentIntent, null, 2);
         
         
-     
+
         document.querySelector(".sr-payment-form").classList.add("hidden");
         // console.log(paymentIntentJson);
         // document.querySelector("pre").textContent = paymentIntentJson;
@@ -285,6 +288,7 @@
     // accounts list; (1) if you haven't created any accounts, we'll re-direct you to the onboarding guide, (2) if none of
     // of your accounts have charges enabled, we'll display instructions on how to finish the onboarding process, (3)
     // otherwise, we'll display a payment form, as a customer might see it.
+    // REMOVE THIS TO PAY DIRECTLY
     fetch("/recent-accounts", {
         method: "GET",
         headers: {
@@ -296,7 +300,7 @@
         document.querySelector(".spinner").classList.add("hidden");
 
         var accounts = data.accounts.data;
-
+        console.log(accounts);
         // If there are no accounts, display a message pointing to an onboarding guide.
         if (!accounts.length) {
         document.querySelector("#no-accounts-section").classList.remove("hidden");
@@ -311,6 +315,7 @@
         if (!enabledAccounts.length) {
         var expressAccounts = accounts.filter((acct) => acct.type == 'express');
         var hasCustom = !!accounts.filter((acct) => acct.type == 'custom');
+        console.log(hasCustom);
         var hasStandard = !!accounts.filter((acct) => acct.type == 'standard');
 
         var wrapper = document.querySelector("#disabled-accounts-section");
@@ -342,6 +347,7 @@
         var input = document.querySelector("#enabled-accounts-select");
         enabledAccounts.forEach((acct) => {
         var element = document.createElement("option");
+        console.log(acct.id)
         element.setAttribute("value", acct.id);
         element.innerHTML = acct.email || acct.id;
         input.appendChild(element)

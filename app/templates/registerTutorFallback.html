@@ -66,6 +66,37 @@
       </script>
         <script src="js/homeui.js"></script>
 <script>
+
+
+    var current_appended_url= window.location.search; 
+    
+    // this function is used to get appended values
+    function parse_query_string(query) {
+        var vars = query.split("&");
+        var query_string = {};
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            var key = decodeURIComponent(pair[0]);
+            var value = decodeURIComponent(pair[1]);
+            // If first entry with this name
+            if (typeof query_string[key] === "undefined") {
+            query_string[key] = decodeURIComponent(value);
+            // If second entry with this name
+            } else if (typeof query_string[key] === "string") {
+            var arr = [query_string[key], decodeURIComponent(value)];
+            query_string[key] = arr;
+            // If third or later entry with this name
+            } else {
+            query_string[key].push(decodeURIComponent(value));
+            }
+        }
+        return query_string;
+        }
+
+    var appended_value_obj=parse_query_string(current_appended_url);
+    var stripe_id=appended_value_obj["?accountid"]
+    console.log(stripe_id);
+
     var tutor_URL = "http://localhost:5006/createTutor"
     function createTutor(){
         //retrieves and stores childData from user microservice
@@ -100,6 +131,8 @@
 
         json["portfolio"] = "No bio has been created yet";
         json["priceRange"] = 7;
+        console.log("inside function:" + stripe_id);
+        json["stripeID"]=stripe_id;
         //retrieves and stores form data
         // this.childName = document.getElementById("childrens").value;
         // this.subject = document.getElementById("subjects").value;
