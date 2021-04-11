@@ -23,19 +23,20 @@ app = Flask(__name__)
 CORS(app)
 
 # Assignment
-get_offer_URL = "http://localhost:5001/offerByUser/" # GETS offer (specify userID <int:userID>)
-get_offer_by_assignment_URL = "http://localhost:5001/offerByAssignment/" # GET offer (specify assignmentId <int:assignmentId>)
+get_offer_URL = "http://localhost:5001/offerByUser/" # GETS offer (<int:userID>)
+get_offer_by_assignment_URL = "http://localhost:5001/offerByAssignment/" # GET offer (<int:assignmentId>)
 create_offer_URL = "http://localhost:5001/createOffer" # POST new offer 
-reject_offer_URL = "http://localhost:5001/rejectOffer/" # DELETE offer (assignmentId and tutorID <int:assignmentId>/<int:tutorID>)
-accept_offer_URL = "http://localhost:5001/acceptOffer/" # PUT assignment (assignmentId and tutorID <int:assignmentId>/<int:tutorID>)
+reject_offer_URL = "http://localhost:5001/rejectOffer/" # DELETE offer (<int:assignmentId>/<int:tutorID>)
+accept_offer_URL = "http://localhost:5001/acceptOffer/" # PUT assignment (<int:assignmentId>/<int:tutorID>)
 
-update_assignment_URL = "http://localhost:5001/assignment/" # PUT assignment (specify assignmentId <int:assignmentId>)
+update_assignment_URL = "http://localhost:5001/assignment/" # PUT assignment (<int:assignmentId>)
 create_assignment_URL = "http://localhost:5001/makeAssignment" # POST new assignment 
-delete_assignment_URL = "http://localhost:5001/deleteAssignment/" # DELETE assignment (specify assignmentID <int:assignmentId>)
+delete_assignment_URL = "http://localhost:5001/deleteAssignment/" # DELETE assignment (<int:assignmentId>)
 
 # Inbox
 inbox_create_offer_URL = "http://localhost:5002/createOffer" # POST new offer
 inbox_reject_offer_URL = "http://localhost:5002/returnOffer" # POST rejected offer 
+update_status_URL = "http://localhost:5002/updateStatus/" # PUT (<int:assignmentId>/<int:tutorID>)
 
 #-----------------------------------------------------------------------------------------------------
 # Delete Assignments
@@ -211,7 +212,7 @@ def accept_offers(offer):
     message = json.dumps(offer_result)
     print('offer_result:', offer_result)
 
-    # Error handling
+    # Error handling for changing offer status 
     if code not in range(200, 300):
         print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
         amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
@@ -231,7 +232,33 @@ def accept_offers(offer):
     # change the tutorID in assignment table to match the accepted offer 
     print('-----Updating TutorID in Assignment-----')
     update = invoke_http(update_assignment_URL + assignmentId, method='PUT', json=offer['offer'])
+    update_code = update["code"] 
+    update_message = json.dumps(update)
     print("Update Assignment Results:", update)
+
+    # Error handling
+    if update_code not in range(200, 300):
+        print('\n\n-----Publishing the (offer error) message with routing_key=inbox.error-----')
+        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="inbox.error", 
+            body=update_message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(update_code), update)
+        return {"code": 500,"data": {"updated assignment": update},"message": "Inbox failure sent for error handling."}
+
+    # change status of 'pending' offer in createdOffers in inbox.sql to 'accepted'
+    print('\n-----Updated Accepted Offer Status to inboxMS-----')
+    inbox_result = invoke_http(update_status_URL + assignmentId + tutorID, method='PUT', 
+                    json=offer_result['data']) 
+    inbox_code = inbox_result["code"] 
+    inbox_message = json.dumps(inbox_result)
+    print("inbox_result:", inbox_result)
+
+    # Error handling for added offer to createdOffers
+    if inbox_code not in range(200, 300):
+        print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
+        amqpSetup.channel.basic_publish(exchange=amqpSetup.exchange_name, routing_key="offer.error", 
+            body=inbox_message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(inbox_code), inbox_result)
+        return {"code": 500,"data": {"inbox_result": inbox_result},"message": "Inbox failure sent for error handling."}
 
     return {"code": 201,"data": {"offer_result": offer_result}}
 

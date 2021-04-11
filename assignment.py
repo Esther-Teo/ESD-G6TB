@@ -355,8 +355,8 @@ def reject_offer(assignmentId, tutorID):
     try:
         offer = Offer.query.filter_by(assignmentId=assignmentId, tutorID=tutorID).first()
         if not offer:
-            return jsonify(
-                {"code": 404,"data": {"assignmentId": assignmentId,"tutorID": tutorID},"message": "Offer not found."}), 404
+            return jsonify({"code": 404,"data": {"assignmentId": assignmentId,"tutorID": tutorID},
+            "message": "Offer not found."}), 404
 
         # update status
         offer.status = "rejected"
