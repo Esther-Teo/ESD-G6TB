@@ -142,7 +142,7 @@
             methods: {
                 getAllAssignments: function () {
                     const response =
-                        fetch(get_all_URL+`/${this.userID}`)
+                        fetch("http://localhost:5001/assignment")
                             .then(response => response.json())
                             .then(data => {
                                 //console.log(data.assignments)
@@ -156,6 +156,7 @@
                                         offer_level = "Secondary "
                                     }
                                     offer_level += assignment.level;
+                                    //alert(offer_level);
                                     array_of_child.push(offer_level);
                                     array_of_child.push(assignment.subject);
                                 }
@@ -197,44 +198,47 @@
                                         document.getElementById("offer_header").innerHTML = `You have ${no_of_offers} new Notifications!`
                                        }
                                         //console.log(data.offers);
+                                       
+                                        // console.log(array_of_child);
                                        for (offer of data.offers){
                                             for (i=0;i<array_of_child.length;i+=4){
+                                                if (offer.assignmentId == array_of_child[i]){
                                                 childName1 = array_of_child[i+1]
                                                 offer_subject = array_of_child[i+3]
                                                 offer_level = array_of_child[i+2]
                                                 var temp69 = offer.tutorID 
-                                                for (m=0; m < array_of_tutor.length;m++){
-                                                    if (temp69 == array_of_tutor[m]){
-                                                        offer_tutor = array_of_tutor[m+1]
-                                                    }
+                                                // console.log(array_of_child) 
+                                                // console.log(childName1);
+                                                // console.log(offer_subject);
+                                                // console.log(offer_level);
                                                 }
-                                        }
-                                        if (offer.status == "accepted"){
-                                        document.getElementById("offer_notification").innerHTML += `
-                                                <div class="card text-center border-light mb-3" style="max-width: 30rem; margin:10px">
-                                                <div class="card-header">Offer Notification</div>
-                                                <div class="card-body">
-                                                <h5 class="card-title">Tuition for ${childName1}</h5>
-                                                <p class="card-text">Your offer to teach <b>${childName1}</b> for ${offer_level} ${offer_subject}</p>
-                                                <p class="card-text">on <b>${offer.preferredDay} @ ${offer.selectedTime} for $${offer.expectedPrice}/Hr</b></p> 
-                                                <p class="card-text" id="accept_reject">has been <a style="color:green">Accepted</a></p>                           
-                                                </div>
-                                                </div>
-                                                `
                                             }
-                                        else {
+                                            if (offer.status == "accepted"){
                                             document.getElementById("offer_notification").innerHTML += `
-                                                <div class="card text-center border-light mb-3" style="max-width: 30rem; margin:10px">
-                                                <div class="card-header">Offer Notification</div>
-                                                <div class="card-body">
-                                                <h5 class="card-title">Tuition for ${childName1}</h5>
-                                                <p class="card-text">Your offer to teach <b>${childName1}</b> for ${offer_level} ${offer_subject}</p>
-                                                <p class="card-text">on <b>${offer.preferredDay} @ ${offer.selectedTime} for $${offer.expectedPrice}/Hr</b></p> 
-                                                <p class="card-text" id="accept_reject">has been <a style="color:red">Rejected</a></p>                           
-                                                </div>
-                                                </div>
-                                                `
-                                        }
+                                                    <div class="card text-center border-light mb-3" style="max-width: 30rem; margin:10px">
+                                                    <div class="card-header">Offer Notification</div>
+                                                    <div class="card-body">
+                                                    <h5 class="card-title">Tuition for ${childName1}</h5>
+                                                    <p class="card-text">Your offer to teach <b>${childName1}</b> for ${offer_level} ${offer_subject}</p>
+                                                    <p class="card-text">on <b>${offer.preferredDay} @ ${offer.selectedTime} for $${offer.expectedPrice}/Hr</b></p> 
+                                                    <p class="card-text" id="accept_reject">has been <a style="color:green">Accepted</a></p>                           
+                                                    </div>
+                                                    </div>
+                                                    `
+                                                }
+                                            else {
+                                                document.getElementById("offer_notification").innerHTML += `
+                                                    <div class="card text-center border-light mb-3" style="max-width: 30rem; margin:10px">
+                                                    <div class="card-header">Offer Notification</div>
+                                                    <div class="card-body">
+                                                    <h5 class="card-title">Tuition for ${childName1}</h5>
+                                                    <p class="card-text">Your offer to teach <b>${childName1}</b> for ${offer_level} ${offer_subject}</p>
+                                                    <p class="card-text">on <b>${offer.preferredDay} @ ${offer.selectedTime} for $${offer.expectedPrice}/Hr</b></p> 
+                                                    <p class="card-text" id="accept_reject">has been <a style="color:red">Rejected</a></p>                           
+                                                    </div>
+                                                    </div>
+                                                    `
+                                            }
                                         }
                                       
                                     }
