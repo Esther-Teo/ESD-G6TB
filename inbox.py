@@ -153,22 +153,22 @@ def push_created(userID):
         "message": "An error occurred while updating the Offer. " + str(e)}), 500
 
 
-@app.route("/updateStatus/<int:assignmentId>/<int:tutorID>", methods=['PUT'])
-def update_status(assignmentId, tutorID):
-    try:
-        offer = CreatedOffer.query.filter_by(tutorID=tutorID, assignmentId=assignmentId).first()
-        if not offer:
-            return jsonify({"code": 404,"data": {"assignmentId": assignmentId,"tutorID": tutorID},
-            "message": "Offer not found."}), 404
+# @app.route("/updateStatus/<int:assignmentId>/<int:tutorID>", methods=['PUT'])
+# def update_status(assignmentId, tutorID):
+#     try:
+#         offer = CreatedOffer.query.filter_by(tutorID=tutorID, assignmentId=assignmentId).first()
+#         if not offer:
+#             return jsonify({"code": 404,"data": {"assignmentId": assignmentId,"tutorID": tutorID},
+#             "message": "Offer not found."}), 404
 
-        offer.status = "accepted"
-        offer.read = False
-        db.session.commit()
-        return jsonify({"code": 201, "data": {"assignmentId": assignmentId, "tutorID": tutorID}})
+#         offer.status = "accepted"
+#         offer.read = False
+#         db.session.commit()
+#         return jsonify({"code": 201, "data": {"assignmentId": assignmentId, "tutorID": tutorID}})
 
-    except Exception as e:
-        return jsonify({"code": 500,"data": {"assignmentId": assignmentId, "tutorID": tutorID},
-        "message": "An error occurred while updating the Offer. " + str(e)}), 500
+#     except Exception as e:
+#         return jsonify({"code": 500,"data": {"assignmentId": assignmentId, "tutorID": tutorID},
+#         "message": "An error occurred while updating the Offer. " + str(e)}), 500
 
 
 # need to create one to get all accepted/rejected offers by tutorID, update read to true, and return them in a json of jsons or smtg. 

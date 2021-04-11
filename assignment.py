@@ -226,7 +226,8 @@ def delete_assignment(assignmentId):
                 # print(data)
                 data['userID'] = offer.userID 
                 data['tutorID'] = offer.tutorID
-                data['status'] = "rejected"
+                # data['status'] = "rejected"
+                data['status'] = offer.status
                 data['selectedTime'] = offer.selectedTime
                 data['expectedPrice'] = offer.expectedPrice
                 data['preferredDay'] = offer.preferredDay

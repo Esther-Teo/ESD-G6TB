@@ -34,9 +34,9 @@ create_assignment_URL = "http://assignment:5001/makeAssignment" # POST new assig
 delete_assignment_URL = "http://assignment:5001/deleteAssignment/" # DELETE assignment (<int:assignmentId>)
 
 # Inbox
-inbox_create_offer_URL = "http://inbox:5002/createOffer" # POST new offer
-inbox_reject_offer_URL = "http://inbox:5002/returnOffer" # POST rejected offer 
-update_status_URL = "http://inbox:5002/updateStatus/" # PUT (<int:assignmentId>/<int:tutorID>)
+inbox_create_offer_URL = "http://inbox:5002/createOffer" # POST new offer to USER
+inbox_return_offer_URL = "http://inbox:5002/returnOffer" # POST accepted/rejected offer to TUTOR 
+# update_status_URL = "http://inbox:5002/updateStatus/" # PUT (<int:assignmentId>/<int:tutorID>)
 
 #-----------------------------------------------------------------------------------------------------
 # Delete Assignments
@@ -133,13 +133,20 @@ def tutor_creates_offers():
 
 # Functions for processing
 #-----------------------------------------------------------------------------------------------------
-# Task 0: Delete assignment based on assignmentId (COMPLETED, TEST SUCCESSFUL)
+# Task 0: Delete assignment based on assignmentId (COMPLETED, TEST SUCCESSFUL) 
 def delete_assignment(offer):
-    # delete assignment and deletes offers with that assignmentId
+    # for each offer, reject using reject_offers 
+    # reject_offers: changes status to rejected and sends to returnedoffer in inbox.sql
     assignmentId = str(offer['assignment']['assignmentId']) 
+    print('-------------------------REJECTING OFFERS-------------------------')  
+    all_offers = invoke_http(get_offer_by_assignment_URL + assignmentId, method='GET', json=offer)
+    temp = {}  
+    for offer in all_offers['offers']:
+        temp['offer'] = offer
+        print(reject_offers(temp))
+
     print('\n-----Invoking assignmentMS-----')
     deleted_result = invoke_http(delete_assignment_URL + assignmentId, method='DELETE', json=offer)
-
     code = deleted_result["code"] 
     message = json.dumps(deleted_result)
     print('deleted_result:', deleted_result)
@@ -152,17 +159,10 @@ def delete_assignment(offer):
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), deleted_result)
         return {"code": 500, "data": {"deleted_result": deleted_result}, "message": "Offer creation failure sent for error handling."}
 
-    # Populate returnedOffer table in inbox.sql with deleted offers 
-    print('\n-----Sending to inboxMS-----')
-    offer_dict = {}
-    for offer in deleted_result['deleted']:
-        offer_dict['offer'] = offer
-        inbox_result = invoke_http(inbox_reject_offer_URL, method='POST', json=offer_dict)
-
     return {"code": 201, "data": {"deleted_result": deleted_result,}}
 
 #-----------------------------------------------------------------------------------------------------
-# Task 1: User rejects offer (COMPLETED, TEST SUCCESSFUL)
+# Task 1: User rejects offer (COMPLETED, TEST SUCCESSFUL) 
 def reject_offers(offer):
     # Change status of offer to 'rejected'
     print('\n-----Invoking assignmentMS-----')
@@ -181,11 +181,11 @@ def reject_offers(offer):
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), offer_result)
         return {"code": 500, "data": {"offer_result": offer_result}, "message": "Offer creation failure sent for error handling."}
    
-    # If rejection successful, send rejected offer to inboxMS
+    # send rejected offer to returnedoffer table 
     print('-----Offer has been rejected-----')
-    print('\n-----Sending to inboxMS-----')
-    new = {"offer": offer['data']}
-    inbox_result = invoke_http(inbox_reject_offer_URL, method='POST', json=new)
+    print('-----Sending Rejected Offer to Inbox-----')
+    new = {"offer": offer_result['data']}
+    inbox_result = invoke_http(inbox_return_offer_URL, method='POST', json=new)
     inbox_code = inbox_result["code"] 
     inbox_message = json.dumps(inbox_result)
     print('inbox_result:', inbox_result)
@@ -220,12 +220,30 @@ def accept_offers(offer):
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), offer_result)
         return {"code": 500,"data": {"offer_result": offer_result},"message": "Offer failure sent for error handling."}  
 
-    # for each offer, reject using reject_offers (changes status and sends to returnedoffer in inbox.sql)
+    # send accepted offer to returnedoffer table in inbox.sql
+    print('-----Sending to Accepted offer to Inbox-----')
+    new = {"offer": offer_result['data']}
+    inbox_result = invoke_http(inbox_return_offer_URL, method='POST', json=new)
+    inbox_code = inbox_result["code"] 
+    inbox_message = json.dumps(inbox_result)
+    print("inbox_result", inbox_result)
+
+    # Error handling for sending accepted offer 
+    if inbox_code not in range(200, 300):
+        print('\n\n-----Publishing the (offer error) message with routing_key=inbox.error-----')
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="inbox.error", 
+            body=inbox_message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(inbox_code), inbox_result)
+        return {"code": 500,"data": {"inbox_result": inbox_result},"message": "Inbox failure sent for error handling."}
+
+    # for each offer, reject using reject_offers 
+    # reject_offers: changes status to rejected and sends to returnedoffer in inbox.sql
     print('-------------------------REJECTING OFFERS-------------------------')    
     all_offers = invoke_http(get_offer_by_assignment_URL + assignmentId, method='GET', json=offer['offer'])
     temp = {}
+    accepted_offer = offer_result['data']
     for rej_offer in all_offers['offers']: 
-        if rej_offer != offer_result['data']:
+        if rej_offer != accepted_offer:
             temp['offer'] = rej_offer
             print(reject_offers(temp))
 
@@ -244,26 +262,10 @@ def accept_offers(offer):
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(update_code), update)
         return {"code": 500,"data": {"updated assignment": update},"message": "Inbox failure sent for error handling."}
 
-    # change status of 'pending' offer in createdOffers in inbox.sql to 'accepted'
-    print('\n-----Updated Accepted Offer Status to inboxMS-----')
-    inbox_result = invoke_http(update_status_URL + assignmentId + tutorID, method='PUT', 
-                    json=offer_result['data']) 
-    inbox_code = inbox_result["code"] 
-    inbox_message = json.dumps(inbox_result)
-    print("inbox_result:", inbox_result)
-
-    # Error handling for added offer to createdOffers
-    if inbox_code not in range(200, 300):
-        print('\n\n-----Publishing the (offer error) message with routing_key=offer.error-----')
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="offer.error", 
-            body=inbox_message, properties=pika.BasicProperties(delivery_mode = 2)) 
-        print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(inbox_code), inbox_result)
-        return {"code": 500,"data": {"inbox_result": inbox_result},"message": "Inbox failure sent for error handling."}
-
     return {"code": 201,"data": {"offer_result": offer_result}}
 
 #-----------------------------------------------------------------------------------------------------
-# Task 3: Tutor creates an offer (COMPLETED, TEST SUCCESSFUL)
+# Task 3: Tutor creates an offer (COMPLETED, TEST SUCCESSFUL) 
 def create_offer(offer):
     # POST a new offer 
     print('\n-----Invoking assignmentMS-----') 
@@ -282,7 +284,6 @@ def create_offer(offer):
 
     # If successful, send offer to inboxMS
     print('\n-----Sending to inboxMS-----')
-    # userID = str(offer['userID'])
     inbox_result = invoke_http(inbox_create_offer_URL, method='POST', json=offer)
     inbox_code = inbox_result["code"] 
     inbox_message = json.dumps(inbox_result)
