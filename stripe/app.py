@@ -64,7 +64,7 @@ stripe.api_key = 'sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xM
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 
-
+#not used
 # START OF BUY SHIT 
 # method with sessions
 @app.route('/')
@@ -96,7 +96,7 @@ def create_checkout_session():
     )
     return jsonify(id=session.id)
 
-
+#not used 
 @app.route('/success.html')
 def success():
     return render_template('success.html')
@@ -107,13 +107,47 @@ def success():
 # fix email to stripe account.
 @app.route('/onboard-user', methods=['GET','POST'])
 def onboard_user():
-    # HAHAHHAHHAHAHAHHAHAHAHHAHAHHAH PROBLEM SOLVED!!!!! WORK SMART NOT HARD!!!
     data = json.loads(request.data)
-    # user_email=data['userEmail']
-    print(f"Data passed is: {data}")
-    account = stripe.Account.create(type='standard')
+    print(data)
+    user_email=data['userEmail']
+    print(f"Data passed is: {user_email}")
+    #emailed is passed but
+    # account = stripe.Account.create(type='standard', email=user_email)
+    # acss_debit_payments, afterpay_clearpay_payments, au_becs_debit_payments, bacs_debit_payments, bancontact_payments, card_issuing, card_payments, cartes_bancaires_payments, eps_payments, fpx_payments, giropay_payments, grabpay_payments, ideal_payments, jcb_payments, legacy_payments, oxxo_payments, p24_payments, sepa_debit_payments, sofort_payments, tax_reporting_us_1099_k, tax_reporting_us_1099_misc, or transfers
+    # required : ['card_payments', 'transfers',' bancontact_payments','eps_payments','giropay_payments',' ideal_payments','p24_payments','sepa_debit_payments', 'sofort_payments']
+    account = stripe.Account.create(country='SG',type='custom', email=user_email,
+     capabilities={
+    'card_payments': {
+      'requested': True,
+    },
+    'transfers': {
+      'requested': True,
+    },
+    'bancontact_payments': {
+      'requested': True,
+    },
+    'eps_payments': {
+      'requested': True,
+    },
+    'giropay_payments': {
+      'requested': True,
+    },
+    'ideal_payments': {
+      'requested': True,
+    },
+    'p24_payments': {
+    'requested': True,
+    },
+    'sepa_debit_payments': {
+    'requested': True,
+    },
+    'sofort_payments': {
+    'requested': True,
+    }
+  })
     # Store the account ID.
-    print(account.id)
+    # print(account.id)
+    print(account)
     session['account_id'] = account.id
 
     origin = request.headers['origin']
@@ -141,15 +175,17 @@ def onboard_user_refresh():
 def _generate_account_link(account_id, origin):
     print(origin)
     account_link = stripe.AccountLink.create(
+
         type='account_onboarding',
+        # type='account_onboarding',    
         account=account_id,
+        collect='eventually_due',
         # refresh_url=f'{origin}/onboard-user/refresh',
         # return_url=f'{origin}/success.html',
-        
         # refresh_url=f'{origin}/onboard-user/refresh',
         refresh_url=f'http://127.0.0.1:5000/onboard-user/refresh',
         return_url=f'{origin}/ESD/ESD-G6TB/app/templates/registerPage.html',
-   
+
     )
     print(origin)
     return account_link.url
@@ -258,22 +294,16 @@ def webhook_received():
 
 
 
-
-
-
-# not working
-# @ramq.queue(exchange_name='payment_exchange', routing_key='flask_rabmq.pay_successful')
+# rabbitMQ commented out first it works but my docker has some problems rn.  
 @app.route("/send-payment-to-rabbit", methods=["POST"])
 def handle_successful_payment_intent():
-    # ramq.send({'message_id': 23123,'tester':7}, routing_key='flask_rabmq.test', exchange_name='flask_rabmq')
+
     print("runs after payment")
     data = json.loads(request.data)
     message=json.dumps(data)
     print(message)
     amqp_setup2.channel.basic_publish(exchange=amqp_setup2.exchangename, routing_key="payment_successful", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
-
-    # print('PaymentIntent: ' + str(payment_intent))
     return json.dumps({"success": True}), 200
 
 

@@ -93,12 +93,12 @@ def onboard_user():
         return jsonify(error=str(e)), 403
 
 # route here after clicking the connect button 
-# SESSIONS WHEN USERS REFRESH LIKE A FKER USERS ARE 
+# SESSIONS WHEN USERS REFRESH LIKE USERS ARE 
 @app.route('/onboard-user/refresh', methods=['GET'])
 def onboard_user_refresh():
     if 'account_id' not in session:
         return redirect('/')
-    # wdym session not define fk u
+    # wdym session not define 
     account_id = session['account_id']
 
     origin = ('https://' if request.is_secure else 'http://') + request.headers['host']
