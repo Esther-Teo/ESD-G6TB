@@ -1,26 +1,57 @@
 # ESD-G6TB
 
-How to run the file? 
 
-1 Unzip file into the root directory.
+INTRODUCTION
+------------------------------------------
+TutorPedia is a web application built with Flask to digitalise the entire search for tutors on finding prospective tutees. Through TutorPedia, we can reduce the manual work for both parties and tutees are able to receive more customized lesson plans and they are not bound by any tuition agencies.
+
+
+REQUIREMENTS
+------------------------------------------
+SQLAlchemy==1.3.22
+Flask==1.1.2
+Flask-SQLAlchemy==2.4.4
+mysql-connector-python==8.0.22
+Flask-Cors==3.0.10
+requests==2.25.1
+
+
+INSTALLATION
+------------------------------------------
+ * No extra installation necessary
+
+CONFIGURATION
+------------------------------------------
+======== TO SET UP ========
+1. Unzip file into the root directory.
 2. Load WAMP
-3. import SQL files into phpmyadmin
+3. Import SQL files into phpmyadmin
     How to import the required SQL:
-    a.) After starting Wamp/Mamp, type “localhost/phpmyadmin”.
-    b.) Click “Import” button on the navbar.
-    c.) Click “Choose File”
-    d.) Select the file “import.sql”
-    e.) Scroll down and click “Go”
-    f.) Repeat step 2,3,4,5 for the following files: “user.sql”, “tutor.sql”, “inbox.sql” and “assignment.sql”
-
+        1.) After starting Wamp/Mamp, type “localhost/phpmyadmin”.
+        2.) Click “Import” button on the navbar.
+        3.) Click “Choose File”
+        4.) Select the file “import.sql”
+        5.) Scroll down and click “Go”
 4. Go to ESD-G6TB directory in your terminal
-5. enter docker-compose up command
+5. Enter 'docker-compose up' command
+
+======== CONSTRAINTS ========
+ *** A user cannot create a child entity with special characters or whitespace in the childName
+
+ *** A tutor cannot submit another offer for an assignment after their offer has been rejected
+
+ *** All form fields must be populated before submission
+
+ *** The maximum price range for a tutor to offer his/her services is capped at 999.99
 
 
+TROUBLESHOOTING 
+------------------------------------------
+*If ‘docker-compose up’ does not start building the file, check if your docker engine is running. If all else fails, try to run the ‘docker-compose down —rmi all’ before trying again.
 
-# Login through the web application
 
-- Manual log in to access the application
+TEST DATA
+------------------------------------------
 User:
 Email: dwightsnoot@gmail.com
 pwd: gg
@@ -32,9 +63,8 @@ pwd: 123
 Email: soonhao.er@smu.edu.sg
 pwd:123
 
-
-# Login through Google Log-In 
-We have created 2 Gmail accounts to test out the Google Log In API and you can test it out too by using these login credentials
+Login through Google Log-In 
+We have created 2 Gmail accounts to test out the Google Log In API and you can test it out too by using these login credentials)
 
 User Email
 email: mikeyscarn69@gmail.com
