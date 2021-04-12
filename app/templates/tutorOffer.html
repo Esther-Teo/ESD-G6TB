@@ -55,8 +55,8 @@
 
 <script>
     
-    console.log(localStorage.getItem("tutorEmail"));
-    console.log(localStorage.getItem("tutorName"));
+    // console.log(localStorage.getItem("tutorEmail"));
+    // console.log(localStorage.getItem("tutorName"));
 </script>
 
 <script>
@@ -73,10 +73,12 @@
                             var no_of_offers = (data.message).length
                             console.log(data)
                             if (no_of_offers == 0){
-                                document.getElementById("offer_header").innerHTML = "You have yet to send an offer yet!"
+                                document.getElementById("offer_header").innerHTML = "You have yet to send an offer!";
+                                document.getElementById("listings").style.display = "none";
                             }
                             else {
                             document.getElementById("offer_header").innerHTML = `Offer history`;
+                            document.getElementById("listings").style.display = "block";
                             
                             }
                             //console.log(data.offers)

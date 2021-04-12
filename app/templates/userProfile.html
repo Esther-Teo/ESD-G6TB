@@ -208,9 +208,9 @@ function switcheroo3(){
         var userID = localStorage.getItem(`userID`)
         childName = document.getElementById(`name`).value
         school = document.getElementById(`school`).value
-        alert(school)
+        // alert(school)
         primary = document.getElementById(`primary`).value
-        alert(userID)
+        // alert(userID)
 
         level = document.getElementById(`level`).value
         var posting_url = "http://localhost:5004/createChild/";
@@ -245,13 +245,13 @@ function switcheroo3(){
                             // this.assignmentAdded = true;
 
                             // refresh assignment list
-                            alert("meeeeep")
+                            // alert("meeeeep")
                             location.reload()
 
                             //                 // an alternate way is to add this one element into this.books
                             break;
                         case 400:
-                            alert("oops")
+                            // alert("oops")
                             break;
                         case 500:
                             this.addAssignmentError = data.message;
@@ -262,19 +262,19 @@ function switcheroo3(){
                 })
                 .catch(error=>{
                     console.log(error);
-                    alert("pause")
+                    // alert("pause")
                 })
     }
 </script>
 <script>
     function processChildForm(childName){
-        alert(childName)
+        // alert(childName)
         console.log(String(childName))
         var userID = localStorage.getItem(`userID`)
         school = document.getElementById(`${childName}school`).value
-        alert(school)
+        // alert(school)
         primary = document.getElementById(`${childName}primary`).value
-        alert(userID)
+        // alert(userID)
 
         level = document.getElementById(`${childName}level`).value
         var posting_URL = "http://localhost:5004/editChild/";
@@ -309,13 +309,13 @@ function switcheroo3(){
                             // this.assignmentAdded = true;
 
                             // refresh assignment list
-                            alert("meeeeep")
+                            // alert("meeeeep")
                             location.reload()
 
                             //                 // an alternate way is to add this one element into this.books
                             break;
                         case 400:
-                            alert("oops")
+                            // alert("oops")
                             break;
                         case 500:
                             this.addAssignmentError = data.message;
@@ -326,7 +326,7 @@ function switcheroo3(){
                 })
                 .catch(error=>{
                     console.log(error);
-                    alert("pause")
+                    // alert("pause")
                 })
     }
 </script>
@@ -356,18 +356,17 @@ function switcheroo3(){
             methods: {
                 getAllAssignments: function () {
                     // on Vue instance created, load the book list
-                    alert("meep")
+                    // alert("meep")
                     const response =
                         fetch(get_all_URL + `/${this.userID}`)
                         .then(response => response.json())
                         .then(data => {
-                            console.log(data);
-                            console.log("meep");
+                            // console.log(data);
                             if (data.code === 404) {
                                 // no book in db
                                 this.message = data.message;
                             } else {
-                                console.log(data);
+                                // console.log(data);
                                 this.userName = data.userName;
                                 this.userEmail = data.userEmail;
                                 this.userPwd = data.passw;
@@ -384,19 +383,18 @@ function switcheroo3(){
                 },
                 getAllChildren: function () {
                     // on Vue instance created, load the book list
-                    alert("meep")
                     const response =
                         fetch(get_child_URL + `/${this.userID}`)
                         .then(response => response.json())
                         .then(data => {
-                            console.log(data);
-                            console.log("meep");
+                            // console.log(data);
+                            // console.log("meep");
                             if (data.code === 404) {
                                 // no book in db
                                 this.message = data.message;
                             } else {
                                 for (child of data.data){
-                                    console.log(data);
+                                    // console.log(data);
                                     this.childName = child.childName;
                                     this.school = child.school;
                                     this.primary = child.pri;
@@ -463,12 +461,12 @@ function switcheroo3(){
                         });
 
                 },
-                // },
+                //
                 processUserForm: function () {
                     // on Vue instance created, load the book list
                     var postingUrl = "http://localhost:5004/editUser/";
                     //prepares posting data
-                    console.log("hello");
+                    // console.log("hello");
                     let jsonData = JSON.stringify({
                         "userID": this.userID,
                         "userName": this.userName,
@@ -487,9 +485,9 @@ function switcheroo3(){
                         })
                         .then(response => response.json())
                         .then(data => {
-                            console.log(data);
+                            // console.log(data);
                             result = data.data;
-                            console.log(result);
+                            // console.log(result);
                             this.getAllAssignments();
                             // 3 cases
                             switch (data.code) {
@@ -497,7 +495,7 @@ function switcheroo3(){
                                     // this.assignmentAdded = true;
 
                                     // refresh assignment list
-                                    alert("meeeeep")
+                                    // alert("meeeeep")
 
 
                                     //                 // an alternate way is to add this one element into this.books
@@ -517,7 +515,7 @@ function switcheroo3(){
                 this.getAllAssignments();
                 this.getAllChildren();
                 }
-            ,
+            
             
         });
         </script>

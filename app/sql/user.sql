@@ -42,17 +42,7 @@ CREATE TABLE IF NOT EXISTS users (
   PRIMARY KEY (userID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- 
---
 
-INSERT INTO users (userID, userName, userEmail, passw, userPhone, loc) VALUES
-(1, 'Michael Scarn', 'mikeyscarn69@gmail.com', "helps",'12354678', 'Jurong East'),
-(2, 'Dwight Snoot', 'dwightsnoot@gmail.com', "gg", '96857412', 'Yishun'),
-(3, 'Nard Dog', 'andybernard@gmail.com',"helps", '21325465', 'Sengkang'),
-(4, 'Mary Juana', 'maryjuana@gmail.com', "helps",'78459865', 'Tampines'),
-(5, 'Jimothy Halpert', 'jimhalpert@gmail.com',"helps", '01472558', 'Woodlands');
-COMMIT;
 
 -- create a new table for child
 DROP TABLE IF EXISTS child;
@@ -67,7 +57,17 @@ CREATE TABLE IF NOT EXISTS child (
     REFERENCES users(userID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- 
+--
 
+INSERT INTO users (userID, userName, userEmail, passw, userPhone, loc) VALUES
+(1, 'Michael Scarn', 'mikeyscarn69@gmail.com', "helps",'12354678', 'Jurong East'),
+(2, 'Dwight Snoot', 'dwightsnoot@gmail.com', "gg", '96857412', 'Yishun'),
+(3, 'Nard Dog', 'andybernard@gmail.com',"helps", '21325465', 'Sengkang'),
+(4, 'Mary Juana', 'maryjuana@gmail.com', "helps",'78459865', 'Tampines'),
+(5, 'Jimothy Halpert', 'jimhalpert@gmail.com',"helps", '01472558', 'Woodlands');
+COMMIT;
 
 -- Dumping data for table child
 --

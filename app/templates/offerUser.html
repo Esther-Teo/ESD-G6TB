@@ -44,7 +44,7 @@
                 <div id="pending">
                     
                     <div class ="container" id="loadOffers">
-                        <!-- <span style="color:black" v-html="headers"></span> -->
+
                            
                     </div>
                 </div>
@@ -62,9 +62,7 @@
             $.get("navbarUser.html", function(data){
                 $("#navbar").replaceWith(data);
             });
-            // window.onload = function() {
-            //     yourFunction(param1, param2);
-            // };
+
             </script>
     
     <script> 
@@ -95,8 +93,6 @@
 
 
     function deleteit(assignment_ID, tutorId) {
-        // alert(tutorId);
-        
         gg =
         fetch(get_one_offer_URL +`/${assignment_ID}/${tutorId}`)
         .then(gg => gg.json())
@@ -125,11 +121,9 @@
                 body: JSON.stringify(json)})
                 .then(response =>response.json())
                 .then(data => {
-                    // console.log("oof");
-                    // console.log(":ehhh");
-                    // console.log(data.code);
+
                     if (data.code !== 201) {
-                        // no book in db
+                        // none return
                         message = data.message;
                     } else {
                         // message += data;
@@ -146,7 +140,6 @@
     }
 
     function acceptOffer(assignment_ID, tutorId) {
-        // alert("yeboiiiii")
         
         meep =
         fetch(get_one_offer_URL +`/${assignment_ID}/${tutorId}`)
@@ -176,11 +169,8 @@
                 body: JSON.stringify(json)})
                 .then(response =>response.json())
                 .then(data => {
-                    // console.log("oof");
-                    // console.log(":ehhh");
-                    // console.log(data.code);
                     if (data.code !== 201) {
-                        // no book in db
+                        // none returned
                         message = data.message;
                     } else {
                         // message += data;
@@ -203,22 +193,15 @@
             fetch(get_all_URL+`/${userID}`)
                 .then(response => response.json())
                 .then(huh => {
-                    console.log(response);
-                    console.log("meep");
-                    console.log(huh)
+
                     if (huh.code === 404) {
-                        // no book in db
+                        // none returned
                         message = huh.message;
-                        document.getElementById(childName).innerHTML += `
-                        <h1>You have no offers!</h1>
-                        `;
+                        
                     } else {
+                        
                         for (each of huh.message) {
-                            //console.log(each[0].childName);
-                            //console.log(huh.offers[each])
                             card_status = each[1].status;
-                            //alert(card_status)
-                            // if (card_status==="pending") {
                             childName = each[0].childName;
                             card_primary = each[0].primary;
                             if (card_primary) {
@@ -234,14 +217,7 @@
                             var card_time = each[1].selectedTime;
                             var card_price = each[1].expectedPrice;
                             var assignmentID = each[1].assignmentId;
-                                // offer = huh.offers[each]
-                                //alert(offer.status)
-                                //alert(offer.tutorName)
-                                
-                                //alert(offer.tutorname)
-                                
-                                //alert(assignmentID);
-                                // var space_below_name = childName;
+
                             if (card_status==="pending") {   
                                 document.getElementById(childName).innerHTML += `
                                 <div id="card_template">
@@ -272,19 +248,18 @@
                                 </div>
                                 </div>`;
                             }  
-                                }
-                            }
-                        })  
-                        // alert(counter);
-                        // console.log(counter);
-                        // document.getElementById("offerTable").innerHTML = html
+                                
+                            
+                        }
+                    }
+                })  
     
                 
                 .catch(error => {
                     // Errors when calling the service; such as network error, 
                     // service offline, etc
                     console.log( error);
-                    alert("got it")
+                    // alert("got it")
                 });
     
     }
@@ -322,21 +297,19 @@
                     },
                     methods: {
                         getChildrenDetails: function() {
-                            alert(this.userID)
-                            document.getElementById("loadOffers").innerHTML = '';
+                            // alert(this.userID)
+                            
                             const response = 
                             fetch("http://localhost:5004/child"+`/${this.userID}`)
                                     .then(response => response.json())
                                     .then(data => {
-                                        console.log(data);
-                                        console.log("meepy");
                                         // console.log(data)
                                         if (data.code === 404) {
                                             // no book in db
                                             this.message = data.message;
                                         } else {
                                             // this.subject = data.data.subjects;
-                                            console.log(data)
+                                           
                                             for (each of data.data){
                                                 // alert(each.childName);
                                                 document.getElementById("loadOffers").innerHTML += `

@@ -50,6 +50,21 @@ services:
     ports: 
       - "5006:5006"
 
+  #################################
+  # Tutor: The Tutor microservice
+  #################################
+  app:
+    build:
+      context: ./
+      dockerfile: app.Dockerfile
+    image: esdg6tb/payment:esd
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports: 
+      - "5007:5007"
+
+
 
   ####################################
   # RabbitMQ: The messaging broker   

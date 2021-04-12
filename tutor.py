@@ -55,8 +55,32 @@ def get_all():
 	return jsonify({"tutors": [tutor.json() for tutor in Tutor.query.all()]})
 
 
-#retrieve stripe ID based on Tutor ID 
+# gets one tutor + his subjects by his id
+@app.route("/tutor/<int:tutorID>",methods=['GET'])
+def find_by_tutorId(tutorID):
+    try:
+        tutorList = Tutor.query.filter_by(tutorID = tutorID).first()
+        print(tutorList)
+        
+        if tutorList:
+            return jsonify(
+                {
+                    "code": 200,
+                    "tutorData": tutorList.json()
+                }
+            )
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 404,
+                "data": {
+                    "tutorID": tutorID
+                },
+                "message": "Couldn't find tutor." + str(e)
+            }
+        ), 404
 
+#retrieve stripe ID based on Tutor ID 
 @app.route("/retrieve_stripe_id", methods=['POST', 'GET'])
 def retrieve_stripe_id():
     data = request.get_json()
@@ -416,30 +440,4 @@ if __name__ == "__main__":
 #         ), 404
 
 
-# # gets one tutor + his subjects by his id
-# @app.route("/tutor/<int:tutorID>",methods=['GET'])
-# def find_by_tutorId(tutorID):
-#     try:
-#         tutorList = Tutor.query.filter_by(tutorID = tutorID).first()
-#         print(tutorList)
-#         subject = TutorSubjects.query.filter_by(tutorID = tutorID).all()
-#         print(subject)
-        
-#         if tutorList:
-#             return jsonify(
-#                 {
-#                     "code": 200,
-#                     "tutorData": tutorList.json(),
-#                     "tutorSubject": [subj.json() for subj in subject]
-#                 }
-#             )
-#     except Exception as e:
-#         return jsonify(
-#             {
-#                 "code": 404,
-#                 "data": {
-#                     "tutorID": tutorID
-#                 },
-#                 "message": "Couldn't find tutor." + str(e)
-#             }
-#         ), 404
+#

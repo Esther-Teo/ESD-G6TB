@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <title>Buy cool new product</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/stripe.css') }}">
+  </head>
+  <body>
+
+<!-- CHECKOUT FOR B2C   -->
+<button id="checkout-button">Checkout</button>
+
+<br> 
+<br> 
+<!-- BUTTONS FOR STRIPE CONNECT -->
+<!-- I like the blue color button -->
+<a class="stripe-connect" id="connect"><span>Connect with</span></a>
+
+<!-- <button class="stripe-connect" id="connect"></button> -->
+<br />
+<br />
+<!-- <a href="#" class="stripe-connect slate"><span>Connect with</span></a> -->
+<br />
+<br />
+<!-- For use on dark backgrounds. Please remove the <div> tag from your implementation. -->
+<!-- <div><a href="#" class="stripe-connect white"><span>Connect with</span></a></div> -->
+<!-- END OF BUTTONS FOR STRIPE CONNECT -->
+
+
+    <script type="text/javascript">
+
+    // START OF BOOK PURCHASES JS 
+      // Create an instance of the Stripe object with your publishable API key
+      var stripe = Stripe('pk_test_51Ib4VfBvhmRsAY8LWdqkxz5jziPQ1YmxCjuFHuQCaJyMNjoJSipniNaC1lh9ZocTLnpaxVWwgKkFSeX76ACHNqZP007ogKEoHo');
+      var checkoutButton = document.getElementById('checkout-button');
+
+      checkoutButton.addEventListener('click', function() {
+        // Create a new Checkout Session using the server-side endpoint you
+        // created in step 3.
+        fetch('/create-checkout-session', {
+          method: 'POST',
+        })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(session) {
+          return stripe.redirectToCheckout({ sessionId: session.id });
+        })
+        .then(function(result) {
+          // If `redirectToCheckout` fails due to a browser or network
+          // error, you should display the localized error message to your
+          // customer using `error.message`.
+          if (result.error) {
+            alert(result.error.message);
+          }
+        })
+        .catch(function(error) {
+          console.error('Error:', error);
+        });
+      });
+    // END OF BUY SHIT JS
+    
+    
+    // CONNECT JS 
+
+    // let elmButton = document.querySelector("connect");
+
+    let elmButton = document.getElementById('connect');
+    console.log(elmButton);
+    if (elmButton) {
+    elmButton.addEventListener(
+        "click",
+        e => {
+        elmButton.setAttribute("disabled", "disabled");
+        elmButton.textContent = "Opening...";
+
+        fetch("/onboard-user", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+            if (data.url) {
+                window.location = data.url;
+            } else {
+                elmButton.removeAttribute("disabled");
+                elmButton.textContent = "<Something went wrong>";
+                console.log("data", data);
+            }
+            });
+        },
+        false
+    );
+    }
+
+    </script>
+  </body>
+</html>

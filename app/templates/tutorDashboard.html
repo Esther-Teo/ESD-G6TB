@@ -60,9 +60,9 @@
     </div>
     <script>
         console.log("user localStorage check")
-        console.log(localStorage.getItem("userID"));
-        console.log(localStorage.getItem("userName"));
-        console.log(localStorage.getItem("userEmail"));
+        console.log(localStorage.getItem("tutorID"));
+        console.log(localStorage.getItem("tutorName"));
+        console.log(localStorage.getItem("tutorEmail"));
     </script>
 
     
@@ -200,6 +200,7 @@
                                         //console.log(data.offers);
                                        
                                         // console.log(array_of_child);
+                                        document.getElementById("offer_notification").innerHTML += ``;
                                        for (offer of data.offers){
                                             for (i=0;i<array_of_child.length;i+=4){
                                                 if (offer.assignmentId == array_of_child[i]){
@@ -227,6 +228,7 @@
                                                     `
                                                 }
                                             else {
+                                                
                                                 document.getElementById("offer_notification").innerHTML += `
                                                     <div class="card text-center border-light mb-3" style="max-width: 30rem; margin:10px">
                                                     <div class="card-header">Offer Notification</div>

@@ -343,7 +343,7 @@ def create_Child(userID):
     return jsonify(
         {
             "code": 201,
-            "data": "gotit"
+            "data": "child created successfully"
         }
     ), 201
 

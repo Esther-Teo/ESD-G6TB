@@ -177,7 +177,7 @@
             } else {
                 // console.log(data)
                 childName = data.childName
-                alert(childName)
+                // alert(childName)
                 subject = data.subject;
                 // console.log(subject)
                 price = data.expectedPrice;
@@ -196,7 +196,7 @@
                         //NOT DONE YET
                         
                             if (each[1].childName ==childName){
-                                alert(childName)
+                                // alert(childName)
                                 var parentName = each[0].userName;
                                 var parentPhone = each[0].userPhone;
                                 var parentEmail = each[0].userEmail;
@@ -259,7 +259,7 @@
         tutorEmail = localStorage.getItem("tutorEmail")
         console.log(tutorID)
 
-        alert("inside create")
+        // alert("inside create")
         var time = document.getElementById("time").value;
         // console.log(time)
         var expectedPrice = document.getElementById("expected_price").value;
@@ -293,18 +293,18 @@
                     console.log("even");
                     console.log(data.message);
                     if (data.code !== 201) {
-                        // no book in db
+                        // none returmed
                         message = data.message;
                         console.log("there was an error creating the offer")
                         document.getElementById("modal-body").innerHTML = `
                         <p>Oops, there was an error sending the offer. It could be that you have already created an offer for this assignment. Try making an offer at another assignment!</p>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" >Okay</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="refresh()">Okay</button>
                         `;
                     } else {
                         // alert("it went through???")
                         document.getElementById("modal-body").innerHTML = `
                         <p>Your offer has been made successfully!</p>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Okay</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="refresh()">Okay</button>
                         `;
                         //NOT DONE YET
                         

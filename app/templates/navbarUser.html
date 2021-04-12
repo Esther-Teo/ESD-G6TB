@@ -1,13 +1,4 @@
-<!-- <?php
-    session_start();
-    if ( !isset($_SESSION["userName"]) ) {
-      $user = 'no';
-      
-    }
-    else{
-        $user = $_SESSION["userName"];
-    }
-?> -->
+
 <script> 
 username = localStorage.getItem("userName");
 document.getElementById("welcome").innerHTML = `<a class="navbar-brand" href="dashboardUser.html">Welcome ${username}</a>`

@@ -76,6 +76,9 @@
           var UserCheck = "";
           
           function checkTutor() {
+            // localStorage.setItem("tutorName",json.data.tutorName);
+            // localStorage.setItem("tutorEmail",json.data.tutorEmail);
+            // localStorage.setItem("tutorID",json.data.tutorID);
             email = document.getElementById('email').value
             pass = document.getElementById('password').value
             // data to be sent to the POST request
@@ -92,7 +95,7 @@
             .then(json => {
               console.log(json); 
               console.log("lol"); 
-              console.log(json.data.userID);
+              console.log(json.data.tutorID);
               $.post("loginPage.html", {tutorId:json.data.tutorID, tutorEmail:json.data.tutorEmail, tutorName:json.data.tutorName});
               var check = "user";
               switch (json.code) {
