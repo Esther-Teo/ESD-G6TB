@@ -21,7 +21,7 @@
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
-        <title>All Listings</title>
+        <title>Tutor Registration</title>
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <script>
@@ -114,7 +114,7 @@
             check= c.indexOf("=")+1;
             for (each of lst){
                 if (c.indexOf(each) > -1){
-                    json[`${each}`]= c.substring(check, c.length)
+                    json[each]= c.substring(check, c.length)
                     alert(c.substring(check, c.length))
                 }
             }
@@ -133,7 +133,7 @@
         json["portfolio"] = "No bio has been created yet";
         json["priceRange"] = 7;
         console.log("inside function:" + stripe_id);
-        json["stripeID"]=stripe_id;
+        json["stripeID"] = stripe_id;
         //retrieves and stores form data
         // this.childName = document.getElementById("childrens").value;
         // this.subject = document.getElementById("subjects").value;
@@ -145,7 +145,7 @@
         let jsonData = JSON.stringify(
             json
         );
-        // console.log(jsonData)
+        console.log(jsonData)
         //posts creates a new assignment
         fetch(tutor_URL,
             {
@@ -172,7 +172,7 @@
                         window.setTimeout(function(){
                             // Move to a new location or you can do something else
 
-                            
+                            window.location.href = "loginPage.html";
                         }, 2000);
                         // an alternate way is to add this one element into this.books
                         break;
@@ -188,7 +188,7 @@
                     // service offline, etc
                     alert("Please complete the form before sending!");
                     // come back to this 
-                    window.location.href = "loginPage.html";
+                    // window.location.href = "loginPage.html";
                 });
     }
 
