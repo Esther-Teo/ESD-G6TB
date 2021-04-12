@@ -6,6 +6,12 @@ INTRODUCTION
 TutorPedia is a web application built with Flask to digitalise the entire search for tutors on finding prospective tutees. Through TutorPedia, we can reduce the manual work for both parties and tutees are able to receive more customized lesson plans and they are not bound by any tuition agencies.
 
 
+FUNCTIONALITIES
+------------------------------------------
+======== USER ========
+*Create an assignment
+
+
 REQUIREMENTS
 ------------------------------------------
 SQLAlchemy==1.3.22
