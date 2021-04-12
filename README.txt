@@ -9,7 +9,26 @@ TutorPedia is a web application built with Flask to digitalise the entire search
 FUNCTIONALITIES
 ------------------------------------------
 ======== USER ========
+*Register a new account
+*Log in
+*Edit profile
+*Create/edit children
 *Create an assignment
+*View/delete assignments
+*View pending/accepted offers
+*View notifications on dashboard (upon reception of offer)
+*Make payments to tutors
+
+======== TUTOR ========
+*Register a new account
+*Log in
+*Edit profile
+*View assignment listings
+*Make offers for assignment
+*View pending/accepted offers
+*View notifications on dashboard (upon acceptance/rejection of offer)
+
+
 
 
 REQUIREMENTS
