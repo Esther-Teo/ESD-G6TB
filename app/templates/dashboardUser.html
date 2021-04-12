@@ -45,7 +45,8 @@
             <!-- Notifications  -->
 
             <div class="container black">
-
+                <div class="row d-flex justify-content-center" id="offer_header"> 
+                </div>
 
                 <div class="row d-flex justify-content-center" id="offer_notification"> 
                 </div>
@@ -68,8 +69,6 @@
         });
         </script>
 
-        <script> var user = "<?=$user ?>"; console.log(user);</script>
-
         <script>
             var array_of_child = [];
             var array_of_tutor = [];
@@ -79,32 +78,6 @@
             var offer_tutor = "";
             var get_all_URL = "http://localhost:5001/assignmentByUser";
             // var place_order_URL = "http://localhost:5100/place_order";
-        function getAllOffers1() {
-        // on Vue instance created, load the book list
-        var userID = 1;
-        const response =
-            fetch(`http://localhost:5001/test/` + `${userID}`)
-                .then(response => response.json())
-                .then(huh => {
-                    console.log(huh);
-                    if (huh.code === 400) {
-                        message = huh.message;
-                    } else {
-                            //console.log(huh.message)
-                            for (temp1 of huh.message){
-                                array_of_tutor.push(temp1[1].tutorID);
-                                array_of_tutor.push(temp1[1].tutorName);
-                             }
-                            console.log(array_of_tutor);
-                            getAllOffers();
-                                }
-                            }
-                         )  
-                .catch(error => {
-                    console.log( error);
-                });
-
-    }
         </script>        
         <script src="//code.jquery.com/jquery.min.js"></script>
         <script>
@@ -113,6 +86,7 @@
         });
         </script>
         <script>
+            var userID = localStorage.getItem("userID");
             var app = new Vue({
                 el: "#app",
                 computed: {
@@ -121,7 +95,7 @@
                     }
                 },
                 data: {
-                    userID: 1,
+                    userID: userID,
                     "assignments": [],
                     message: "There is a problem retrieving the assignment data, please try again later.",
                     childId: "",
@@ -139,10 +113,10 @@
                     getAllAssignments: function () {
                         // on Vue instance created, load the book list
                         const response =
-                            fetch(get_all_URL+`/${this.userID}`)
+                            fetch(get_all_URL+`/${userID}`)
                                 .then(response => response.json())
                                 .then(data => {
-                                    console.log(data.assignments)
+                                    // console.log(data.assignments)
                                     for (assignment of data.assignments){
                                         // console.log(assignment.assignmentId);
                                         // console.log(assignment.childName);
@@ -163,7 +137,7 @@
                                         // no book in db
                                         this.message = data.message;
                                     } else {
-                                        this.subject = data.data.subjects;
+                                        console.log("went in");
                                     }
                                 })
                                 .catch(error => {
@@ -235,7 +209,7 @@
                                         }
                                     })
                                     .catch(error => {
-        
+                                        console.log(error)
                                     });
             }
         </script>

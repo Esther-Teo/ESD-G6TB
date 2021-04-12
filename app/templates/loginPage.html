@@ -76,9 +76,7 @@
           var UserCheck = "";
           
           function checkTutor() {
-            localStorage.setItem("tutorName",json.data.tutorName);
-            localStorage.setItem("tutorEmail",json.data.tutorEmail);
-            localStorage.setItem("tutorID",json.data.tutorID);
+
             email = document.getElementById('email').value
             pass = document.getElementById('password').value
             // data to be sent to the POST request
@@ -150,7 +148,7 @@
               var check = "user";
               switch (json.code) {
                     case 200:
-                        alert("yayyyyy Hi user")
+                        // alert("yayyyyy Hi user")
 
                         // refresh assignment list
                         // alert("meeeeep")

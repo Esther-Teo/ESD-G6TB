@@ -44,15 +44,11 @@
             Main Dashboard
 
         </h1>
-        <!-- Payment -->
-        <h1 class='mt-3 header text-center display-5'>
-            Payment </br>
-            {Insert some text here about payment i dunno}
-        </h1>
+
         <!-- Notifications  -->
 
         <div class="container black">
-            <h2 class='mt-3 header text-center display-5' id="offer_header">Offers</h2>
+            <h2 class='mt-3 header text-center display-5' id="offer_header"></h2>
 
             <div class="row d-flex justify-content-center" id="offer_notification"> 
             </div>
@@ -85,9 +81,9 @@
         // var place_order_URL = "http://localhost:5100/place_order";
     function getAllOffers1() {
     // on Vue instance created, load the book list
-    var userID = 1;
+    tutorID = localStorage.getItem("tutorID")
     const response =
-        fetch(`http://localhost:5001/test/` + `${userID}`)
+        fetch(`http://localhost:5001/test/` + `${tutorID}`)
             .then(response => response.json())
             .then(huh => {
                 //console.log(huh);
@@ -145,7 +141,7 @@
                         fetch("http://localhost:5001/assignment")
                             .then(response => response.json())
                             .then(data => {
-                                //console.log(data.assignments)
+                                console.log(data.assignments)
                                 for (assignment of data.assignments){
                                     array_of_child.push(assignment.assignmentId);
                                     array_of_child.push(assignment.childName);
@@ -165,7 +161,7 @@
                                     // no book in db
                                     this.message = data.message;
                                 } else {
-                                    this.subject = data.data.subjects;
+                                    console.log("forwhat")
                                 }
                             })
                             .catch(error => {
@@ -182,7 +178,7 @@
         </script>
         <script>
         function getAllOffers() {
-            var tutorID = 1 //FIX PLS EDENA TIO YI NING YOU FCKING BASTARD MAKING ME WORK 365DAYS A YEAR 
+            var tutorID = localStorage.getItem("tutorID")//FIX PLS EDENA TIO YI NING YOU FCKING BASTARD MAKING ME WORK 365DAYS A YEAR 
                         const response = 
                         fetch("http://localhost:5002/returned"+`/${tutorID}`)
                                 .then(response => response.json())
