@@ -53,10 +53,10 @@ services:
   #################################
   # Tutor: The Tutor microservice
   #################################
-  app:
+  payment:
     build:
       context: ./
-      dockerfile: app.Dockerfile
+      dockerfile: payment.Dockerfile
     image: esdg6tb/payment:esd
     restart: always
     environment:

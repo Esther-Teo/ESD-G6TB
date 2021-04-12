@@ -171,9 +171,7 @@
 
           function onSignIn(googleUser){
             var userGoogle = googleUser.getBasicProfile();
-            var userName = userGoogle.getName();
             var userEmail = userGoogle.getEmail();
-            localStorage.setItem("userName",userName);
             localStorage.setItem("userEmail",userEmail);
             if(userEmail != null){
               var login = {
@@ -187,7 +185,9 @@
               .then(response => response.json()) 
               .then(json => {
                 var userID = json.data.userID;
+                var userName = json.data.userName;
                 localStorage.setItem("userID",userID);
+                localStorage.setItem("userName",userName);
                 
                 $.post("loginPage.html", {userEmail:json.data.userEmail});
                 var check = "user";
@@ -223,7 +223,7 @@
             var tutorName = googleTutor.getName();
 
             localStorage.setItem("tutorEmail",tutorEmail);
-            localStorage.setItem("tutorName",tutorName);
+            
 
             if(tutorEmail != null){
               var login = {
@@ -239,6 +239,7 @@
               .then(json => {
                 var tutorID = json.data.tutorID;
                 localStorage.setItem("tutorID",tutorID);
+                localStorage.setItem("tutorName",tutorName);
 
                 $.post("loginPage.html", {tutorEmail:json.data.tutorEmail});
                 var check = "tutor";
