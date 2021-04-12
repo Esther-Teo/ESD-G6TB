@@ -44,6 +44,8 @@ CONFIGURATION
 
  *** The maximum price range for a tutor to offer his/her services is capped at 999.99
 
+ *** Payment settings on the payment page for the user will not be removed after payment due to recurring payments
+
 
 TROUBLESHOOTING 
 ------------------------------------------
