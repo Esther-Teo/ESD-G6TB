@@ -306,7 +306,7 @@ function switcheroo3(){
                 level: "",
             },
             methods: {
-                getAllAssignments: function () {
+                getUserInfo: function () {
                     // on Vue instance created, load 
                     const response =
                         fetch(get_all_URL + `/${this.userID}`)
@@ -432,14 +432,14 @@ function switcheroo3(){
                         .then(response => response.json())
                         .then(data => {
                             result = data.data;
-                            this.getAllAssignments();
+                            this.getUserInfo();
                            
                         })
                 },
             },
             created: function () {
                 // on Vue instance created, load the book list
-                this.getAllAssignments();
+                this.getUserInfo();
                 this.getAllChildren();
                 }
             
