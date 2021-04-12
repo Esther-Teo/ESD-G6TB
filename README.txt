@@ -14,6 +14,9 @@ Flask-SQLAlchemy==2.4.4
 mysql-connector-python==8.0.22
 Flask-Cors==3.0.10
 requests==2.25.1
+pika==1.2.0
+Flask-Session==0.3.2
+stripe==2.56.0
 
 
 INSTALLATION
@@ -46,7 +49,6 @@ CONFIGURATION
 
  *** Payment settings on the payment page for the user will not be removed after payment due to recurring payments
 
-
 TROUBLESHOOTING 
 ------------------------------------------
 *If ‘docker-compose up’ does not start building the file, check if your docker engine is running. If all else fails, try to run the ‘docker-compose down —rmi all’ before trying again.
@@ -69,9 +71,9 @@ Login through Google Log-In
 We have created 2 Gmail accounts to test out the Google Log In API and you can test it out too by using these login credentials)
 
 User Email
-email: mikeyscarn69@gmail.com
-PWD: ESDBestMod
+Email: mikeyscarn69@gmail.com
+pwd: ESDBestMod
 
 Tutor Email
-email: bcoskitt@gmail.com
+Email: bcoskitt@gmail.com
 pwd: ESDBestMod
