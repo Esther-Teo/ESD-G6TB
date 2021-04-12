@@ -6,7 +6,7 @@ import os, sys
 import requests
 # sys.path.insert(0, 'C:\GitHub\ESD-G6TB')
 
-# HI PLS NOTE!: To run this file without using your local path as seen above^:
+# HI PLS NOTE!: To run this file without using your local path as seen above^: NOT NEEDED ANYMORE
     # Navigate into your own local path at GitHub\ESD-G6TB, then type:
     # set PYTHONPATH=.;.\manageOffersMS
     # python manageOffer
@@ -36,7 +36,6 @@ delete_assignment_URL = "http://assignment:5001/deleteAssignment/" # DELETE assi
 # Inbox
 inbox_create_offer_URL = "http://inbox:5002/createOffer" # POST new offer to USER
 inbox_return_offer_URL = "http://inbox:5002/returnOffer" # POST accepted/rejected offer to TUTOR 
-# update_status_URL = "http://inbox:5002/updateStatus/" # PUT (<int:assignmentId>/<int:tutorID>)
 
 #-----------------------------------------------------------------------------------------------------
 # Delete Assignments
@@ -50,11 +49,9 @@ def manage_assignment():
         try:
             offer = request.get_json()
             print("\nReceived request in JSON:", offer)
-
             # Delete assignment 
             if offer['delete'] == 1:
                 result = delete_assignment(offer)
-
             print('\n------------------------')
             print('\nresult: ', result)
             return jsonify(result), result["code"]
@@ -64,9 +61,7 @@ def manage_assignment():
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
             print(ex_str)
-
             return jsonify({"code": 500, "message": "manageOffersMS.py internal error: " + ex_str}), 500
-
     return jsonify({"code": 400, "message": "Invalid JSON input: " + str(request.get_data())}), 400   
            
 #-----------------------------------------------------------------------------------------------------
@@ -82,13 +77,11 @@ def manage_offers():
         try:
             offer = request.get_json()
             print("\nReceived request in JSON:", offer)
-
             # Accept or Reject Offers
             if offer['acceptOrReject'] == 'accept':
                 result = accept_offers(offer)
             elif offer['acceptOrReject'] == 'reject':
                 result = reject_offers(offer)
-
             print('\n------------------------')
             print('\nresult: ', result)
             return jsonify(result), result["code"]
@@ -98,9 +91,7 @@ def manage_offers():
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
             print(ex_str)
-
             return jsonify({"code": 500, "message": "manageOffersMS.py internal error: " + ex_str}), 500
-
     return jsonify({"code": 400, "message": "Invalid JSON input: " + str(request.get_data())}), 400   
 
 #-----------------------------------------------------------------------------------------------------
@@ -124,9 +115,7 @@ def tutor_creates_offers():
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
             print(ex_str)
-
             return jsonify({"code": 500, "message": "manageOffersMS.py internal error: " + ex_str}), 500
-
     return jsonify({"code": 400, "message": "Invalid JSON input: " + str(request.get_data())}), 400
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -157,9 +146,9 @@ def delete_assignment(offer):
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="assignment.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
         print("\nOffer status ({:d}) published to the RabbitMQ Exchange:".format(code), deleted_result)
-        return {"code": 500, "data": {"deleted_result": deleted_result}, "message": "Offer creation failure sent for error handling."}
+        return {"code": 500, "data": {"deleted_result": deleted_result}, "message": "Assignment deletion failure sent for error handling."}
 
-    return {"code": 201, "data": {"deleted_result": deleted_result,}}
+    return {"code": 201, "data": {"deleted_result": deleted_result}}
 
 #-----------------------------------------------------------------------------------------------------
 # Task 1: User rejects offer (COMPLETED, TEST SUCCESSFUL) 
