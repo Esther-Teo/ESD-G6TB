@@ -108,9 +108,7 @@
     window.input_email=price_obj['email'];
     window.input_stripe_id=price_obj['stripeID'];
 
-    console.log(price_per_hour);
-    console.log(input_email); 
-    console.log(input_stripe_id); 
+  
     // var stripe = Stripe('pk_test_51Ib4VfBvhmRsAY8LWdqkxz5jziPQ1YmxCjuFHuQCaJyMNjoJSipniNaC1lh9ZocTLnpaxVWwgKkFSeX76ACHNqZP007ogKEoHo');
     var paymentForm = document.getElementById("payment-form");
     var paymentIntentData = {
@@ -228,8 +226,6 @@
         
 
         document.querySelector(".sr-payment-form").classList.add("hidden");
-        // console.log(paymentIntentJson);
-        // document.querySelector("pre").textContent = paymentIntentJson;
         document.querySelector("pre").textContent = paymentIntent.status;
         
 
@@ -300,7 +296,6 @@
         document.querySelector(".spinner").classList.add("hidden");
 
         var accounts = data.accounts.data;
-        console.log(accounts);
         // If there are no accounts, display a message pointing to an onboarding guide.
         if (!accounts.length) {
         document.querySelector("#no-accounts-section").classList.remove("hidden");
@@ -315,14 +310,10 @@
         if (!enabledAccounts.length) {
         var expressAccounts = accounts.filter((acct) => acct.type == 'express');
         var hasCustom = !!accounts.filter((acct) => acct.type == 'custom');
-        console.log(hasCustom);
         var hasStandard = !!accounts.filter((acct) => acct.type == 'standard');
 
         var wrapper = document.querySelector("#disabled-accounts-section");
         var input = document.querySelector("#disabled-accounts-select");
-        console.log(acct)
-        
-    
         
         expressAccounts.forEach((acct) => {
             var element = document.createElement("option");
@@ -350,10 +341,7 @@
         var wrapper = document.querySelector("#enabled-accounts-section");
         var input = document.querySelector("#enabled-accounts-select");
         // add getter account here? 
-        // window.input_email=price_obj['email'];
-        // window.input_stripe_id=price_obj['stripeID'];
         if(input_stripe_id && input_email != null){
-            console.log("not empty");
             
             var element = document.createElement("option");
             element.setAttribute("value", input_stripe_id );
@@ -361,10 +349,8 @@
             input.appendChild(element);
         }
 
-
         enabledAccounts.forEach((acct) => {
         var element = document.createElement("option");
-        console.log(acct.id)
         element.setAttribute("value", acct.id);
         element.innerHTML = acct.email || acct.id;
         input.appendChild(element)
@@ -406,7 +392,6 @@
             } else {
             elmButton.removeAttribute("disabled");
             elmButton.textContent = "<Something went wrong>";
-            console.log("data", data);
             }
         });
     },

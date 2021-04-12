@@ -17,7 +17,7 @@
         <link rel="stylesheet" href="../static/styles/homeresponsive.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
-        <title>All Listings</title>
+        <title>Tutor Offers</title>
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
    
@@ -54,12 +54,6 @@
 </script>
 
 <script>
-    
-    // console.log(localStorage.getItem("tutorEmail"));
-    // console.log(localStorage.getItem("tutorName"));
-</script>
-
-<script>
         function getAllOffers() {
             var tutorID = localStorage.getItem("tutorID") 
             const response = 
@@ -71,7 +65,6 @@
                             this.message = data.message;
                         } else {
                             var no_of_offers = (data.message).length
-                            console.log(data)
                             if (no_of_offers == 0){
                                 document.getElementById("offer_header").innerHTML = "You have yet to send an offer!";
                                 document.getElementById("listings").style.display = "none";
@@ -79,13 +72,9 @@
                             else {
                             document.getElementById("offer_header").innerHTML = `Offer history`;
                             document.getElementById("listings").style.display = "block";
-                            
                             }
-                            //console.log(data.offers)
-                            //console.log(data.offers);
                             var count = 1
                             for (offer of data.message){
-                                // console.log(offer[0].childName)
                                 if (offer[0].primary) {
                                     primary = "Primary"
                                 } else {

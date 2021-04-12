@@ -6,14 +6,11 @@
 
         <!-- development version, includes helpful console warnings -->
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-        <!-- <link rel="stylesheet" href="css/allListings.css"> -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <script src="https://use.fontawesome.com/a64b47fd82.js"></script>
-        <!-- <link rel="stylesheet" href="css/testHome.css">
-        <link rel="stylesheet" href="css/homeresponsive.css"> -->
         <link rel="stylesheet" href="../static/styles/testHome.css">
         <link rel="stylesheet" href="../static/styles/homeresponsive.css">
         <link rel="stylesheet" href="../static/styles/loginRegister.css">
@@ -115,7 +112,6 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
               <a class="stripe-connect" id="connect"><span>Connect with </span></a>
             </div>
           </div>
@@ -123,7 +119,6 @@
       </div>
 <!-- END OF MODAL  -->
       <script src="//code.jquery.com/jquery.min.js"></script>
-      <!-- FIX NAVBAR AFTER SESSION!!! -->
       <script>
       $.get("navbarGuest.html", function(data){
           $("#navbar").replaceWith(data);
@@ -136,30 +131,17 @@
         document.getElementById("formallyYours").style.display="block";
         document.getElementById("buttonUp").style.display="none";
     }
-    // @SOONZZZZZZ PLS THROW YOUR FANCY CONNECTSTRIPE BELOW HERE
-    // NOOO i am putting it under the modal m8 can't stop me :D 
-    // but i think the flow a bit weird. but it's fine as long as it works lol. 
     function tutorClicked(){
         document.getElementById("different").innerHTML = `<button type="button" class="btn" onclick="storeData()" data-toggle="modal" data-target="#stripeModal">Sign Up</button>`;
         document.getElementById("formallyYours").style.display="block";
         document.getElementById("buttonUp").style.display="none";
     }
-    
-
-    // globalize the variables 
-    // var tutorID 
-    // var tutorName; 
-    // var tutorEmail;
-    // var passw;
-    // var tutorPhone; 
-    // var loc;
 
     // this should globalized the variables 
     function storeData(){
     window.tutorID = Math.floor((Math.random() * 696969) + 1);
     window.tutorName = document.getElementById("username").value;
     window.tutorEmail = document.getElementById("email").value;
-    console.log("inside function:" + tutorEmail);
 
     window.passw = document.getElementById("password").value;
     window.tutorPhone = document.getElementById("phoneNumber").value;
@@ -177,14 +159,9 @@
     // hardcoded URL 
    
     var user_URL = "http://localhost:5004/createUser";
-    // var tutor_URL = `http://localhost:5004/seeChild`; 
-    // var stripe_url = "http://localhost:5000/onboard-user";
-    // var stripe_url="http://localhost:5007/onboard-user"
-    
     var stripe_url="http://localhost:5007/onboard-user";
 
     let elmButton = document.getElementById('connect');
-    console.log(elmButton);
     if (elmButton) {
     elmButton.addEventListener(
         "click",
@@ -192,9 +169,6 @@
         elmButton.setAttribute("disabled", "disabled");
         elmButton.textContent = "Opening...";
         // so it is to use windows.variable
-        
-        console.log("outside function");
-        console.log(tutorEmail);
         console.log(stripe_url);
         // console.log(send_to_stripe); 
         fetch(stripe_url, {
@@ -226,16 +200,7 @@
     
     //NOT DONE SETTING UP POST INFO!!!!!! @ALL             
     function createUser(){
-        
-        //retrieves and stores childData from user microservice
-        // alert("check")
-        alert(document.getElementById("password").value)
         //retrieves and stores form data
-        // this.childName = document.getElementById("childrens").value;
-        // this.subject = document.getElementById("subjects").value;
-        //alert(selected_subject);
-        // var selected_Eprice = document.getElementById("expected_price").value;
-        // alert(this.subject);
         //prepares posting data
         let jsonData = JSON.stringify({
             "userID": Math.floor((Math.random() * 696969) + 1), 
@@ -262,10 +227,8 @@
                 // 3 cases
                 switch (data.code) {
                     case 201:
-                        alert("yayyyyy")
 
                         // refresh assignment list
-                        // alert("meeeeep")
                         document.getElementById("formallyYours").style.display="none";
                         document.getElementById("success").innerHTML = `<h4>Your registration was successful!</h4><p>You will be redirected to the Login Page in a moment</p>`;
                         window.setTimeout(function(){
@@ -277,7 +240,6 @@
                         break;
                     case 400:
                     case 500:
-                        alert("not so great")
                         break;
                     default:
                         throw `${data.code}: ${data.message}`;

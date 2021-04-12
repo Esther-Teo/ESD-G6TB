@@ -17,7 +17,7 @@
         <link rel="stylesheet" href="../static/styles/homeresponsive.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
-        <title>Search Tutor</title>
+        <title>Tutor Search</title>
         <style>
           .pic{
               background-image: url("../images/emailDefault.jpg");
@@ -175,11 +175,8 @@
             if (data.code ===404){
                 message = data.message;
             } else {
-                // console.log(data)
                 childName = data.childName
-                // alert(childName)
                 subject = data.subject;
-                // console.log(subject)
                 price = data.expectedPrice;
                 preferredDay = data.preferredDay;
             }
@@ -193,10 +190,7 @@
                         message = data.message;
                     } else {
                         for (each of data.message){
-                        //NOT DONE YET
-                        
                             if (each[1].childName ==childName){
-                                // alert(childName)
                                 var parentName = each[0].userName;
                                 var parentPhone = each[0].userPhone;
                                 var parentEmail = each[0].userEmail;
@@ -257,15 +251,11 @@
         tutorID = localStorage.getItem("tutorID")
         tutorName = localStorage.getItem("tutorName")
         tutorEmail = localStorage.getItem("tutorEmail")
-        console.log(tutorID)
 
         // alert("inside create")
         var time = document.getElementById("time").value;
-        // console.log(time)
         var expectedPrice = document.getElementById("expected_price").value;
-        // console.log(expectedPrice)
         var preferredDay = $("input[type='radio'][name='preferredDay']:checked").val();
-        // console.log(preferredDay)
         json = {
             "assignmentId": assignmentId, 
             "expectedPrice": expectedPrice, 
@@ -277,7 +267,6 @@
             "tutorName": tutorName,
             "userID": userID
         };
-        console.log(assignmentId);
         const response =
             fetch("http://localhost:5100/tutorOffers", {
                     method: "POST",
@@ -288,14 +277,9 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("why");
-                    console.log(data);
-                    console.log("even");
-                    console.log(data.message);
                     if (data.code !== 201) {
                         // none returmed
                         message = data.message;
-                        console.log("there was an error creating the offer")
                         document.getElementById("modal-body").innerHTML = `
                         <p>Oops, there was an error sending the offer. It could be that you have already created an offer for this assignment. Try making an offer at another assignment!</p>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="refresh()">Okay</button>
@@ -390,8 +374,6 @@ function refresh(){
                                     else {
                                         primary = "Secondary";
                                     }
-                                    console.log(typeof each.subject)
-                                    console.log("placeholderrr")
 
                                     var level = each.level;
                                     var price = each.expectedPrice;
@@ -424,17 +406,11 @@ function refresh(){
                         });
 
                     },
-
-                    // include childName, School, Pri, Lvl, userName, userPhone, loc
-
-
                     
                 },
                 created: function () {
-                    // on Vue instance created, load the book list
-                    
-                    this.tutorcard();
-                    
+                    // on Vue instance created, load the cards
+                    this.tutorcard();                    
                 }
             });
         </script>

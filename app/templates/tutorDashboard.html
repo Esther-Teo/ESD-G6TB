@@ -37,12 +37,10 @@
 <!-- certified freak, 7 days a week -->
 <body class="body1" onload=javascript:getAllOffers1()>
     <div id="navbar"></div>
-                
 
     <div class="overlay" id="app">
         <h1 class='mt-3 header text-center display-4'>
             Main Dashboard
-
         </h1>
 
         <!-- Notifications  -->
@@ -54,12 +52,6 @@
             </div>
         </div>
     </div>
-    <script>
-        console.log("user localStorage check")
-        console.log(localStorage.getItem("tutorID"));
-        console.log(localStorage.getItem("tutorName"));
-        console.log(localStorage.getItem("tutorEmail"));
-    </script>
 
     
 
@@ -78,24 +70,19 @@
         var offer_level = "";
         var offer_tutor = "";
         var get_all_URL = "http://localhost:5001/assignmentByUser";
-        // var place_order_URL = "http://localhost:5100/place_order";
     function getAllOffers1() {
-    // on Vue instance created, load the book list
     tutorID = localStorage.getItem("tutorID")
     const response =
         fetch(`http://localhost:5001/test/` + `${tutorID}`)
             .then(response => response.json())
             .then(huh => {
-                //console.log(huh);
                 if (huh.code === 400) {
                     message = huh.message;
                 } else {
-                        //console.log(huh.message)
                         for (temp1 of huh.message){
                             array_of_tutor.push(temp1[1].tutorID);
                             array_of_tutor.push(temp1[1].tutorName);
                          }
-                        //console.log(array_of_tutor);
                         getAllOffers();
                             }
                         }
@@ -141,7 +128,6 @@
                         fetch("http://localhost:5001/assignment")
                             .then(response => response.json())
                             .then(data => {
-                                console.log(data.assignments)
                                 for (assignment of data.assignments){
                                     array_of_child.push(assignment.assignmentId);
                                     array_of_child.push(assignment.childName);
@@ -152,16 +138,13 @@
                                         offer_level = "Secondary "
                                     }
                                     offer_level += assignment.level;
-                                    //alert(offer_level);
                                     array_of_child.push(offer_level);
                                     array_of_child.push(assignment.subject);
                                 }
 
                                 if (data.code === 404) {
-                                    // no book in db
+                                    // none returned
                                     this.message = data.message;
-                                } else {
-                                    console.log("forwhat")
                                 }
                             })
                             .catch(error => {
@@ -176,75 +159,68 @@
             }
         });
         </script>
-        <script>
+    <script>
         function getAllOffers() {
             var tutorID = localStorage.getItem("tutorID")//FIX PLS EDENA TIO YI NING YOU FCKING BASTARD MAKING ME WORK 365DAYS A YEAR 
-                        const response = 
-                        fetch("http://localhost:5002/returned"+`/${tutorID}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.code === 404) {
-                                        this.message = data.message;
-                                    } else {
-                                       var no_of_offers = (data.offers).length
-                                       if (no_of_offers == 0){
-                                           document.getElementById("offer_header").innerHTML = "You have no new notifications!"
-                                       }
-                                       else {
-                                        document.getElementById("offer_header").innerHTML = `You have ${no_of_offers} new Notifications!`
-                                       }
-                                        //console.log(data.offers);
-                                       
-                                        // console.log(array_of_child);
-                                        document.getElementById("offer_notification").innerHTML += ``;
-                                       for (offer of data.offers){
-                                            for (i=0;i<array_of_child.length;i+=4){
-                                                if (offer.assignmentId == array_of_child[i]){
-                                                childName1 = array_of_child[i+1]
-                                                offer_subject = array_of_child[i+3]
-                                                offer_level = array_of_child[i+2]
-                                                var temp69 = offer.tutorID 
-                                                // console.log(array_of_child) 
-                                                // console.log(childName1);
-                                                // console.log(offer_subject);
-                                                // console.log(offer_level);
-                                                }
-                                            }
-                                            if (offer.status == "accepted"){
-                                            document.getElementById("offer_notification").innerHTML += `
-                                                    <div class="card text-center border-light mb-3" style="max-width: 30rem; margin:10px">
-                                                    <div class="card-header">Offer Notification</div>
-                                                    <div class="card-body">
-                                                    <h5 class="card-title">Tuition for ${childName1}</h5>
-                                                    <p class="card-text">Your offer to teach <b>${childName1}</b> for ${offer_level} ${offer_subject}</p>
-                                                    <p class="card-text">on <b>${offer.preferredDay} @ ${offer.selectedTime} for $${offer.expectedPrice}/Hr</b></p> 
-                                                    <p class="card-text" id="accept_reject">has been <a style="color:green">Accepted</a></p>                           
-                                                    </div>
-                                                    </div>
-                                                    `
-                                                }
-                                            else {
-                                                
-                                                document.getElementById("offer_notification").innerHTML += `
-                                                    <div class="card text-center border-light mb-3" style="max-width: 30rem; margin:10px">
-                                                    <div class="card-header">Offer Notification</div>
-                                                    <div class="card-body">
-                                                    <h5 class="card-title">Tuition for ${childName1}</h5>
-                                                    <p class="card-text">Your offer to teach <b>${childName1}</b> for ${offer_level} ${offer_subject}</p>
-                                                    <p class="card-text">on <b>${offer.preferredDay} @ ${offer.selectedTime} for $${offer.expectedPrice}/Hr</b></p> 
-                                                    <p class="card-text" id="accept_reject">has been <a style="color:red">Rejected</a></p>                           
-                                                    </div>
-                                                    </div>
-                                                    `
-                                            }
-                                        }
-                                      
+                const response = 
+                fetch("http://localhost:5002/returned"+`/${tutorID}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.code === 404) {
+                            this.message = data.message;
+                        } else {
+                            var no_of_offers = (data.offers).length
+                            if (no_of_offers == 0){
+                                document.getElementById("offer_header").innerHTML = "You have no new notifications!"
+                            }
+                            else {
+                            document.getElementById("offer_header").innerHTML = `You have ${no_of_offers} new Notifications!`
+                            }
+                            document.getElementById("offer_notification").innerHTML += ``;
+                            for (offer of data.offers){
+                                for (i=0;i<array_of_child.length;i+=4){
+                                    if (offer.assignmentId == array_of_child[i]){
+                                    childName1 = array_of_child[i+1]
+                                    offer_subject = array_of_child[i+3]
+                                    offer_level = array_of_child[i+2]
+                                    var temp69 = offer.tutorID 
                                     }
-                                })
-                                .catch(error => {
-    
-                                });
-        }
+                                }
+                                if (offer.status == "accepted"){
+                                    document.getElementById("offer_notification").innerHTML += `
+                                        <div class="card text-center border-light mb-3" style="max-width: 30rem; margin:10px">
+                                        <div class="card-header">Offer Notification</div>
+                                        <div class="card-body">
+                                        <h5 class="card-title">Tuition for ${childName1}</h5>
+                                        <p class="card-text">Your offer to teach <b>${childName1}</b> for ${offer_level} ${offer_subject}</p>
+                                        <p class="card-text">on <b>${offer.preferredDay} @ ${offer.selectedTime} for $${offer.expectedPrice}/Hr</b></p> 
+                                        <p class="card-text" id="accept_reject">has been <a style="color:green">Accepted</a></p>                           
+                                        </div>
+                                        </div>
+                                        `
+                                    }
+                                else {
+                                    
+                                    document.getElementById("offer_notification").innerHTML += `
+                                        <div class="card text-center border-light mb-3" style="max-width: 30rem; margin:10px">
+                                        <div class="card-header">Offer Notification</div>
+                                        <div class="card-body">
+                                        <h5 class="card-title">Tuition for ${childName1}</h5>
+                                        <p class="card-text">Your offer to teach <b>${childName1}</b> for ${offer_level} ${offer_subject}</p>
+                                        <p class="card-text">on <b>${offer.preferredDay} @ ${offer.selectedTime} for $${offer.expectedPrice}/Hr</b></p> 
+                                        <p class="card-text" id="accept_reject">has been <a style="color:red">Rejected</a></p>                           
+                                        </div>
+                                        </div>
+                                        `
+                                }
+                            }
+                            
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+                }
     </script>
 </body>
 </html>

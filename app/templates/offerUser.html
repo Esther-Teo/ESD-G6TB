@@ -21,7 +21,7 @@
         <!-- <link rel="stylesheet" href="css/homeresponsive.css"> -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
-        <title>All Listings</title>
+        <title>User Offers</title>
     </head>
     <script src="https://code.jquery.com/jquery-3.5.0.js">
     </script>
@@ -42,15 +42,11 @@
                     </button>
                 </div>    
                 <div id="pending">
-                    
                     <div class ="container" id="loadOffers">
-
-                           
                     </div>
                 </div>
     
                 <div id="previous" class="collapse container">
-                    
                 </div>
                 
                 </br>
@@ -76,13 +72,6 @@
         }
     
     </script>
-    
-<script>
-    console.log("user localStorage check")
-    console.log(localStorage.getItem("userID"));
-    console.log(localStorage.getItem("userName"));
-    console.log(localStorage.getItem("userEmail"));
-</script>
     
 <script>
         var delete_child_URL = "http://localhost:5100/manageOffers";
@@ -123,7 +112,7 @@
                 .then(data => {
 
                     if (data.code !== 201) {
-                        // none return
+                        // none returned
                         message = data.message;
                     } else {
                         // message += data;
@@ -259,7 +248,6 @@
                     // Errors when calling the service; such as network error, 
                     // service offline, etc
                     console.log( error);
-                    // alert("got it")
                 });
     
     }
@@ -269,7 +257,6 @@
             <script>
                 var userID = localStorage.getItem("userID")
                 var get_all_URL = "http://localhost:5001/test";
-                // var place_order_URL = "http://localhost:5100/place_order";
                 var app = new Vue({
                     el: "#app",
                     computed: {
@@ -297,21 +284,16 @@
                     },
                     methods: {
                         getChildrenDetails: function() {
-                            // alert(this.userID)
                             
                             const response = 
                             fetch("http://localhost:5004/child"+`/${this.userID}`)
                                     .then(response => response.json())
                                     .then(data => {
-                                        // console.log(data)
                                         if (data.code === 404) {
-                                            // no book in db
+                                            // none returned
                                             this.message = data.message;
                                         } else {
-                                            // this.subject = data.data.subjects;
-                                           
                                             for (each of data.data){
-                                                // alert(each.childName);
                                                 document.getElementById("loadOffers").innerHTML += `
                                                 <h3  style="color: black;text-align: center;" id="space_below_name">${each.childName}</h3>
                                                 <div class="card-deck" id="${each.childName}"></div>   

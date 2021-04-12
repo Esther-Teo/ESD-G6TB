@@ -1,14 +1,3 @@
-<!-- <?php
-    session_start();
-    if ( !isset($_SESSION["user"]) ) {
-      $user = 'no';
-      
-    }
-    else{
-        $user = $_SESSION["user"];
-    }
-?> -->
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -22,37 +11,19 @@
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <script src="https://use.fontawesome.com/a64b47fd82.js"></script>
-        <!-- <link rel="stylesheet" href="static/testHome.css"> -->
         <link rel="stylesheet" href="../static/styles/testHome.css">
         <link rel="stylesheet" href="../static/styles/homeresponsive.css">
         <link rel="stylesheet" href="../static/styles/allListings.css">
-        <!-- <link rel="stylesheet" href="css/homeresponsive.css">
-        <link rel="stylesheet" href="css/allListings.css"> -->
-        <!-- <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/testHome.css') }}">
-        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/allListings.css') }}">
-        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/homeresponsive.css') }}"> -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet"> 
-        <title>All Listings</title>
+        <title>User Payment</title>
 
         <script>
-            console.log("start");
-            console.log(localStorage.getItem("userID"));
-            console.log(localStorage.getItem("userName"));
-            console.log(localStorage.getItem("email"));
-            // hmmm... 
-            console.log(localStorage.getItem("tutorEmail"));
 
 
             var userID = localStorage.getItem("userID");
             var userName = localStorage.getItem("userName").split(" ");
             userName = userName[1];
-            console.log("userID: ",userID);
-            console.log("userName: ", userName);
-
-            // page must check if log in
-            // if userID is null, redirect log in page
-            //sessionStorage.clear() --> logout
         </script>
 
     </head>
@@ -80,20 +51,10 @@
             $("#navbar").replaceWith(data);
         });
         </script>
-
-        <script> var user = ""; console.log(user);</script>
-        need edit scrips
-        <!-- <script src="./js/homeui.js"></script> -->
-        <script>
-
-          
-        </script>
         <script>
 
             var userID = localStorage.getItem("userID");
-
             var get_all_URL = "http://localhost:5001/test";
-            // var place_order_URL = "http://localhost:5100/place_order";
     
             var app = new Vue({
                 el: "#app",
@@ -118,7 +79,6 @@
                     creationSuccessful: false,
                 },
                 methods: {
-                    //@soonnzzzzzzzz functionto populate the cards starts here
                     getAllAssignments: function () {
                         // on Vue instance created, load the book list
                         const response =
@@ -129,16 +89,12 @@
                                     console.log("meep");
                                     console.log(huh)
                                     if (huh.code === 400) {
-                                        // no book in db
+                                        // none returned
                                         message = huh.message;
                                         
                                     } else {
                                         for (each of huh.message) {
-                                  
-                                            console.log(each[0].childName);
-                                            //console.log(huh.offers[each])
                                             card_status = each[1].status;
-                                            // alert(card_status)
                                             if (card_status==="accepted") {
                                                 childName = each[0].childName;
                                                 card_primary = each[0].primary;
@@ -155,14 +111,8 @@
                                                 var card_time = each[1].selectedTime;
                                                 var card_price = each[1].expectedPrice;
                                                 var assignmentID = each[1].assignmentId;
-                                                // add this to a hidden field? 
                                                 var tutor_email=each[1].tutorEmail; 
                                                 console.log("tutor email:" + tutor_email);
-                                                // offer = huh.offers[each]
-                                                //alert(offer.status)
-                                                //alert(offer.tutorName)
-                                                
-                                                //alert(offer.tutorname)
                                                 
                                                 //ADD EVENT LISTENER STRIPE CALL HERE 
                                                 document.getElementById("cardsss").innerHTML += `
@@ -182,10 +132,6 @@
                                                 }
                                             }
                                         })  
-                                        // alert(counter);
-                                        // console.log(counter);
-                                        // document.getElementById("offerTable").innerHTML = html
-
                                 
                                 .catch(error => {
                                     // Errors when calling the service; such as network error, 
@@ -200,18 +146,9 @@
                             fetch(get_child_URL+`/${this.userID}`)
                                 .then(response => response.json())
                                 .then(data => {
-                                    console.log(response);
-                                    console.log("meep");
-                                    // console.log(data)
                                     if (data.code === 404) {
-                                        // no book in db
+                                        // none returned 
                                         this.message = data.message;
-                                    } else {
-                                        // this.subject = data.data.subjects;
-                                        for (each of data.data) {
-                                            console.log(each.childName)
-                                        }
-                                        
                                     }
                                 })
                                 .catch(error => {
@@ -228,9 +165,6 @@
                     this.getChildrenDetails();
                 }
             });
-            // can be used on localhost 5000
-            // test_url="http://localhost:5007/connect_pay.html"
-            // test_url="http://localhost:5000/connect_pay.html"
             default_url="http://localhost:5007//connect_pay.html"
             function stripe_redirect(assignmentID, tutorId, card_price,tutor_email){
                 console.log(assignmentID,tutorId,card_price,tutor_email);
@@ -246,11 +180,7 @@
                 })
                 .then(response => response.json()) 
                 .then(json => {
-                console.log("output: "+ json); 
-    
-                console.log(json.data.stripeID);
                 var stripe_ID=json.data.stripeID;
-                console.log()
 
                 window.setTimeout(function(){
                             // Move to a new location or you can do something else
@@ -262,11 +192,6 @@
                 
                 }) 
                 .catch(err => console.log(err));
-                
-              
-
-                
-
             }
         
         </script>

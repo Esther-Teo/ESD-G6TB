@@ -4,16 +4,12 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- development version, includes helpful console warnings -->
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-        <!-- <link rel="stylesheet" href="css/allListings.css"> -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <script src="https://use.fontawesome.com/a64b47fd82.js"></script>
-        <!-- <link rel="stylesheet" href="css/testHome.css">
-        <link rel="stylesheet" href="css/homeresponsive.css"> -->
         <link rel="stylesheet" href="../static/styles/testHome.css">
         <link rel="stylesheet" href="../static/styles/homeresponsive.css">
         <link rel="stylesheet" href="../static/styles/loginRegister.css">
@@ -58,7 +54,6 @@
 
 
       <script src="//code.jquery.com/jquery.min.js"></script>
-      <!-- FIX NAVBAR AFTER SESSION!!! -->
       <script>
       $.get("navbarGuest.html", function(data){
           $("#navbar").replaceWith(data);
@@ -94,20 +89,15 @@
         }
 
     var appended_value_obj=parse_query_string(current_appended_url);
-    console.log(appended_value_obj);
     var stripe_id=appended_value_obj["?accountid"]
-    console.log(stripe_id);
 
     var tutor_URL = "http://localhost:5006/createTutor"
     function createTutor(){
-        //retrieves and stores childData from user microservice
-        // alert("check")
+         //retrieves and stores form data
         lst = ["tutorID", "tutorName", "tutorEmail", "passw", "tutorPhone", "loc"]
         help = document.cookie;
-        // console.log(help);
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(';');
-        console.log(ca)
         var json = {}
         for(var i = 0; i < ca.length; i++) {
             var c = ca[i];
@@ -115,12 +105,10 @@
             for (each of lst){
                 if (c.indexOf(each) > -1){
                     json[each]= c.substring(check, c.length)
-                    alert(c.substring(check, c.length))
                 }
             }
         
         }
-        console.log(json);
         // clearing all cookies
         var cookies = document.cookie.split(";");
         for (var i = 0; i < cookies.length; i++) {
@@ -132,20 +120,13 @@
 
         json["portfolio"] = "No bio has been created yet";
         json["priceRange"] = 7;
-        console.log("inside function:" + stripe_id);
         json["stripeID"] = stripe_id;
-        //retrieves and stores form data
-        // this.childName = document.getElementById("childrens").value;
-        // this.subject = document.getElementById("subjects").value;
-        //alert(selected_subject);
-        // var selected_Eprice = document.getElementById("expected_price").value;
-        // alert(this.subject);
-        //prepares posting data
 
+
+        //prepares posting data
         let jsonData = JSON.stringify(
             json
         );
-        console.log(jsonData)
         //posts creates a new assignment
         fetch(tutor_URL,
             {
@@ -157,16 +138,12 @@
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 result = data.data;
-                console.log(result);
                 // 3 cases
                 switch (data.code) {
                     case 201:
-                        alert("yayyyyy")
 
                         // refresh assignment list
-                        // alert("meeeeep")
                         document.getElementById("formallyYours").style.display="none";
                         document.getElementById("success").innerHTML = `<h4>Your registration was successful!</h4><p>You will be redirected to the Login Page in a moment</p>`;
                         window.setTimeout(function(){
@@ -174,11 +151,9 @@
 
                             window.location.href = "loginPage.html";
                         }, 2000);
-                        // an alternate way is to add this one element into this.books
                         break;
                     case 400:
                     case 500:
-                        alert("not so great")
                         break;
                     default:
                         throw `${data.code}: ${data.message}`;
@@ -186,9 +161,14 @@
             }).catch(error => {
                     // Errors when calling the service; such as network error, 
                     // service offline, etc
-                    alert("Please complete the form before sending!");
                     // come back to this 
-                    // window.location.href = "loginPage.html";
+                    document.getElementById("formallyYours").style.display="none";
+                        document.getElementById("success").innerHTML = `<h4>Your registration was not successful!</h4><p>You will be redirected to the Registration Page in a moment</p>`;
+                        window.setTimeout(function(){
+                            // Move to a new location or you can do something else
+
+                            window.location.href = "registerPage.html";
+                        }, 2000);
                 });
     }
 
