@@ -76,7 +76,7 @@ USE user;
 -- --------------------------------------------------------
 
 --
--- 
+-- create table for user
 --
 
 DROP TABLE IF EXISTS users;
