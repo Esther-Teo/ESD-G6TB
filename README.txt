@@ -2,7 +2,7 @@
 
 How to run the file? 
 
-1 Unzip file
+1 Unzip file into the root directory.
 2. Load WAMP
 3. import SQL files into phpmyadmin
     How to import the required SQL:
