@@ -31,42 +31,6 @@ stripe.api_key = 'sk_test_51Ib4VfBvhmRsAY8L6GHK8qRa5rHMl8oF4Innv0nchtswuquNwU9xM
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 
-#not used
-# START OF BUY
-# method with sessions
-@app.route('/')
-def index():
-    return render_template('checkout.html')
-
-# this is for one time checkout basically for buy books from the platform but that would be too simple. Hence we are implementing stripe connect to facilitate P2P payments
-@app.route('/create-checkout-session', methods=['POST'])
-def create_checkout_session():
-    # Creating a session upon load
-    session = stripe.checkout.Session.create(
-        payment_method_types=["card"],
-        line_items=[
-            {
-                "price": "price_1Ib4ZZBvhmRsAY8LTTWPEqWj",
-                "quantity": 1,
-            },
-        ],
-        # line items are what the customer will be paying for.
-        # line_items[price] is retrieved from the product ID in stripe
-        mode="payment",
-        success_url=url_for('success', _external=True) + '?session_id={checkout_session_id}',
-        cancel_url=url_for('index', _external=True),
-    )
-    return jsonify(id=session.id)
-
-#not used 
-@app.route('/success.html')
-def success():
-    return render_template('success.html')
-# END OF BUY SHIT 
-
-#ONBOARDING 
-#An email address associated with the account. You can treat this as metadata: it is not used for authentication or messaging account holders.
-# fix email to stripe account.
 @app.route('/onboard-user', methods=['GET','POST'])
 def onboard_user():
     data = json.loads(request.data)
@@ -133,19 +97,22 @@ def onboard_user_refresh():
 def _generate_account_link(account_id, origin):
     #edene here! edit the return URL to yours. orgin refers to localhost or wat u set docker to be e.g 127.0.0.1 or anything
     print(f'account id in generatelink is {account_id}')
+    print(f'account id in generatelink is {origin}')
+
     account_link = stripe.AccountLink.create(
 
         type='account_onboarding',
         account=account_id,
         collect='eventually_due',
-        refresh_url=f'http://127.0.0.1:5000/onboard-user/refresh',
+        refresh_url=f'http://localhost:5007/ESD-G6TB/onboard-user/refresh',
         # return_url=f'{origin}/ESD/ESD-G6TB/app/templates/registerPage.html',
-        # this is my localhost. 
-        return_url=f'C:\wamp64\www\213\ESD\Project\template\app\ESD-G6TB\app\templates\registerTutorFallback.html' + '?accountid='+account_id,
-        # return_url=f'{origin}:5000/app/templates/registerTutorFallback.html' + '?accountid='+account_id,
-
+        # soonhao localhost. 
+        # return_url=f'C:\wamp64\www\213\ESD\Project\template\app\ESD-G6TB\app\templates\registerTutorFallback.html' + '?accountid='+account_id,
+        # return_url='http://localhost/213/ESD/Project/template/app/ESD-G6TB/app/templates/registerTutorFallback.html' + '?accountid='+account_id,
+        # FOR SUBMISSION
+        return_url='http://localhost/ESD-G6TB/app/templates/registerTutorFallback.html' + '?accountid='+account_id,
     )
-    # print(origin)
+    # print(origin) 
     print(account_link.url)
     return account_link.url
 
@@ -156,9 +123,8 @@ def _generate_account_link(account_id, origin):
 
 # Start of Connect Pay 
 # this is for parents to pay the tutors
-@app.route('/connect_pay.html', methods=['GET'])
-def connect_pay():
-    return render_template('connect_pay.html')
+
+
 
 
 def calculate_order_amount(items):
@@ -208,128 +174,53 @@ def get_accounts():
     return jsonify({'accounts': accounts})
 
 # fix this 
-@app.route("/express-dashboard-link", methods=["GET"])
-def get_express_dashboard_link():
-    account_id = request.args.get('account_id')
-    link = stripe.Account.create_login_link(account_id, redirect_url=(request.url_root))
-    # this link is the one saved in the platform account. 
-    return jsonify({'url': link.url})
+# @app.route("/express-dashboard-link", methods=["GET"])
+# def get_express_dashboard_link():
+#     account_id = request.args.get('account_id')
+#     link = stripe.Account.create_login_link(account_id, redirect_url=(request.url_root))
+#     # this link is the one saved in the platform account. 
+#     return jsonify({'url': link.url})
 
 
 # track user with web hook. leave the web hook alone first 
-@app.route("/webhook", methods=["POST"])
-def webhook_received():
-  payload = request.get_data()
-  # Signature by stripe endpoint. 
-  signature = request.headers.get("stripe-signature")
-  print(signature)
+# @app.route("/webhook", methods=["POST"])
+# def webhook_received():
+#   payload = request.get_data()
+#   # Signature by stripe endpoint. 
+#   signature = request.headers.get("stripe-signature")
+#   print(signature)
 
-  # Verify webhook signature and extract the event. The webhook used is set up to my account 
-  # See https://stripe.com/docs/webhooks/signatures for more information.
-  try:
-    event = stripe.Webhook.construct_event(
-        payload=payload, sig_header=signature, secret=WEBHOOK
-    )
-  except ValueError as e:
-    # Invalid payload.
-    print(e)
-    return Response(status=400)
-  except stripe.error.SignatureVerificationError as e:
-    # Invalid Signature.
-    print(e, signature, os.getenv('STRIPE_WEBHOOK_SECRET'), payload)
-    return Response(status=400)
+#   # Verify webhook signature and extract the event. The webhook used is set up to my account 
+#   # See https://stripe.com/docs/webhooks/signatures for more information.
+#   try:
+#     event = stripe.Webhook.construct_event(
+#         payload=payload, sig_header=signature, secret=WEBHOOK
+#     )
+#   except ValueError as e:
+#     # Invalid payload.
+#     print(e)
+#     return Response(status=400)
+#   except stripe.error.SignatureVerificationError as e:
+#     # Invalid Signature.
+#     print(e, signature, os.getenv('STRIPE_WEBHOOK_SECRET'), payload)
+#     return Response(status=400)
 
-  if event["type"] == "payment_intent.succeeded":
-    payment_intent = event["data"]["object"]
-    # handle_successful_payment_intent(payment_intent)
-    print('runs under webhook?')
-    #Send to broker here 
-
-
-  return json.dumps({"success": True}), 200
+#   if event["type"] == "payment_intent.succeeded":
+#     payment_intent = event["data"]["object"]
+#     # handle_successful_payment_intent(payment_intent)
+#     print('runs under webhook?')
+#     #Send to broker here 
 
 
-
-# rabbitMQ commented out first it works but my docker has some problems rn.
-#   
-# @app.route("/send-payment-to-rabbit", methods=["POST"])
-# def handle_successful_payment_intent():
-
-#     print("runs after payment")
-#     data = json.loads(request.data)
-#     message=json.dumps(data)
-#     print(message)
-#     amqp_setup2.channel.basic_publish(exchange=amqp_setup2.exchangename, routing_key="payment_successful", 
-#             body=message, properties=pika.BasicProperties(delivery_mode = 2))
-#     return json.dumps({"success": True}), 200
-
-
-# @ramq.queue(exchange_name='payment_exchange', routing_key='flask_rabmq.fail')
-# def broker_successful_payment_intent(payment_intent):
-#     if amqp_setup.channel.basic_public(exchange=amqp_setup.exchangename, routing_key="pay_successful")
-
+#   return json.dumps({"success": True}), 200
 
 
 
 if __name__ == '__main__':
     # ramq.run_consumer()
 
-    app.run(debug=True, port=5007)
+    app.run(host='0.0.0.0', debug=True, port=5007)
 
 
 
 
-
-## Payment intent object 
-# {
-#   "id": "pi_1IcTHFBvhmRsAY8L4bBlSj27",
-#   "object": "payment_intent",
-#   "amount": 1400,
-#   "amount_capturable": 0,
-#   "amount_received": 0,
-#   "application": null,
-#   "application_fee_amount": 140,
-#   "canceled_at": null,
-#   "cancellation_reason": null,
-#   "capture_method": "automatic",
-#   "charges": {
-#     "object": "list",
-#     "data": [],
-#     "has_more": false,
-#     "url": "/v1/charges?payment_intent=pi_1IcTHFBvhmRsAY8L4bBlSj27"
-#   },
-#   "client_secret": "pi_1IcTHFBvhmRsAY8L4bBlSj27_secret_gWq5uADpap6kVhAW8ZqcTFCQz",
-#   "confirmation_method": "automatic",
-#   "created": 1617532437,
-#   "currency": "usd",
-#   "customer": null,
-#   "description": null,
-#   "invoice": null,
-#   "last_payment_error": null,
-#   "livemode": false,
-#   "metadata": {},
-#   "next_action": null,
-#   "on_behalf_of": null,
-#   "payment_method": null,
-#   "payment_method_options": {
-#     "card": {
-#       "installments": null,
-#       "network": null,
-#       "request_three_d_secure": "automatic"
-#     }
-#   },
-#   "payment_method_types": [
-#     "card"
-#   ],
-#   "receipt_email": null,
-#   "review": null,
-#   "setup_future_usage": null,
-#   "shipping": null,
-#   "statement_descriptor": null,
-#   "statement_descriptor_suffix": null,
-#   "status": "requires_payment_method",
-#   "transfer_data": {
-#     "destination": "acct_1Ic8ngAiyPfscIUT"
-#   },
-#   "transfer_group": null
-# }

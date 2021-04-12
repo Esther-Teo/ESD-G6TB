@@ -179,9 +179,9 @@
     var user_URL = "http://localhost:5004/createUser";
     // var tutor_URL = `http://localhost:5004/seeChild`; 
     // var stripe_url = "http://localhost:5000/onboard-user";
-    var stripe_url="http://127.0.0.1:5007/onboard-user"
+    // var stripe_url="http://localhost:5007/onboard-user"
     
-
+    var stripe_url="http://localhost:5007/onboard-user";
 
     let elmButton = document.getElementById('connect');
     console.log(elmButton);
@@ -195,7 +195,7 @@
         
         console.log("outside function");
         console.log(tutorEmail);
-    
+        console.log(stripe_url);
         // console.log(send_to_stripe); 
         fetch(stripe_url, {
             method: "POST",

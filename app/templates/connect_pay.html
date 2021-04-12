@@ -6,8 +6,11 @@
     <meta name="description" content="Accept a payment with destination charges" />
 
 
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/normalize.css') }}">
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/global.css') }}">
+    <!-- <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/normalize.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/global.css') }}"> -->
+
+    <link rel="stylesheet" href="../static/styles/normalize.css">
+    <link rel="stylesheet" href="../static/styles/global.css">
     <script src="https://js.stripe.com/v3/"></script>
 
   </head>
@@ -185,7 +188,7 @@
     // PaymentIntent on the server side.
         paymentIntentData.account = account;
 
-    fetch("/create-payment-intent", {
+    fetch("http://localhost:5007/create-payment-intent", {
         method: "POST",
         headers: {
         "Content-Type": "application/json"
@@ -241,8 +244,10 @@
 
         if(paymentIntent.status=="succeeded"){
             setTimeout(function(){
-                window.location="http://localhost:5000/app/templates/offerUser.htm";
-                // SH path
+              //done 
+                // window.location="http://localhost:5000/app/templates/offerUser.htm";
+                // window.location="http://localhost/213/ESD/Project/template/app/ESD-G6TB/app/templates/payment.html"
+                window.location.replace("payment.html");
                 // window.location="http://localhost/ESD/ESD-G6TB/app/templates/payment.html";
              }, 3000);
 
@@ -283,7 +288,8 @@
     // of your accounts have charges enabled, we'll display instructions on how to finish the onboarding process, (3)
     // otherwise, we'll display a payment form, as a customer might see it.
     // REMOVE THIS TO PAY DIRECTLY
-    fetch("/recent-accounts", {
+    
+    fetch("http://localhost:5007/recent-accounts", {
         method: "GET",
         headers: {
         "Content-Type": "application/json"

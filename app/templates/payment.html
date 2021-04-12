@@ -229,8 +229,9 @@
                 }
             });
             // can be used on localhost 5000
-            test_url="http://localhost:5007/connect_pay.html"
-            default_url="http://127.0.0.1:5000/connect_pay.html"
+            // test_url="http://localhost:5007/connect_pay.html"
+            // test_url="http://localhost:5000/connect_pay.html"
+            default_url="http://localhost:5007//connect_pay.html"
             function stripe_redirect(assignmentID, tutorId, card_price,tutor_email){
                 console.log(assignmentID,tutorId,card_price,tutor_email);
                 var message = {
@@ -249,7 +250,16 @@
     
                 console.log(json.data.stripeID);
                 var stripe_ID=json.data.stripeID;
-                window.location=test_url + "?"+"price="+ card_price+'&'+'email='+tutor_email +'&'+'stripeID='+stripe_ID;
+                console.log()
+
+                window.setTimeout(function(){
+                            // Move to a new location or you can do something else
+
+                            window.location.replace("connect_pay.html"+ "?"+"price="+ card_price+'&'+'email='+tutor_email +'&'+'stripeID='+stripe_ID);
+                        }, 1000);
+
+                // window.location=test_url + "?"+"price="+ card_price+'&'+'email='+tutor_email +'&'+'stripeID='+stripe_ID;
+                
                 }) 
                 .catch(err => console.log(err));
                 
